@@ -79,15 +79,10 @@ def DownloadFinancialsMorningstar( iCompanies ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
 
-			print( 'find element' )
 			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' )
-			print( 'click' )
 			export.click()
-			print( 'sleep' )
-			time.sleep( 3 )
+			time.sleep( 3 )	# To be sure, coz' with 1s, sometimes listdir() fails
 
-			print( 'list dir' )
-			print( os.listdir( sgTempDir ) )
 			csv = os.listdir( sgTempDir )[0]
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarIncomeStatement() )
 			
@@ -102,15 +97,10 @@ def DownloadFinancialsMorningstar( iCompanies ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
 
-			print( 'find element' )
 			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' )
-			print( 'click' )
 			export.click()
-			print( 'sleep' )
 			time.sleep( 3 )
 
-			print( 'list dir' )
-			print( os.listdir( sgTempDir ) )
 			csv = os.listdir( sgTempDir )[0]
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarBalanceSheet() )
 			
@@ -125,15 +115,10 @@ def DownloadFinancialsMorningstar( iCompanies ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
 
-			print( 'find element' )
 			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"exportKeyStat2CSV")]' )
-			print( 'click' )
 			export.click()
-			print( 'sleep' )
 			time.sleep( 3 )
 
-			print( 'list dir' )
-			print( os.listdir( sgTempDir ) )
 			csv = os.listdir( sgTempDir )[0]
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarRatios() )
 			
