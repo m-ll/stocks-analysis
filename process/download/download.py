@@ -2,6 +2,8 @@
 
 import os
 import time
+import shutil
+import tempfile
 import requests
 
 from selenium import webdriver
@@ -11,15 +13,24 @@ from ..company import *
 
 os.environ["PATH"] += os.pathsep + '.'
 sgBrowser = None
+sgTempDir = ''
 
 def BrowserInit():
 	global sgBrowser
+	global sgTempDir
 	
 	if sgBrowser is not None:
 		return
+
+	sgTempDir = tempfile.gettempdir() + '/stocks'
 	
 	opts = Options()
 	opts.add_argument( '--headless' )
+
+	opts.set_preference( 'browser.download.folderList', 2 );
+	opts.set_preference( 'browser.download.manager.showWhenStarting', False );
+	opts.set_preference( 'browser.download.dir', sgTempDir );
+	opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,application/octet-stream,text/html' );
 
 	sgBrowser = webdriver.Firefox( firefox_options=opts )
 	sgBrowser.implicitly_wait( 4 ) # seconds
@@ -48,6 +59,85 @@ def DownloadFinancialsZB( iCompanies ):
 
 		with open( company.SourceFileHTMLFinancialsZB(), 'w' ) as output:
 			output.write( sgBrowser.page_source )
+
+		time.sleep( 1 )
+
+def DownloadFinancialsMorningstar( iCompanies ):
+	global sgBrowser
+	global sgTempDir
+	
+	BrowserInit()
+
+	for company in iCompanies:
+		print( 'Download financials Morningstar: {} ...'.format( company.mName ) )
+		
+		if company.mMorningstarRegion:
+			sgBrowser.get( company.SourceUrlFinancialsMorningstarIncomeStatement() )
+			time.sleep( 1 )
+			
+			if os.path.exists( sgTempDir ):
+				shutil.rmtree( sgTempDir )
+			os.makedirs( sgTempDir )
+
+			print( 'find element' )
+			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' )
+			print( 'click' )
+			export.click()
+			print( 'sleep' )
+			time.sleep( 3 )
+
+			print( 'list dir' )
+			print( os.listdir( sgTempDir ) )
+			csv = os.listdir( sgTempDir )[0]
+			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarIncomeStatement() )
+			
+			shutil.rmtree( sgTempDir )
+
+			#---
+
+			sgBrowser.get( company.SourceUrlFinancialsMorningstarBalanceSheet() )
+			time.sleep( 1 )
+			
+			if os.path.exists( sgTempDir ):
+				shutil.rmtree( sgTempDir )
+			os.makedirs( sgTempDir )
+
+			print( 'find element' )
+			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' )
+			print( 'click' )
+			export.click()
+			print( 'sleep' )
+			time.sleep( 3 )
+
+			print( 'list dir' )
+			print( os.listdir( sgTempDir ) )
+			csv = os.listdir( sgTempDir )[0]
+			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarBalanceSheet() )
+			
+			shutil.rmtree( sgTempDir )
+
+			#---
+
+			sgBrowser.get( company.SourceUrlFinancialsMorningstarRatios() )
+			time.sleep( 1 )
+			
+			if os.path.exists( sgTempDir ):
+				shutil.rmtree( sgTempDir )
+			os.makedirs( sgTempDir )
+
+			print( 'find element' )
+			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"exportKeyStat2CSV")]' )
+			print( 'click' )
+			export.click()
+			print( 'sleep' )
+			time.sleep( 3 )
+
+			print( 'list dir' )
+			print( os.listdir( sgTempDir ) )
+			csv = os.listdir( sgTempDir )[0]
+			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarRatios() )
+			
+			shutil.rmtree( sgTempDir )
 
 		time.sleep( 1 )
 

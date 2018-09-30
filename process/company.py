@@ -6,13 +6,17 @@ import re
 from bs4 import BeautifulSoup
 
 class cCompany:
-	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName, iSourceDir, iDestinationDir ):
+	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName, iSourceDir, iDestinationDir ):
 		self.mISIN = iISIN
 		self.mName = iZBName
 		
 		self.mZBName = iZBName			# ZB = ZoneBourse
 		self.mZBCode = iZBCode
 		self.mZBSymbol = iZBSymbol
+
+		self.mMorningstarSymbol = iZBSymbol
+		self.mMorningstarRegion = iMorningstarRegion	# fra/gbr/usa/...
+		self.mMorningstarX = iMorningstarX				# xpar/xlon/...
 		
 		self.mYFSymbol = iYFSymbol		# YF = Yahoo Finance
 		self.mFVSymbol = iFVSymbol		# FV = FinViz
@@ -71,6 +75,21 @@ class cCompany:
 		return 'https://www.zonebourse.com/{}-{}/{}/'.format( self.mZBName, self.mZBCode, 'fondamentaux' )
 	def SourceFileHTMLFinancialsZB( self ):
 		return os.path.join( self.mSourceDir, '{}.{}.finZB.html'.format( self.mName, self.mISIN ) )
+		
+	def SourceUrlFinancialsMorningstarIncomeStatement( self ):
+		return 'http://financials.morningstar.com/income-statement/is.html?t={}&region={}&culture=en-US'.format( self.mMorningstarSymbol, self.mMorningstarRegion )
+	def SourceFileHTMLFinancialsMorningstarIncomeStatement( self ):
+		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarIncomeStatement.csv'.format( self.mName, self.mISIN ) )
+
+	def SourceUrlFinancialsMorningstarBalanceSheet( self ):
+		return 'http://financials.morningstar.com/balance-sheet/bs.html?t={}&region={}&culture=en-US'.format( self.mMorningstarSymbol, self.mMorningstarRegion )
+	def SourceFileHTMLFinancialsMorningstarBalanceSheet( self ):
+		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarBalanceSheet.csv'.format( self.mName, self.mISIN ) )
+
+	def SourceUrlFinancialsMorningstarRatios( self ):
+		return 'http://financials.morningstar.com/ratios/r.html?t={}&region={}&culture=en-US'.format( self.mMorningstarSymbol, self.mMorningstarRegion )
+	def SourceFileHTMLFinancialsMorningstarRatios( self ):
+		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarRatios.csv'.format( self.mName, self.mISIN ) )
 		
 	def SourceUrlFinancialsFV( self ):
 		return 'https://finviz.com/quote.ashx?t={}'.format( self.mFVSymbol )
