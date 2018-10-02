@@ -22,7 +22,14 @@ def BrowserInit():
 	if sgBrowser is not None:
 		return
 
-	sgTempDir = tempfile.gettempdir() + '/stocks'
+	# Problem of tmp dir when using with cygwin
+	# sgTempDir = tempfile.gettempdir() + '/tmp-stocks'
+	# sgTempDir = 'C:\\Users\\Mike\\Documents\\stocks-analysis\\tmp-stocks'
+	current_path = os.path.abspath( '.' )
+	current_path = current_path.replace( '/cygdrive/c', 'c:' )
+	current_path = current_path.replace( '/cygdrive/d', 'd:' )
+	current_path = current_path.replace( '/cygdrive/e', 'e:' )
+	sgTempDir = current_path + '/tmp'
 	
 	opts = Options()
 	opts.add_argument( '--headless' )
@@ -75,13 +82,17 @@ def DownloadFinancialsMorningstar( iCompanies ):
 			sgBrowser.get( company.SourceUrlFinancialsMorningstarIncomeStatement() )
 			time.sleep( 1 )
 			
+			with open( company.SourceFileHTMLFinancialsMorningstarIncomeStatement() + '.html', 'w' ) as output:
+				output.write( sgBrowser.page_source )
+
 			if os.path.exists( sgTempDir ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
 
 			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' )
 			export.click()
-			time.sleep( 3 )	# To be sure, coz' with 1s, sometimes listdir() fails
+			while not os.listdir( sgTempDir ):	# To be sure, coz' with 1s, sometimes listdir() fails
+				time.sleep( 1 )
 
 			csv = os.listdir( sgTempDir )[0]
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarIncomeStatement() )
@@ -93,13 +104,17 @@ def DownloadFinancialsMorningstar( iCompanies ):
 			sgBrowser.get( company.SourceUrlFinancialsMorningstarBalanceSheet() )
 			time.sleep( 1 )
 			
+			with open( company.SourceFileHTMLFinancialsMorningstarBalanceSheet() + '.html', 'w' ) as output:
+				output.write( sgBrowser.page_source )
+
 			if os.path.exists( sgTempDir ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
 
 			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' )
 			export.click()
-			time.sleep( 3 )
+			while not os.listdir( sgTempDir ):
+				time.sleep( 1 )
 
 			csv = os.listdir( sgTempDir )[0]
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarBalanceSheet() )
@@ -111,13 +126,17 @@ def DownloadFinancialsMorningstar( iCompanies ):
 			sgBrowser.get( company.SourceUrlFinancialsMorningstarRatios() )
 			time.sleep( 1 )
 			
+			with open( company.SourceFileHTMLFinancialsMorningstarRatios() + '.html', 'w' ) as output:
+				output.write( sgBrowser.page_source )
+
 			if os.path.exists( sgTempDir ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
 
 			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"exportKeyStat2CSV")]' )
 			export.click()
-			time.sleep( 3 )
+			while not os.listdir( sgTempDir ):
+				time.sleep( 1 )
 
 			csv = os.listdir( sgTempDir )[0]
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarRatios() )

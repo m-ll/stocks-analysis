@@ -77,16 +77,22 @@ class cCompany:
 		return os.path.join( self.mSourceDir, '{}.{}.finZB.html'.format( self.mName, self.mISIN ) )
 		
 	def SourceUrlFinancialsMorningstarIncomeStatement( self ):
+		if self.mMorningstarX == 'xetr':
+			return 'http://financials.morningstar.com/income-statement/is.html?t={}:{}&region={}&culture=en-US'.format( self.mMorningstarX, self.mMorningstarSymbol, self.mMorningstarRegion )
 		return 'http://financials.morningstar.com/income-statement/is.html?t={}&region={}&culture=en-US'.format( self.mMorningstarSymbol, self.mMorningstarRegion )
 	def SourceFileHTMLFinancialsMorningstarIncomeStatement( self ):
 		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarIncomeStatement.csv'.format( self.mName, self.mISIN ) )
 
 	def SourceUrlFinancialsMorningstarBalanceSheet( self ):
+		if self.mMorningstarX == 'xetr':
+			return 'http://financials.morningstar.com/balance-sheet/bs.html?t={}:{}&region={}&culture=en-US'.format( self.mMorningstarX, self.mMorningstarSymbol, self.mMorningstarRegion )
 		return 'http://financials.morningstar.com/balance-sheet/bs.html?t={}&region={}&culture=en-US'.format( self.mMorningstarSymbol, self.mMorningstarRegion )
 	def SourceFileHTMLFinancialsMorningstarBalanceSheet( self ):
 		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarBalanceSheet.csv'.format( self.mName, self.mISIN ) )
 
 	def SourceUrlFinancialsMorningstarRatios( self ):
+		if self.mMorningstarX == 'xetr':
+			return 'http://financials.morningstar.com/ratios/r.html?t={}:{}&region={}&culture=en-US'.format( self.mMorningstarX, self.mMorningstarSymbol, self.mMorningstarRegion )
 		return 'http://financials.morningstar.com/ratios/r.html?t={}&region={}&culture=en-US'.format( self.mMorningstarSymbol, self.mMorningstarRegion )
 	def SourceFileHTMLFinancialsMorningstarRatios( self ):
 		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarRatios.csv'.format( self.mName, self.mISIN ) )
