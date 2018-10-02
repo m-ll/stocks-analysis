@@ -8,6 +8,7 @@ from ..company import *
 from . import title
 from . import info
 from . import histo
+from . import fondamentals
 from . import data
 from . import images
 from . import dividendsTS
@@ -114,6 +115,9 @@ def Extract( iCompanies ):
 		body.append( div )
 		
 		div = histo.Extract( company, soupout )
+		body.append( div )
+		
+		div = fondamentals.Extract( company, soupout )
 		body.append( div )
 		
 		div = data.Extract( company, soupout )

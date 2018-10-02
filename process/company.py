@@ -2,6 +2,9 @@
 
 import os
 import re
+import sys
+import csv
+import locale
 
 from bs4 import BeautifulSoup
 
@@ -182,6 +185,12 @@ class cCompany:
 		
 		# return ( croissances, sum( croissances ) / len( croissances ), pow( croissances[-1] - croissances[0], 1.0 / len( croissances ) ) )
 		return ( croissances, sum( croissances ) / len( croissances ), sum( croissances[-5:] ) / len( croissances ) )
+		
+	# bof bof
+	def MyAtof( self, iX ):
+		if not len( iX ):
+			return 0.0
+		return locale.atof( iX )
 
 	def Fill( self ):
 		html_financials = ''
@@ -408,8 +417,177 @@ class cCompany:
 
 			self.mBNAGrowthB, self.mBNAGrowthAverageB, self.mBNAGrowthAverageLast5YB = self.ComputeCroissance( self.mBNAB )
 
+		#---
+		
+		previous_local = locale.setlocale( locale.LC_ALL )
+		
+		with open( self.SourceFileHTMLFinancialsMorningstarIncomeStatement(), newline='' ) as csvfile:
+			reader = csv.reader( csvfile )
+			
+			self.is_years = []
+			self.is_year = ''
+			self.ebitdas = []
+			self.ebitda = ''
+			for row in reader:
+				if len( row ) <= 1:
+					continue
+				if row[0].startswith( 'Fiscal year ends' ):
+					self.is_years = row[1:-1]
+					self.is_year = row[-1]
+				if row[0].startswith( 'EBITDA' ):
+					self.ebitdas = row[1:-1]
+					self.ebitda = row[-1]
+			
+			locale.setlocale( locale.LC_ALL, 'en_US.UTF8' )
+			self.ebitdas = list( map( self.MyAtof, self.ebitdas ) )
+			self.ebitda = self.MyAtof( self.ebitda )
+		
+			# print('is')
+			# print( self.is_years )
+			# print( self.is_year )
+			# print( self.ebitdas )
+			# print( self.ebitda )
 
+		with open( self.SourceFileHTMLFinancialsMorningstarBalanceSheet(), newline='' ) as csvfile:
+			reader = csv.reader( csvfile )
+			
+			self.bs_years = []
+			self.ltd = []
+			for row in reader:
+				if len( row ) <= 1:
+					continue
+				if row[0].startswith( 'Fiscal year ends' ):
+					self.bs_years = row[1:]
+				if row[0].startswith( 'Total non-current liabilities' ):
+					self.ltd = row[1:]
+			
+			locale.setlocale( locale.LC_ALL, 'en_US.UTF8' )
+			self.ltd = list( map( self.MyAtof, self.ltd ) )
+		
+			# print('bs')
+			# print( self.bs_years )
+			# print( self.ltd )
 
+		with open( self.SourceFileHTMLFinancialsMorningstarRatios(), newline='' ) as csvfile:
+			reader = csv.reader( csvfile )
+			
+			self.financials_years = []
+			self.financials_year = ''
+			self.revenues = []
+			self.revenue = ''
+			self.earnings = []
+			self.earning = ''
+			
+			self.profitability_years = []
+			self.profitability_year = ''
+			self.roes = []
+			self.roe = ''
+			self.rois = []
+			self.roi = ''
+			self.ics = []
+			self.ic = ''
+			
+			self.fcf_ss = []
+			self.fcf_s = ''
+			
+			self.health_years = []
+			self.health_year = ''
+			self.currentratios = []
+			self.currentratio = ''
+			self.d_es = []
+			self.d_e = ''
+			
+			for row in reader:
+				if len( row ) <= 1:
+					continue
+				if row[0].startswith( 'Profitability' ):
+					self.financials_years = row[1:-1]
+					self.financials_year = row[-1]
+					self.profitability_years = row[1:-1]
+					self.profitability_year = row[-1]
+				if row[0].startswith( 'Revenue' ) and row[0].endswith( 'Mil' ):
+					self.revenues = row[1:-1]
+					self.revenue = row[-1]
+				if row[0].startswith( 'Earnings' ):
+					self.earnings = row[1:-1]
+					self.earning = row[-1]
+					
+				if row[0].startswith( 'Return on Equity' ):
+					self.roes = row[1:-1]
+					self.roe = row[-1]
+				if row[0].startswith( 'Return on Invested Capital' ):
+					self.rois = row[1:-1]
+					self.roi = row[-1]
+				if row[0].startswith( 'Interest Coverage' ):
+					self.ics = row[1:-1]
+					self.ic = row[-1]
+					
+				if row[0].startswith( 'Free Cash Flow/Sales' ):
+					self.fcf_ss = row[1:-1]
+					self.fcf_s = row[-1]
+			
+				if row[0].startswith( 'Liquidity/Financial Health' ):
+					self.health_years = row[1:-1]
+					self.health_year = row[-1]
+				if row[0].startswith( 'Current Ratio' ):
+					self.currentratios = row[1:-1]
+					self.currentratio = row[-1]
+				if row[0].startswith( 'Debt/Equity' ):
+					self.d_es = row[1:-1]
+					self.d_e = row[-1]
+					
+			locale.setlocale( locale.LC_ALL, 'en_US.UTF8' )
+			self.revenues = list( map( self.MyAtof, self.revenues ) )
+			self.revenue = self.MyAtof( self.revenue )
+			locale.setlocale( locale.LC_ALL, 'fr_FR.UTF8' )
+			self.earnings = list( map( self.MyAtof, self.earnings ) )
+			self.earning = self.MyAtof( self.earning )
+			
+			locale.setlocale( locale.LC_ALL, 'fr_FR.UTF8' )
+			self.roes = list( map( self.MyAtof, self.roes ) )
+			self.roe = self.MyAtof( self.roe )
+			self.rois = list( map( self.MyAtof, self.rois ) )
+			self.roi = self.MyAtof( self.roi )
+			self.ics = list( map( self.MyAtof, self.ics ) )
+			self.ic = self.MyAtof( self.ic )
+			
+			self.fcf_ss = list( map( self.MyAtof, self.fcf_ss ) )
+			self.fcf_s = self.MyAtof( self.fcf_s )
+		
+			self.currentratios = list( map( self.MyAtof, self.currentratios ) )
+			self.currentratio = self.MyAtof( self.currentratio )
+			self.d_es = list( map( self.MyAtof, self.d_es ) )
+			self.d_e = self.MyAtof( self.d_e )
+		
+			# print('ratios')
+			# print( self.financials_years )
+			# print( self.financials_year )
+			# print( self.revenues )
+			# print( self.revenue )
+			# print( self.earnings )
+			# print( self.earning )
+			
+			# print('ratios2')
+			# print( self.profitability_years )
+			# print( self.profitability_year )
+			# print( self.roes )
+			# print( self.roe )
+			# print( self.rois )
+			# print( self.roi )
+			# print( self.ics )
+			# print( self.ic )
+			
+			# print('ratios3')
+			# print( self.health_years )
+			# print( self.health_year )
+			# print( self.currentratios )
+			# print( self.currentratio )
+			# print( self.d_es )
+			# print( self.d_e )
+			
+		locale.setlocale( locale.LC_ALL, previous_local )
+
+		# sys.exit( 0 )
 
 
 
