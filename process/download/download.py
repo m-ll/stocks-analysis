@@ -23,20 +23,17 @@ def BrowserInit():
 	if sgBrowser is not None:
 		return
 
-	# Problem of tmp dir when using with cygwin
-	# sgTempDir = tempfile.gettempdir() + '/tmp-stocks'
-	# sgTempDir = 'C:\\Users\\Mike\\Documents\\stocks-analysis\\tmp-stocks'
-	current_path = os.path.abspath( '.' )
 	if sys.platform.startswith( 'cygwin' ):
+		current_path = os.path.abspath( '.' )
 		current_path = current_path.replace( '/cygdrive/c', 'C:' )
 		current_path = current_path.replace( '/cygdrive/d', 'D:' )
 		current_path = current_path.replace( '/cygdrive/e', 'E:' )
+		current_path = current_path.replace( '/', '\\' )
 		
-	sgTempDir = current_path + '/tmp'
+		sgTempDir = current_path + '\\tmp'
 	
-	if sys.platform.startswith( 'cygwin' ) or sys.platform.startswith( 'win' ):
-		sgTempDir = sgTempDir.replace( '/', '\\' )
-		sgTempDir = sgTempDir.replace( '/', '\\' )
+	elif sys.platform.startswith( 'linux' ):
+		sgTempDir = tempfile.gettempdir() + '/tmp-stocks'
 	
 	opts = Options()
 	opts.add_argument( '--headless' )
@@ -76,6 +73,39 @@ def DownloadFinancialsZB( iCompanies ):
 
 		time.sleep( 1 )
 
+def WaitElement( iXPath ):
+	global sgBrowser
+
+	element = sgBrowser.find_elements_by_xpath( iXPath )
+	while not element:
+		print( 'sleep wait element: {}'.format( iXPath ) )
+		time.sleep( 1 )
+		element = sgBrowser.find_elements_by_xpath( iXPath )
+	
+	time.sleep( 1 )
+
+	return element[0]
+	
+def WaitNoElement( iXPath ):
+	global sgBrowser
+
+	element = sgBrowser.find_elements_by_xpath( iXPath )
+	while element:
+		print( 'sleep wait no element: {}'.format( iXPath ) )
+		time.sleep( 1 )
+		element = sgBrowser.find_elements_by_xpath( iXPath )
+	
+	time.sleep( 1 )
+	
+def WaitFileInside( iDirectory ):
+	files = os.listdir( iDirectory )
+	while not files:
+		print( 'sleep file: {}'.format( iDirectory ) )
+		time.sleep( 1 )
+		files = os.listdir( iDirectory )
+
+	return files[0]
+
 def DownloadFinancialsMorningstar( iCompanies ):
 	global sgBrowser
 	global sgTempDir
@@ -97,17 +127,11 @@ def DownloadFinancialsMorningstar( iCompanies ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
 
-			while not sgBrowser.find_elements_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' ):
-				time.sleep( 1 )
-
-			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' )
+			export = WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
 			export.click()
-			while not os.listdir( sgTempDir ):	# To be sure, coz' with 1s, sometimes listdir() fails
-				time.sleep( 1 )
+			csv = WaitFileInside( sgTempDir )
 
-			csv = os.listdir( sgTempDir )[0]
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarIncomeStatement() )
-			
 			shutil.rmtree( sgTempDir )
 
 			#---
@@ -123,17 +147,11 @@ def DownloadFinancialsMorningstar( iCompanies ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
 
-			while not sgBrowser.find_elements_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' ):
-				time.sleep( 1 )
-
-			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' )
+			export = WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
 			export.click()
-			while not os.listdir( sgTempDir ):
-				time.sleep( 1 )
+			csv = WaitFileInside( sgTempDir )
 
-			csv = os.listdir( sgTempDir )[0]
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarBalanceSheet() )
-			
 			shutil.rmtree( sgTempDir )
 
 			#---
@@ -149,17 +167,11 @@ def DownloadFinancialsMorningstar( iCompanies ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
 
-			while not sgBrowser.find_elements_by_xpath( '//a[contains(@href,"exportKeyStat2CSV")]' ):
-				time.sleep( 1 )
-
-			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"exportKeyStat2CSV")]' )
+			export = WaitElement( '//a[contains(@href,"exportKeyStat2CSV")]' )
 			export.click()
-			while not os.listdir( sgTempDir ):
-				time.sleep( 1 )
+			csv = WaitFileInside( sgTempDir )
 
-			csv = os.listdir( sgTempDir )[0]
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarRatios() )
-			
 			shutil.rmtree( sgTempDir )
 			
 			#---
@@ -168,13 +180,10 @@ def DownloadFinancialsMorningstar( iCompanies ):
 			sgBrowser.get( company.SourceUrlFinancialsMorningstarValuation() )
 			time.sleep( 1 )
 			
-			while not sgBrowser.find_elements_by_xpath( '//li[@data-link="sal-components-valuation"]//button' ):
-				time.sleep( 1 )
-
-			valuation = sgBrowser.find_element_by_xpath( '//li[@data-link="sal-components-valuation"]//button' )
+			valuation = WaitElement( '//li[@data-link="sal-components-valuation"]//button' )
 			valuation.click()
-			while sgBrowser.find_elements_by_xpath( '//a[@data-anchor="valuation"]/..//span[contains(text(), "There is no Valuation data available")]' ):
-				time.sleep( 1 )
+			WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-valuation' )
+			# WaitNoElement( '//a[@data-anchor="valuation"]/..//span[contains(text(), "There is no Valuation data available")]' )
 
 			with open( company.SourceFileHTMLFinancialsMorningstarValuation(), 'w' ) as output:
 				output.write( sgBrowser.page_source )
