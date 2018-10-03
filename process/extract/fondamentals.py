@@ -9,26 +9,43 @@ from ..company import *
 
 #---
 
-def CreateTR( iSoup, iText, iValues, iHeader=False ):
-	td = iSoup.new_tag( 'th' if iHeader else 'td' )
+def AddTR( iSoup, iSBody, iText, iData, iDataType, iCSSFunction, iHeader=False ):
+	if iData is None:
+		return
+	
+	td = iSoup.new_tag( 'th' )
 	td.string = iText
 	tr = iSoup.new_tag( 'tr' )
 	tr.append( td )
 	
-	for v in iValues:
+	for i, v in enumerate( iData.mData ):
 		td = iSoup.new_tag( 'th' if iHeader else 'td' )
-		td.string = str( v )
+		if v:
+			if iDataType == 'kGrowth':
+				td['class'] = 'plus' if iCSSFunction( float( v ) ) else 'minus'
+			elif iDataType == 'kThreshold':
+				if iCSSFunction( float( v ) ) == 1:
+					td['class'] = 'plus'
+				elif iCSSFunction( float( v ) ) == 0:
+					td['class'] = 'bof'
+				elif iCSSFunction( float( v ) ) == -1:
+					td['class'] = 'minus'
+		td.string = v
 		tr.append( td )
 		
-	# td = iSoup.new_tag( 'th' if iHeader else 'td' )
-	# td.string = 'Last 5 Years'
-	# tr.append( td )
+	td = iSoup.new_tag( 'th' if iHeader else 'td' )
+	td.string = str( iData.mTTM )
+	tr.append( td )
 	
-	return tr
+	td = iSoup.new_tag( 'th' if iHeader else 'td' )
+	td.string = str( iData.mLatestQuarter )
+	tr.append( td )
+	
+	iSBody.append( tr )
 
 def Extract( iCompany, iSoup ):
 	div_data = iSoup.new_tag( 'div' )
-	# div_data['class'] = 'clear last10'
+	div_data['class'] = 'clear fondamentals'
 	
 	if not iCompany.mMorningstarRegion:
 		return div_data
@@ -37,58 +54,46 @@ def Extract( iCompany, iSoup ):
 	
 	#---
 	
-	tr = CreateTR( iSoup, '', iCompany.is_years, True )
-	tbody.append( tr )
+	AddTR( iSoup, tbody, '', iCompany.mMorningstarISYears, 'kNone', None, iHeader=True )
+	AddTR( iSoup, tbody, 'EBITDA', iCompany.mMorningstarEBITDA, 'kNone', None )
 	
-	tr = CreateTR( iSoup, 'EBITDA', iCompany.ebitdas )
-	tbody.append( tr )
-	
-	#---
-	
-	tr = CreateTR( iSoup, '', iCompany.bs_years, True )
-	tbody.append( tr )
-	
-	tr = CreateTR( iSoup, 'LT-Debt', iCompany.ltd )
-	tbody.append( tr )
+	# AddTR( iSoup, tbody, '', iCompany.mMorningstarBSYears, 'kNone', None, iHeader=True )
+	AddTR( iSoup, tbody, 'LongTerm Debt', iCompany.mMorningstarLongTermDebt, 'kNone', None )
+	AddTR( iSoup, tbody, 'LT-Debt/EBITDA (<5)', iCompany.mMorningstarLTDOnEBITDA, 'kThreshold', lambda v : 1 if v < 5 else -1 )
 	
 	#---
 	
-	tr = CreateTR( iSoup, '', iCompany.financials_years, True )
-	tbody.append( tr )
-	
-	tr = CreateTR( iSoup, 'Revenue', iCompany.revenues )
-	tbody.append( tr )
-	
-	tr = CreateTR( iSoup, 'EPS', iCompany.earnings )
-	tbody.append( tr )
-	
-	#---
-	
-	tr = CreateTR( iSoup, '', iCompany.profitability_years, True )
-	tbody.append( tr )
-	
-	tr = CreateTR( iSoup, 'ROE', iCompany.roes )
-	tbody.append( tr )
-	
-	tr = CreateTR( iSoup, 'ROI', iCompany.rois )
-	tbody.append( tr )
-	
-	tr = CreateTR( iSoup, 'Interest Cover', iCompany.ics )
-	tbody.append( tr )
-	
-	tr = CreateTR( iSoup, 'FCF/Sales', iCompany.fcf_ss )
-	tbody.append( tr )
+	AddTR( iSoup, tbody, '', iCompany.mMorningstarFinancialsYears, 'kNone', None, iHeader=True )
+	# AddTR( iSoup, tbody, '', iCompany.mMorningstarGrowthYears, 'kNone', None, iHeader=True )
+	AddTR( iSoup, tbody, 'Revenue', iCompany.mMorningstarFinancialsRevenue, 'kNone', None )
+	AddTR( iSoup, tbody, 'Growth Revenue', iCompany.mMorningstarGrowthRevenue, 'kGrowth', lambda v : v >= 0 )
+	AddTR( iSoup, tbody, 'Net Income', iCompany.mMorningstarFinancialsNetIncome, 'kNone', None )
+	AddTR( iSoup, tbody, 'Growth Net Income', iCompany.mMorningstarGrowthNetIncome, 'kGrowth', lambda v : v >= 0 )
+	AddTR( iSoup, tbody, 'Book', iCompany.mMorningstarFinancialsBook, 'kNone', None )
+	AddTR( iSoup, tbody, 'Growth Book', iCompany.mMorningstarFinancialsGrowthBook, 'kGrowth', lambda v : v >= 0 )
+	AddTR( iSoup, tbody, 'EPS', iCompany.mMorningstarFinancialsEarnings, 'kNone', None )
+	AddTR( iSoup, tbody, 'Growth EPS', iCompany.mMorningstarGrowthEarnings, 'kGrowth', lambda v : v >= 0 )
+	AddTR( iSoup, tbody, 'Dividends', iCompany.mMorningstarFinancialsDividends, 'kNone', None )
+	AddTR( iSoup, tbody, 'GrowthDividends', iCompany.mMorningstarFinancialsGrowthDividends, 'kGrowth', lambda v : v >= 0 )
 	
 	#---
 	
-	tr = CreateTR( iSoup, '', iCompany.health_years, True )
-	tbody.append( tr )
+	AddTR( iSoup, tbody, '', iCompany.mMorningstarProfitabilityYears, 'kNone', None, iHeader=True )
+	#TODO: see what is it ? not corresponding to zonebourse
+	AddTR( iSoup, tbody, 'Payout Ratio (<60)', iCompany.mMorningstarFinancialsPayoutRatio, 'kThreshold', lambda v : 1 if v <= 60 else 0 if v <= 70 else -1 )
+	AddTR( iSoup, tbody, 'ROE (>15)', iCompany.mMorningstarProfitabilityROE, 'kThreshold', lambda v : 1 if v >= 15 else 0 if v >= 8 else -1 )
+	AddTR( iSoup, tbody, 'ROI (>15)', iCompany.mMorningstarProfitabilityROI, 'kThreshold', lambda v : 1 if v >= 15 else 0 if v >= 8 else -1 )
+	AddTR( iSoup, tbody, 'Interest Cover (>3)', iCompany.mMorningstarProfitabilityIC, 'kThreshold', lambda v : 1 if v >= 3 else -1 )
+	AddTR( iSoup, tbody, 'FCF/Sales (>5)', iCompany.mMorningstarCashFlowFCFOnSales, 'kThreshold', lambda v : 1 if v >= 5 else -1 )
 	
-	tr = CreateTR( iSoup, 'Current Ratio', iCompany.currentratios )
-	tbody.append( tr )
+	#---
 	
-	tr = CreateTR( iSoup, 'Debt/Equity', iCompany.d_es )
-	tbody.append( tr )
+	
+	#---
+	
+	AddTR( iSoup, tbody, '', iCompany.mMorningstarHealthYears, 'kNone', None, iHeader=True )
+	AddTR( iSoup, tbody, 'Current Ratio (>1.5)', iCompany.mMorningstarHealthCurrentRatio, 'kThreshold', lambda v : 1 if v >= 1.5 else 0 if v >= 1 else -1 )
+	AddTR( iSoup, tbody, 'Debt/Equity (<1)', iCompany.mMorningstarHealthDebtOnEquity, 'kThreshold', lambda v : 1 if v < 1 else -1 )
 	
 	#---
 	

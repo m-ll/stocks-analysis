@@ -72,21 +72,29 @@ def Extract( iCompanies ):
 	}
 	
 	.last10 th,
-	.last10 td
+	.last10 td,
+	.fondamentals th,
+	.fondamentals td
 	{
 		padding:	7px 20px;
 	}
-	.last10 th
+	.last10 th,
+	.fondamentals th
 	{
 		background-color: rgba( 0, 0, 0, 0.10 );
 	}
-	.last10 td
+	.last10 td,
+	.fondamentals td
 	{
 		text-align:		right;
 	}
 	.minus
 	{
 		background-color: rgba( 255, 0, 0, 0.25 );
+	}
+	.bof
+	{
+		background-color: rgba( 255, 197, 92, 0.25 );
 	}
 	.plus
 	{
@@ -111,10 +119,10 @@ def Extract( iCompanies ):
 		div = info.Extract( company, soupout )
 		body.append( div )
 		
-		div = title.Extract( company, soupout )
+		div = histo.Extract( company, soupout )
 		body.append( div )
 		
-		div = histo.Extract( company, soupout )
+		div = title.Extract( company, soupout )
 		body.append( div )
 		
 		div = fondamentals.Extract( company, soupout )
