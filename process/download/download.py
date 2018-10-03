@@ -86,15 +86,19 @@ def DownloadFinancialsMorningstar( iCompanies ):
 		print( 'Download financials Morningstar: {} ...'.format( company.mName ) )
 		
 		if company.mMorningstarRegion:
+			print( '	- Income Statement' )
 			sgBrowser.get( company.SourceUrlFinancialsMorningstarIncomeStatement() )
 			time.sleep( 1 )
 			
-			with open( company.SourceFileHTMLFinancialsMorningstarIncomeStatement() + '.html', 'w' ) as output:
-				output.write( sgBrowser.page_source )
+			# with open( company.SourceFileHTMLFinancialsMorningstarIncomeStatement() + '.html', 'w' ) as output:
+			#	output.write( sgBrowser.page_source )
 
 			if os.path.exists( sgTempDir ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
+
+			while not sgBrowser.find_elements_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' ):
+				time.sleep( 1 )
 
 			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' )
 			export.click()
@@ -108,15 +112,19 @@ def DownloadFinancialsMorningstar( iCompanies ):
 
 			#---
 
+			print( '	- Balance Sheet' )
 			sgBrowser.get( company.SourceUrlFinancialsMorningstarBalanceSheet() )
 			time.sleep( 1 )
 			
-			with open( company.SourceFileHTMLFinancialsMorningstarBalanceSheet() + '.html', 'w' ) as output:
-				output.write( sgBrowser.page_source )
+			# with open( company.SourceFileHTMLFinancialsMorningstarBalanceSheet() + '.html', 'w' ) as output:
+			#	output.write( sgBrowser.page_source )
 
 			if os.path.exists( sgTempDir ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
+
+			while not sgBrowser.find_elements_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' ):
+				time.sleep( 1 )
 
 			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"SRT_stocFund.Export")]' )
 			export.click()
@@ -130,15 +138,19 @@ def DownloadFinancialsMorningstar( iCompanies ):
 
 			#---
 
+			print( '	- Ratios' )
 			sgBrowser.get( company.SourceUrlFinancialsMorningstarRatios() )
 			time.sleep( 1 )
 			
-			with open( company.SourceFileHTMLFinancialsMorningstarRatios() + '.html', 'w' ) as output:
-				output.write( sgBrowser.page_source )
+			# with open( company.SourceFileHTMLFinancialsMorningstarRatios() + '.html', 'w' ) as output:
+			#	output.write( sgBrowser.page_source )
 
 			if os.path.exists( sgTempDir ):
 				shutil.rmtree( sgTempDir )
 			os.makedirs( sgTempDir )
+
+			while not sgBrowser.find_elements_by_xpath( '//a[contains(@href,"exportKeyStat2CSV")]' ):
+				time.sleep( 1 )
 
 			export = sgBrowser.find_element_by_xpath( '//a[contains(@href,"exportKeyStat2CSV")]' )
 			export.click()
@@ -152,9 +164,13 @@ def DownloadFinancialsMorningstar( iCompanies ):
 			
 			#---
 			
+			print( '	- Valuation' )
 			sgBrowser.get( company.SourceUrlFinancialsMorningstarValuation() )
 			time.sleep( 1 )
 			
+			while not sgBrowser.find_elements_by_xpath( '//li[@data-link="sal-components-valuation"]//button' ):
+				time.sleep( 1 )
+
 			valuation = sgBrowser.find_element_by_xpath( '//li[@data-link="sal-components-valuation"]//button' )
 			valuation.click()
 			while sgBrowser.find_elements_by_xpath( '//a[@data-anchor="valuation"]/..//span[contains(text(), "There is no Valuation data available")]' ):
@@ -162,8 +178,6 @@ def DownloadFinancialsMorningstar( iCompanies ):
 
 			with open( company.SourceFileHTMLFinancialsMorningstarValuation(), 'w' ) as output:
 				output.write( sgBrowser.page_source )
-
-			time.sleep( 1 )
 
 		time.sleep( 1 )
 
