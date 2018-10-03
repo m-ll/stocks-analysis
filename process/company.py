@@ -41,12 +41,29 @@ class cDataMorningstar:
 			else:
 				self.mData = iRow[1:]
 		
-		self.mData = list( map( self.FixLocale, self.mData ) );
-		self.mTTM = self.FixLocale( self.mTTM )
-		self.mLatestQuarter = self.FixLocale( self.mLatestQuarter )
+		self.mData = list( map( self._FixLocale, self.mData ) );
+		self.mTTM = self._FixLocale( self.mTTM )
+		self.mLatestQuarter = self._FixLocale( self.mLatestQuarter )
 			
-	def FixLocale( self, iString ):
+	def _FixLocale( self, iString ):
 		return iString.replace( ',', '.' ).replace( '(', '-' ).replace( ')', '' )
+		
+	def SetTR( self, iSSection, iTag, iText ):
+		td = iSSection.find( iTag, string=iText )
+		if not td and self.mParent:		# value doesn't exist
+			self.mData = [''] * len( self.mParent.mData )
+			return
+			
+		if self.mParent:
+			td = td.parent
+		td = td.find_next_sibling( 'td' )
+		while td:
+			v = td.find( 'span' ).string if self.mParent else td.string
+			v = v.replace( '—', '' )
+			self.mData.append( v )
+			
+			td = td.find_next_sibling( 'td' )
+			
 
 class cCompany:
 	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName, iSourceDir, iDestinationDir ):
@@ -474,6 +491,7 @@ class cCompany:
 					self.mMorningstarEBITDA = cDataMorningstar( row, self.mMorningstarISYears )
 		
 		if self.mMorningstarEBITDA is None:
+			self.mMorningstarEBITDA = cDataMorningstar()
 			self.mMorningstarEBITDA.mData = [''] * len( self.mMorningstarISYears.mData )
 		
 		#---
@@ -506,7 +524,6 @@ class cCompany:
 			ratio = float( ltd ) / float( ebitda )
 			self.mMorningstarLTDOnEBITDA.mData.append( '{:.02f}'.format( ratio ) )
 					
-		
 		#---
 			
 		self.mMorningstarFinancialsYears = None
@@ -609,6 +626,32 @@ class cCompany:
 			diff = float( dividend ) - float( self.mMorningstarFinancialsBook.mData[i-1] )
 			self.mMorningstarFinancialsGrowthBook.mData.append( '{:.02f}'.format( diff * 100 ) )
 					
+		#---
+			
+		html_content = ''
+		with open( self.SourceFileHTMLFinancialsMorningstarValuation(), 'r', encoding='utf-8' ) as fd:
+			html_content = fd.read()
+		if not html_content:
+			print( 'ERROR: valuation html is empty' )
+			return
+			
+		svaluation = BeautifulSoup( html_content, 'html5lib' )
+		section = svaluation.find( 'a', attrs={'data-anchor': 'valuation'} ).parent
+		
+		self.mMorningstarValuationYears = cDataMorningstar()
+		self.mMorningstarValuationYears.SetTR( section, 'td', 'Calendar' )
+			
+		self.mMorningstarValuationP2S = cDataMorningstar( iParent=self.mMorningstarValuationYears )
+		self.mMorningstarValuationP2S.SetTR( section, 'span', 'Price/Sales' )
+		self.mMorningstarValuationPER = cDataMorningstar( iParent=self.mMorningstarValuationYears )
+		self.mMorningstarValuationPER.SetTR( section, 'span', 'Price/Earnings' )
+		self.mMorningstarValuationP2CF = cDataMorningstar( iParent=self.mMorningstarValuationYears )
+		self.mMorningstarValuationP2CF.SetTR( section, 'span', 'Price/Cash Flow' )
+		self.mMorningstarValuationP2B = cDataMorningstar( iParent=self.mMorningstarValuationYears )
+		self.mMorningstarValuationP2B.SetTR( section, 'span', 'Price/Book' )
+		self.mMorningstarValuationEVOnEBITDA = cDataMorningstar( iParent=self.mMorningstarValuationYears )
+		self.mMorningstarValuationEVOnEBITDA.SetTR( section, 'span', 'Enterprise Value/EBITDA' )
+		
 		# sys.exit( 0 )
 
 

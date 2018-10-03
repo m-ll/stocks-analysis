@@ -88,12 +88,18 @@ def Extract( iCompany, iSoup ):
 	
 	#---
 	
-	
-	#---
-	
 	AddTR( iSoup, tbody, '', iCompany.mMorningstarHealthYears, 'kNone', None, iHeader=True )
 	AddTR( iSoup, tbody, 'Current Ratio (>1.5)', iCompany.mMorningstarHealthCurrentRatio, 'kThreshold', lambda v : 1 if v >= 1.5 else 0 if v >= 1 else -1 )
 	AddTR( iSoup, tbody, 'Debt/Equity (<1)', iCompany.mMorningstarHealthDebtOnEquity, 'kThreshold', lambda v : 1 if v < 1 else -1 )
+	
+	#---
+	
+	AddTR( iSoup, tbody, '', iCompany.mMorningstarValuationYears, 'kNone', None, iHeader=True )
+	AddTR( iSoup, tbody, 'PER (3<<15)', iCompany.mMorningstarValuationPER, 'kThreshold', lambda v : 1 if v >=3 and v <= 12 else 0 if v >=12 and v <= 18 else -1 )
+	AddTR( iSoup, tbody, 'Price/Book (<4)', iCompany.mMorningstarValuationP2B, 'kThreshold', lambda v : 1 if v <= 4 else 0 if v <= 5 else -1 )
+	AddTR( iSoup, tbody, 'Price/Sales (<2)', iCompany.mMorningstarValuationP2S, 'kThreshold', lambda v : 1 if v <= 2 else 0 if v <= 4 else -1 )
+	AddTR( iSoup, tbody, 'Price/CashFlow (<8)', iCompany.mMorningstarValuationP2CF, 'kThreshold', lambda v : 1 if v <= 8 else 0 if v <= 12 else -1 )
+	AddTR( iSoup, tbody, 'EV/EBITDA (<8)', iCompany.mMorningstarValuationEVOnEBITDA, 'kThreshold', lambda v : 1 if v <= 5 else 0 if v <= 8 else -1 )
 	
 	#---
 	

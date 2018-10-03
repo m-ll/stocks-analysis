@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import os
+import sys
 import time
 import shutil
 import tempfile
@@ -26,10 +27,16 @@ def BrowserInit():
 	# sgTempDir = tempfile.gettempdir() + '/tmp-stocks'
 	# sgTempDir = 'C:\\Users\\Mike\\Documents\\stocks-analysis\\tmp-stocks'
 	current_path = os.path.abspath( '.' )
-	current_path = current_path.replace( '/cygdrive/c', 'c:' )
-	current_path = current_path.replace( '/cygdrive/d', 'd:' )
-	current_path = current_path.replace( '/cygdrive/e', 'e:' )
+	if sys.platform.startswith( 'cygwin' ):
+		current_path = current_path.replace( '/cygdrive/c', 'C:' )
+		current_path = current_path.replace( '/cygdrive/d', 'D:' )
+		current_path = current_path.replace( '/cygdrive/e', 'E:' )
+		
 	sgTempDir = current_path + '/tmp'
+	
+	if sys.platform.startswith( 'cygwin' ) or sys.platform.startswith( 'win' ):
+		sgTempDir = sgTempDir.replace( '/', '\\' )
+		sgTempDir = sgTempDir.replace( '/', '\\' )
 	
 	opts = Options()
 	opts.add_argument( '--headless' )
@@ -142,6 +149,21 @@ def DownloadFinancialsMorningstar( iCompanies ):
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarRatios() )
 			
 			shutil.rmtree( sgTempDir )
+			
+			#---
+			
+			sgBrowser.get( company.SourceUrlFinancialsMorningstarValuation() )
+			time.sleep( 1 )
+			
+			valuation = sgBrowser.find_element_by_xpath( '//li[@data-link="sal-components-valuation"]//button' )
+			valuation.click()
+			while sgBrowser.find_elements_by_xpath( '//a[@data-anchor="valuation"]/..//span[contains(text(), "There is no Valuation data available")]' ):
+				time.sleep( 1 )
+
+			with open( company.SourceFileHTMLFinancialsMorningstarValuation(), 'w' ) as output:
+				output.write( sgBrowser.page_source )
+
+			time.sleep( 1 )
 
 		time.sleep( 1 )
 
