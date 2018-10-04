@@ -37,6 +37,8 @@ def BrowserInit():
 	
 	opts = Options()
 	opts.add_argument( '--headless' )
+	
+	opts.set_preference( 'browser.privatebrowsing.autostart', True )
 
 	opts.set_preference( 'browser.download.folderList', 2 );
 	opts.set_preference( 'browser.download.manager.showWhenStarting', False );
@@ -98,6 +100,7 @@ def WaitNoElement( iXPath ):
 	time.sleep( 1 )
 	
 def WaitFileInside( iDirectory ):
+	time.sleep( 1 )
 	files = os.listdir( iDirectory )
 	while not files:
 		print( 'sleep file: {}'.format( iDirectory ) )
@@ -105,6 +108,14 @@ def WaitFileInside( iDirectory ):
 		files = os.listdir( iDirectory )
 
 	return files[0]
+	
+def RemoveFiles( iDirectory ):
+	for file in os.listdir( iDirectory ):
+		path_file = os.path.join( iDirectory, file )
+		if os.path.isfile( path_file ):
+			os.unlink( path_file )
+			
+	time.sleep( 1 )
 
 def DownloadFinancialsMorningstar( iCompanies ):
 	global sgBrowser
@@ -116,6 +127,10 @@ def DownloadFinancialsMorningstar( iCompanies ):
 		print( 'Download financials Morningstar: {} ...'.format( company.mName ) )
 		
 		if company.mMorningstarRegion:
+			if os.path.exists( sgTempDir ):
+				shutil.rmtree( sgTempDir )
+			os.makedirs( sgTempDir )
+
 			print( '	- Income Statement' )
 			sgBrowser.get( company.SourceUrlFinancialsMorningstarIncomeStatement() )
 			time.sleep( 1 )
@@ -123,16 +138,12 @@ def DownloadFinancialsMorningstar( iCompanies ):
 			# with open( company.SourceFileHTMLFinancialsMorningstarIncomeStatement() + '.html', 'w' ) as output:
 			#	output.write( sgBrowser.page_source )
 
-			if os.path.exists( sgTempDir ):
-				shutil.rmtree( sgTempDir )
-			os.makedirs( sgTempDir )
-
 			export = WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
 			export.click()
 			csv = WaitFileInside( sgTempDir )
 
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarIncomeStatement() )
-			shutil.rmtree( sgTempDir )
+			RemoveFiles( sgTempDir )
 
 			#---
 
@@ -152,7 +163,7 @@ def DownloadFinancialsMorningstar( iCompanies ):
 			csv = WaitFileInside( sgTempDir )
 
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarBalanceSheet() )
-			shutil.rmtree( sgTempDir )
+			RemoveFiles( sgTempDir )
 
 			#---
 
@@ -172,7 +183,7 @@ def DownloadFinancialsMorningstar( iCompanies ):
 			csv = WaitFileInside( sgTempDir )
 
 			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarRatios() )
-			shutil.rmtree( sgTempDir )
+			RemoveFiles( sgTempDir )
 			
 			#---
 			
@@ -187,6 +198,8 @@ def DownloadFinancialsMorningstar( iCompanies ):
 
 			with open( company.SourceFileHTMLFinancialsMorningstarValuation(), 'w' ) as output:
 				output.write( sgBrowser.page_source )
+				
+			shutil.rmtree( sgTempDir )
 
 		time.sleep( 1 )
 
