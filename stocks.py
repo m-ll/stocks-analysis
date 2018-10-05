@@ -305,7 +305,7 @@ for group_name, company_group in company_groups.items():
 		DownloadSociety( company_group )
 		DownloadStockPrice( company_group )
 		DownloadDividends( company_group )
-		BrowserQuit()
+		# BrowserQuit()
 	
 	Fill( company_group )
 	
