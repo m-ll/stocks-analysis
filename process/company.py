@@ -99,7 +99,7 @@ class cDataMorningstar:
 			
 
 class cCompany:
-	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName, iSourceDir, iDestinationDir ):
+	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName, iSourceDir='', iDestinationDir='' ):
 		self.mISIN = iISIN
 		self.mName = iZBName
 		
@@ -163,6 +163,12 @@ class cCompany:
 		self.mYieldCurrent = 0				# 0.0 < ... < 100.0
 	
 	#---
+	
+	def DataDir( self, iDirectory ):
+		self.mSourceDir = iDirectory
+	
+	def ImageDir( self, iDirectory ):
+		self.mDestinationDir = iDirectory
 	
 	def SourceUrlFinancialsZB( self ):
 		return 'https://www.zonebourse.com/{}-{}/{}/'.format( self.mZBName, self.mZBCode, 'fondamentaux' )
@@ -282,182 +288,170 @@ class cCompany:
 		return ( croissances, sum( croissances ) / len( croissances ), sum( croissances[-5:] ) / len( croissances ) )
 		
 	def Fill( self ):
-		html_financials = ''
+		self.FillZoneBourse()
+		self.FillFinviz()
+		self.FillReuters()
+		self.FillYahooFinance()
+		self.FillBoerse()
+		self.FillFinances()
+		self.FillTradingSat()
+		self.FillMorningstar()
+		
+	def FillZoneBourse( self ):
+		html_content = ''
 		with open( self.SourceFileHTMLFinancialsZB(), 'r', encoding='utf-8' ) as fd:
-			html_financials = fd.read()
-		if not html_financials:
-			print( 'ERROR: financials html is empty' )
-			return
+			html_content = fd.read()
 			
-		self.mSFinancialsZB = BeautifulSoup( html_financials, 'html5lib' )
-		
-		if self.mFVSymbol:
-			html_financials = ''
-			with open( self.SourceFileHTMLFinancialsFV(), 'r', encoding='utf-8' ) as fd:
-				html_financials = fd.read()
-			if not html_financials:
-				print( 'ERROR: financials html is empty' )
-				return
-				
-			self.mSFinancialsFV = BeautifulSoup( html_financials, 'html5lib' )
-		
-		if self.mRSymbol:
-			html_financials = ''
-			with open( self.SourceFileHTMLFinancialsR(), 'r', encoding='utf-8' ) as fd:
-				html_financials = fd.read()
-			if not html_financials:
-				print( 'ERROR: financials html is empty' )
-				return
-				
-			self.mSFinancialsR = BeautifulSoup( html_financials, 'html5lib' )
-		
-		if self.mYFSymbol:
-			html_financials = ''
-			with open( self.SourceFileHTMLFinancialsYF(), 'r', encoding='utf-8' ) as fd:
-				html_financials = fd.read()
-			if not html_financials:
-				print( 'ERROR: financials html is empty' )
-				return
-				
-			self.mSFinancialsYF = BeautifulSoup( html_financials, 'html5lib' )
-		
-		if self.mBName:
-			html_financials = ''
-			with open( self.SourceFileHTMLFinancialsB(), 'r', encoding='utf-8' ) as fd:
-				html_financials = fd.read()
-			if not html_financials:
-				print( 'ERROR: financials html is empty' )
-				return
-				
-			self.mSFinancialsB = BeautifulSoup( html_financials, 'html5lib' )
-		
-		html_society_zb = ''
-		with open( self.SourceFileHTMLSocietyZB(), 'r', encoding='utf-8' ) as fd:
-			html_society_zb = fd.read()
-		if not html_society_zb:
-			print( 'ERROR: society html is empty' )
-			return
-			
-		self.mSSocietyZB = BeautifulSoup( html_society_zb, 'html5lib' )
-		
-		if self.mFCName:
-			html_dividends = ''
-			with open( self.SourceFileHTMLDividendsFC(), 'r', encoding='utf-8' ) as fd:
-				html_dividends = fd.read()
-			if not html_dividends:
-				print( 'ERROR: dividends fc html is empty' )
-				return
-				
-			self.mSDividendsFC = BeautifulSoup( html_dividends, 'html5lib' )
-			
-		if self.mTSName:
-			html_dividends = ''
-			with open( self.SourceFileHTMLDividendsTS(), 'r', encoding='utf-8' ) as fd:
-				html_dividends = fd.read()
-			if not html_dividends:
-				print( 'ERROR: dividends ts html is empty' )
-				return
-				
-			self.mSDividendsTS = BeautifulSoup( html_dividends, 'html5lib' )
+		self.mSFinancialsZB = BeautifulSoup( html_content, 'html5lib' )
 		
 		#---
 		
 		self.mSFinancialsZBTable = self.mSFinancialsZB.find( 'table', class_='BordCollapseYear' )
-		if self.mSFinancialsZBTable:
-			for tr in self.mSFinancialsZBTable.find_all( 'tr' ):
-				tr.append( self.mSFinancialsZB.new_tag( 'td' ) )
+		if not self.mSFinancialsZBTable:
+			return
 			
-			tr_years = self.mSFinancialsZBTable.find( 'tr' ).find_next_sibling()
-			tr_ca = tr_years.find_next_sibling()
-			tr_ebitda = tr_ca.find_next_sibling()
-			tr_ebitda.find_next_sibling().decompose()
-			tr_ebitda.find_next_sibling().decompose()
-			tr_net = tr_ebitda.find_next_sibling()
-			
-			tr_bna = tr_net.find_next_sibling().find_next_sibling()
-			tr_dividends = tr_bna.find_next_sibling()
-			tr_rendements = tr_dividends.find_next_sibling()
-			
-			#---
-			
-			self.mDividendsGrowth, self.mDividendsGrowthAverage = self.ComputeCroissanceTr( tr_dividends )
-			
-			self.mBNAGrowth, self.mBNAGrowthAverage = self.ComputeCroissanceTr( tr_bna )
-			
-			td_rendement = tr_rendements.find( 'td' ).find_next_sibling().find_next_sibling().find_next_sibling().find_next_sibling().find( 'b' ).string
-			self.mYieldCurrent = float( td_rendement.strip().replace( '%', '' ).replace( ',', '.' ) )
+		for tr in self.mSFinancialsZBTable.find_all( 'tr' ):
+			tr.append( self.mSFinancialsZB.new_tag( 'td' ) )
+		
+		tr_years = self.mSFinancialsZBTable.find( 'tr' ).find_next_sibling()
+		tr_ca = tr_years.find_next_sibling()
+		tr_ebitda = tr_ca.find_next_sibling()
+		tr_ebitda.find_next_sibling().decompose()
+		tr_ebitda.find_next_sibling().decompose()
+		tr_net = tr_ebitda.find_next_sibling()
+		
+		tr_bna = tr_net.find_next_sibling().find_next_sibling()
+		tr_dividends = tr_bna.find_next_sibling()
+		tr_rendements = tr_dividends.find_next_sibling()
 		
 		#---
 		
+		self.mDividendsGrowth, self.mDividendsGrowthAverage = self.ComputeCroissanceTr( tr_dividends )
+		
+		self.mBNAGrowth, self.mBNAGrowthAverage = self.ComputeCroissanceTr( tr_bna )
+		
+		td_rendement = tr_rendements.find( 'td' ).find_next_sibling().find_next_sibling().find_next_sibling().find_next_sibling().find( 'b' ).string
+		self.mYieldCurrent = float( td_rendement.strip().replace( '%', '' ).replace( ',', '.' ) )
+		
+		#---
+		
+		html_content = ''
+		with open( self.SourceFileHTMLSocietyZB(), 'r', encoding='utf-8' ) as fd:
+			html_content = fd.read()
+			
+		self.mSSocietyZB = BeautifulSoup( html_content, 'html5lib' )
+		
+	def FillFinviz( self ):
 		self.mBNAGrowthFV5['-5'] = '-'
 		self.mBNAGrowthFV5['0'] = '-'
 		self.mBNAGrowthFV5['+1'] = '-'
 		self.mBNAGrowthFV5['+5'] = '-'
-		if self.mSFinancialsFV:
-			table = self.mSFinancialsFV.find( 'table', class_='snapshot-table2' )
-			tr = table.find( 'tr' ).find_next_sibling().find_next_sibling().find_next_sibling()
-			td = tr.find( string='EPS this Y' ).parent
-			td_value = td.find_next_sibling().string
-			self.mBNAGrowthFV5['0'] = td_value
+		
+		if not self.mFVSymbol:
+			return
 			
-			tr = tr.find_next_sibling()
-			td = tr.find( string='EPS next Y' ).parent
-			td_value = td.find_next_sibling().string
-			self.mBNAGrowthFV5['+1'] = td_value
-		
-			tr = tr.find_next_sibling()
-			td = tr.find( string='EPS next 5Y' ).parent
-			td_value = td.find_next_sibling().string
-			self.mBNAGrowthFV5['+5'] = td_value
-		
-			tr = tr.find_next_sibling()
-			td = tr.find( string='EPS past 5Y' ).parent
-			td_value = td.find_next_sibling().string
-			self.mBNAGrowthFV5['-5'] = td_value
+		html_content = ''
+		with open( self.SourceFileHTMLFinancialsFV(), 'r', encoding='utf-8' ) as fd:
+			html_content = fd.read()
+			
+		self.mSFinancialsFV = BeautifulSoup( html_content, 'html5lib' )
 		
 		#---
 		
+		if not self.mSFinancialsFV:
+			return
+			
+		table = self.mSFinancialsFV.find( 'table', class_='snapshot-table2' )
+		tr = table.find( 'tr' ).find_next_sibling().find_next_sibling().find_next_sibling()
+		td = tr.find( string='EPS this Y' ).parent
+		td_value = td.find_next_sibling().string
+		self.mBNAGrowthFV5['0'] = td_value
+		
+		tr = tr.find_next_sibling()
+		td = tr.find( string='EPS next Y' ).parent
+		td_value = td.find_next_sibling().string
+		self.mBNAGrowthFV5['+1'] = td_value
+	
+		tr = tr.find_next_sibling()
+		td = tr.find( string='EPS next 5Y' ).parent
+		td_value = td.find_next_sibling().string
+		self.mBNAGrowthFV5['+5'] = td_value
+	
+		tr = tr.find_next_sibling()
+		td = tr.find( string='EPS past 5Y' ).parent
+		td_value = td.find_next_sibling().string
+		self.mBNAGrowthFV5['-5'] = td_value
+		
+	def FillReuters( self ):
 		self.mBNAGrowthR5['-1'] = '-'
 		self.mBNAGrowthR5['-3'] = '-'
 		self.mBNAGrowthR5['-5'] = '-'
-		if self.mSFinancialsR:
-			td = self.mSFinancialsR.find( string='EPS (TTM) %' ).parent.find_next_sibling()
-			td_value = td.string
-			self.mBNAGrowthR5['-1'] = td_value
-			
-			td = td.find_next_sibling()
-			td_value = td.string
-			self.mBNAGrowthR5['-3'] = td_value
 		
-			td = td.find_next_sibling()
-			td_value = td.string
-			self.mBNAGrowthR5['-5'] = td_value
+		if not self.mRSymbol:
+			return
+			
+		html_content = ''
+		with open( self.SourceFileHTMLFinancialsR(), 'r', encoding='utf-8' ) as fd:
+			html_content = fd.read()
+			
+		self.mSFinancialsR = BeautifulSoup( html_content, 'html5lib' )
 		
 		#---
 		
+		if not self.mSFinancialsR:
+			return
+			
+		td = self.mSFinancialsR.find( string='EPS (TTM) %' ).parent.find_next_sibling()
+		td_value = td.string
+		self.mBNAGrowthR5['-1'] = td_value
+		
+		td = td.find_next_sibling()
+		td_value = td.string
+		self.mBNAGrowthR5['-3'] = td_value
+	
+		td = td.find_next_sibling()
+		td_value = td.string
+		self.mBNAGrowthR5['-5'] = td_value
+		
+	def FillYahooFinance( self ):
 		self.mGrowthYF5['-5'] = '-'
 		self.mGrowthYF5['0'] = '-'
 		self.mGrowthYF5['+1'] = '-'
 		self.mGrowthYF5['+5'] = '-'
-		if self.mSFinancialsYF and self.mSFinancialsYF.find( string='Past 5 Years (per annum)' ):
-			td = self.mSFinancialsYF.find( string='Past 5 Years (per annum)' ).find_parent( 'td' ).find_next_sibling()
-			td_value = td.string
-			self.mGrowthYF5['-5'] = td_value
+		
+		if not self.mYFSymbol:
+			return
 			
-			td = td.find_parent( 'tr' ).find_previous_sibling().find( 'td' ).find_next_sibling()
-			td_value = td.string
-			self.mGrowthYF5['+5'] = td_value
-		
-			td = td.find_parent( 'tr' ).find_previous_sibling().find( 'td' ).find_next_sibling()
-			td_value = td.string
-			self.mGrowthYF5['+1'] = td_value
-		
-			td = td.find_parent( 'tr' ).find_previous_sibling().find( 'td' ).find_next_sibling()
-			td_value = td.string
-			self.mGrowthYF5['0'] = td_value
+		html_content = ''
+		with open( self.SourceFileHTMLFinancialsYF(), 'r', encoding='utf-8' ) as fd:
+			html_content = fd.read()
+			
+		self.mSFinancialsYF = BeautifulSoup( html_content, 'html5lib' )
 		
 		#---
 		
+		if not self.mSFinancialsYF:
+			return
+		if not self.mSFinancialsYF.find( string='Past 5 Years (per annum)' ):
+			return
+			
+		td = self.mSFinancialsYF.find( string='Past 5 Years (per annum)' ).find_parent( 'td' ).find_next_sibling()
+		td_value = td.string
+		self.mGrowthYF5['-5'] = td_value
+		
+		td = td.find_parent( 'tr' ).find_previous_sibling().find( 'td' ).find_next_sibling()
+		td_value = td.string
+		self.mGrowthYF5['+5'] = td_value
+	
+		td = td.find_parent( 'tr' ).find_previous_sibling().find( 'td' ).find_next_sibling()
+		td_value = td.string
+		self.mGrowthYF5['+1'] = td_value
+	
+		td = td.find_parent( 'tr' ).find_previous_sibling().find( 'td' ).find_next_sibling()
+		td_value = td.string
+		self.mGrowthYF5['0'] = td_value
+		
+	def FillBoerse( self ):
 		self.mYearsB = []
 		self.mPERB = []
 		self.mBNAB = []
@@ -469,97 +463,87 @@ class cCompany:
 		self.mDividendGrowthAverageB = 0
 		self.mDividendGrowthAverageLast5YB = 0
 		self.mDividendYieldB = []
-		if self.mSFinancialsB and not self.mSFinancialsB.find( string=re.compile('Bilanz \(\)') ):
-			td = self.mSFinancialsB.find( id='rentabilitaet' ).find_next_sibling( 'table' ).find( 'tr' ).find( 'th' ).find_next_sibling()
-			while td:
-				self.mYearsB.append( td.string )
-				td = td.find_next_sibling( 'th' )
+		
+		if not self.mBName:
+			return
 			
-			td = self.mSFinancialsB.find( id='rentabilitaet' ).find_next_sibling( 'table' ).find( 'td', string='Dividendenrendite' ).find_next_sibling()
-			while td:
-				self.mDividendYieldB.append( td.string )
-				td = td.find_next_sibling( 'td' )
-
-			td = self.mSFinancialsB.find( id='kennzahlen' ).find_next_sibling( 'table' ).find_next_sibling( 'table' ).find( 'td' ).find( 'a', string='KGV' ).parent.find_next_sibling()
-			while td:
-				s = td.string.strip().replace( ',', '.' ) if td.string is not None else '0'
-				if 'n.v.' in s:
-					s = '0'
-				if '-' in s:
-					s = '0'
-				self.mPERB.append( float( s ) )
-				td = td.find_next_sibling( 'td' )
-
-			td = self.mSFinancialsB.find( id='kennzahlen' ).find_next_sibling( 'table' ).find( 'td', string='Dividende je Aktie' ).find_next_sibling()
-			while td:
-				s = td.string.strip().replace( ',', '.' ) if td.string is not None else '0'
-				self.mDividendB.append( float( s ) )
-				td = td.find_next_sibling( 'td' )
-
-			self.mDividendGrowthB, self.mDividendGrowthAverageB, self.mDividendGrowthAverageLast5YB = self.ComputeCroissance( self.mDividendB )
-
-			td = self.mSFinancialsB.find( id='kennzahlen' ).find_next_sibling( 'table' ).find( 'td', string='Gewinn je Aktie (unverwässert)' ).find_next_sibling()
-			while td:
-				s = td.string.strip().replace( ',', '.' ) if td.string is not None else '0'
-				self.mBNAB.append( float( s ) )
-				td = td.find_next_sibling( 'td' )
-
-			self.mBNAGrowthB, self.mBNAGrowthAverageB, self.mBNAGrowthAverageLast5YB = self.ComputeCroissance( self.mBNAB )
-
+		html_content = ''
+		with open( self.SourceFileHTMLFinancialsB(), 'r', encoding='utf-8' ) as fd:
+			html_content = fd.read()
+			
+		self.mSFinancialsB = BeautifulSoup( html_content, 'html5lib' )
+		
 		#---
 		
+		if not self.mSFinancialsB:
+			return
+		if self.mSFinancialsB.find( string=re.compile('Bilanz \(\)') ):
+			return
+			
+		td = self.mSFinancialsB.find( id='rentabilitaet' ).find_next_sibling( 'table' ).find( 'tr' ).find( 'th' ).find_next_sibling()
+		while td:
+			self.mYearsB.append( td.string )
+			td = td.find_next_sibling( 'th' )
+		
+		td = self.mSFinancialsB.find( id='rentabilitaet' ).find_next_sibling( 'table' ).find( 'td', string='Dividendenrendite' ).find_next_sibling()
+		while td:
+			self.mDividendYieldB.append( td.string )
+			td = td.find_next_sibling( 'td' )
+
+		td = self.mSFinancialsB.find( id='kennzahlen' ).find_next_sibling( 'table' ).find_next_sibling( 'table' ).find( 'td' ).find( 'a', string='KGV' ).parent.find_next_sibling()
+		while td:
+			s = td.string.strip().replace( ',', '.' ) if td.string is not None else '0'
+			if 'n.v.' in s:
+				s = '0'
+			if '-' in s:
+				s = '0'
+			self.mPERB.append( float( s ) )
+			td = td.find_next_sibling( 'td' )
+
+		td = self.mSFinancialsB.find( id='kennzahlen' ).find_next_sibling( 'table' ).find( 'td', string='Dividende je Aktie' ).find_next_sibling()
+		while td:
+			s = td.string.strip().replace( ',', '.' ) if td.string is not None else '0'
+			self.mDividendB.append( float( s ) )
+			td = td.find_next_sibling( 'td' )
+
+		self.mDividendGrowthB, self.mDividendGrowthAverageB, self.mDividendGrowthAverageLast5YB = self.ComputeCroissance( self.mDividendB )
+
+		td = self.mSFinancialsB.find( id='kennzahlen' ).find_next_sibling( 'table' ).find( 'td', string='Gewinn je Aktie (unverwässert)' ).find_next_sibling()
+		while td:
+			s = td.string.strip().replace( ',', '.' ) if td.string is not None else '0'
+			self.mBNAB.append( float( s ) )
+			td = td.find_next_sibling( 'td' )
+
+		self.mBNAGrowthB, self.mBNAGrowthAverageB, self.mBNAGrowthAverageLast5YB = self.ComputeCroissance( self.mBNAB )
+
+	def FillFinances( self ):
+		if not self.mFCName:
+			return
+			
+		html_content = ''
+		with open( self.SourceFileHTMLDividendsFC(), 'r', encoding='utf-8' ) as fd:
+			html_content = fd.read()
+			
+		self.mSDividendsFC = BeautifulSoup( html_content, 'html5lib' )
+			
+	def FillTradingSat( self ):
+		if not self.mTSName:
+			return
+			
+		html_content = ''
+		with open( self.SourceFileHTMLDividendsTS(), 'r', encoding='utf-8' ) as fd:
+			html_content = fd.read()
+			
+		self.mSDividendsTS = BeautifulSoup( html_content, 'html5lib' )
+		
+	def FillMorningstar( self ):
 		self.mMorningstarISYears = None
 		self.mMorningstarEBITDA = None
-		
-		if self.mMorningstarRegion:
-			with open( self.SourceFileHTMLFinancialsMorningstarIncomeStatement(), newline='' ) as csvfile:
-				reader = csv.reader( csvfile )
-				
-				for row in reader:
-					if len( row ) <= 1:
-						continue
-					
-					if row[0].startswith( 'Fiscal year ends' ):
-						self.mMorningstarISYears = cDataMorningstar( row )
-					elif row[0].startswith( 'EBITDA' ):
-						self.mMorningstarEBITDA = cDataMorningstar( row, self.mMorningstarISYears )
-			
-			if self.mMorningstarEBITDA is None:
-				self.mMorningstarEBITDA = cDataMorningstar()
-				self.mMorningstarEBITDA.mData = [''] * len( self.mMorningstarISYears.mData )
-		
-		#---
 		
 		self.mMorningstarBSYears = None
 		self.mMorningstarLongTermDebt = None
 		self.mMorningstarLTDOnEBITDA = cDataMorningstar()
 		
-		if self.mMorningstarRegion:
-			with open( self.SourceFileHTMLFinancialsMorningstarBalanceSheet(), newline='' ) as csvfile:
-				reader = csv.reader( csvfile )
-				
-				for row in reader:
-					if len( row ) <= 1:
-						continue
-					
-					if row[0].startswith( 'Fiscal year ends' ):
-						self.mMorningstarBSYears = cDataMorningstar( row )
-					elif row[0].startswith( 'Total non-current liabilities' ):
-						self.mMorningstarLongTermDebt = cDataMorningstar( row, self.mMorningstarBSYears )
-					elif row[0].startswith( 'Total liabilities' ) and self.mMorningstarLongTermDebt is None:	# CNP
-						self.mMorningstarLongTermDebt = cDataMorningstar( row, self.mMorningstarBSYears )
-			
-			for i, ltd in enumerate( self.mMorningstarLongTermDebt.mData ):
-				ebitda = self.mMorningstarEBITDA.mData[i]
-				if not ltd or not ebitda:
-					self.mMorningstarLTDOnEBITDA.mData.append( '' )
-					continue
-				
-				ratio = float( ltd ) / float( ebitda )
-				self.mMorningstarLTDOnEBITDA.mData.append( '{:.02f}'.format( ratio ) )
-					
-		#---
-			
 		self.mMorningstarFinancialsYears = None
 		self.mMorningstarFinancialsRevenue = None
 		self.mMorningstarFinancialsNetIncome = None
@@ -582,85 +566,6 @@ class cCompany:
 		self.mMorningstarHealthCurrentRatio = None
 		self.mMorningstarHealthDebtOnEquity = None
 		
-		if self.mMorningstarRegion:
-			with open( self.SourceFileHTMLFinancialsMorningstarRatios(), newline='' ) as csvfile:
-				reader = csv.reader( csvfile )
-				
-				for row in reader:
-					if not row:
-						continue
-					
-					if not row[0] and self.mMorningstarFinancialsYears is None:		# 2 lines have the same format, and the first one is the wanted one
-						self.mMorningstarFinancialsYears = cDataMorningstar( row )
-					elif row[0].startswith( 'Revenue' ) and row[0].endswith( 'Mil' ):
-						self.mMorningstarFinancialsRevenue = cDataMorningstar( row, self.mMorningstarFinancialsYears )
-					elif row[0].startswith( 'Net Income' ) and row[0].endswith( 'Mil' ):
-						self.mMorningstarFinancialsNetIncome = cDataMorningstar( row, self.mMorningstarFinancialsYears )
-					elif row[0].startswith( 'Dividends' ):
-						self.mMorningstarFinancialsDividends = cDataMorningstar( row, self.mMorningstarFinancialsYears )
-					elif row[0].startswith( 'Payout Ratio' ):
-						self.mMorningstarFinancialsPayoutRatio = cDataMorningstar( row, self.mMorningstarFinancialsYears )
-					elif row[0].startswith( 'Earnings' ):
-						self.mMorningstarFinancialsEarnings = cDataMorningstar( row, self.mMorningstarFinancialsYears )
-					elif row[0].startswith( 'Book Value Per Share' ):
-						self.mMorningstarFinancialsBook = cDataMorningstar( row, self.mMorningstarFinancialsYears )
-						
-					elif row[0].startswith( 'Profitability' ):
-						self.mMorningstarProfitabilityYears = cDataMorningstar( row )
-					elif row[0].startswith( 'Return on Equity' ):
-						self.mMorningstarProfitabilityROE = cDataMorningstar( row, self.mMorningstarProfitabilityYears )
-					elif row[0].startswith( 'Return on Invested Capital' ):
-						self.mMorningstarProfitabilityROI = cDataMorningstar( row, self.mMorningstarProfitabilityYears )
-					elif row[0].startswith( 'Interest Coverage' ):
-						self.mMorningstarProfitabilityIC = cDataMorningstar( row, self.mMorningstarProfitabilityYears )
-						
-					elif row[0].startswith( 'Key Ratios -> Growth' ):
-						row = next( reader )
-						self.mMorningstarGrowthYears = cDataMorningstar( row )
-					elif row[0].startswith( 'Revenue %' ):
-						row = next( reader )
-						self.mMorningstarGrowthRevenue = cDataMorningstar( row, self.mMorningstarGrowthYears )	# YoY
-					elif row[0].startswith( 'Net Income %' ):
-						row = next( reader )
-						self.mMorningstarGrowthNetIncome = cDataMorningstar( row, self.mMorningstarGrowthYears )	# YoY
-					elif row[0].startswith( 'EPS %' ):
-						row = next( reader )
-						self.mMorningstarGrowthEarnings = cDataMorningstar( row, self.mMorningstarGrowthYears )	# YoY
-						
-					elif row[0].startswith( 'Free Cash Flow/Sales' ):
-						self.mMorningstarCashFlowFCFOnSales = cDataMorningstar( row, self.mMorningstarProfitabilityYears )
-				
-					elif row[0].startswith( 'Liquidity/Financial Health' ):
-						self.mMorningstarHealthYears = cDataMorningstar( row )
-					elif row[0].startswith( 'Current Ratio' ):
-						self.mMorningstarHealthCurrentRatio = cDataMorningstar( row, self.mMorningstarHealthYears )
-					elif row[0].startswith( 'Debt/Equity' ):
-						self.mMorningstarHealthDebtOnEquity = cDataMorningstar( row, self.mMorningstarHealthYears )
-					
-			for i, dividend in enumerate( self.mMorningstarFinancialsDividends.mData ):
-				if not i:
-					self.mMorningstarFinancialsGrowthDividends.mData.append( '' )
-					continue
-				if not dividend or not self.mMorningstarFinancialsDividends.mData[i-1]:
-					self.mMorningstarFinancialsGrowthDividends.mData.append( '' )
-					continue
-				
-				ratio = ( float( dividend ) - float( self.mMorningstarFinancialsDividends.mData[i-1] ) ) / abs( float( dividend ) )
-				self.mMorningstarFinancialsGrowthDividends.mData.append( '{:.02f}'.format( ratio * 100 ) )
-						
-			for i, book in enumerate( self.mMorningstarFinancialsBook.mData ):
-				if not i:
-					self.mMorningstarFinancialsGrowthBook.mData.append( '' )
-					continue
-				if not book or not self.mMorningstarFinancialsBook.mData[i-1]:
-					self.mMorningstarFinancialsGrowthBook.mData.append( '' )
-					continue
-				
-				ratio = ( float( book ) - float( self.mMorningstarFinancialsBook.mData[i-1] ) ) / abs( float( book ) )
-				self.mMorningstarFinancialsGrowthBook.mData.append( '{:.02f}'.format( ratio * 100 ) )
-					
-		#---
-			
 		self.mMorningstarValuationYears = cDataMorningstar()
 		self.mMorningstarValuationP2S = cDataMorningstar( iParent=self.mMorningstarValuationYears )
 		self.mMorningstarValuationPER = cDataMorningstar( iParent=self.mMorningstarValuationYears )
@@ -668,27 +573,146 @@ class cCompany:
 		self.mMorningstarValuationP2B = cDataMorningstar( iParent=self.mMorningstarValuationYears )
 		self.mMorningstarValuationEVOnEBITDA = cDataMorningstar( iParent=self.mMorningstarValuationYears )
 		
-		if self.mMorningstarRegion:
-			html_content = ''
-			with open( self.SourceFileHTMLFinancialsMorningstarValuation(), 'r', encoding='utf-8' ) as fd:
-				html_content = fd.read()
-			if not html_content:
-				print( 'ERROR: valuation html is empty' )
-				return
-				
-			svaluation = BeautifulSoup( html_content, 'html5lib' )
-			section = svaluation.find( 'a', attrs={'data-anchor': 'valuation'} ).parent
+		if not self.mMorningstarRegion:
+			return
 			
-			self.mMorningstarValuationYears.SetTR( section, 'td', 'Calendar' )
+		with open( self.SourceFileHTMLFinancialsMorningstarIncomeStatement(), newline='' ) as csvfile:
+			reader = csv.reader( csvfile )
+			
+			for row in reader:
+				if len( row ) <= 1:
+					continue
 				
-			self.mMorningstarValuationP2S.SetTR( section, 'span', 'Price/Sales' )
-			self.mMorningstarValuationPER.SetTR( section, 'span', 'Price/Earnings' )
-			self.mMorningstarValuationP2CF.SetTR( section, 'span', 'Price/Cash Flow' )
-			self.mMorningstarValuationP2B.SetTR( section, 'span', 'Price/Book' )
-			self.mMorningstarValuationEVOnEBITDA.SetTR( section, 'span', 'Enterprise Value/EBITDA' )
+				if row[0].startswith( 'Fiscal year ends' ):
+					self.mMorningstarISYears = cDataMorningstar( row )
+				elif row[0].startswith( 'EBITDA' ):
+					self.mMorningstarEBITDA = cDataMorningstar( row, self.mMorningstarISYears )
+		
+		if self.mMorningstarEBITDA is None:
+			self.mMorningstarEBITDA = cDataMorningstar()
+			self.mMorningstarEBITDA.mData = [''] * len( self.mMorningstarISYears.mData )
+		
+		#---
+		
+		with open( self.SourceFileHTMLFinancialsMorningstarBalanceSheet(), newline='' ) as csvfile:
+			reader = csv.reader( csvfile )
+			
+			for row in reader:
+				if len( row ) <= 1:
+					continue
+				
+				if row[0].startswith( 'Fiscal year ends' ):
+					self.mMorningstarBSYears = cDataMorningstar( row )
+				elif row[0].startswith( 'Total non-current liabilities' ):
+					self.mMorningstarLongTermDebt = cDataMorningstar( row, self.mMorningstarBSYears )
+				elif row[0].startswith( 'Total liabilities' ) and self.mMorningstarLongTermDebt is None:	# CNP
+					self.mMorningstarLongTermDebt = cDataMorningstar( row, self.mMorningstarBSYears )
+		
+		for i, ltd in enumerate( self.mMorningstarLongTermDebt.mData ):
+			ebitda = self.mMorningstarEBITDA.mData[i]
+			if not ltd or not ebitda:
+				self.mMorningstarLTDOnEBITDA.mData.append( '' )
+				continue
+			
+			ratio = float( ltd ) / float( ebitda )
+			self.mMorningstarLTDOnEBITDA.mData.append( '{:.02f}'.format( ratio ) )
+					
+		#---
+			
+		with open( self.SourceFileHTMLFinancialsMorningstarRatios(), newline='' ) as csvfile:
+			reader = csv.reader( csvfile )
+			
+			for row in reader:
+				if not row:
+					continue
+				
+				if not row[0] and self.mMorningstarFinancialsYears is None:		# 2 lines have the same format, and the first one is the wanted one
+					self.mMorningstarFinancialsYears = cDataMorningstar( row )
+				elif row[0].startswith( 'Revenue' ) and row[0].endswith( 'Mil' ):
+					self.mMorningstarFinancialsRevenue = cDataMorningstar( row, self.mMorningstarFinancialsYears )
+				elif row[0].startswith( 'Net Income' ) and row[0].endswith( 'Mil' ):
+					self.mMorningstarFinancialsNetIncome = cDataMorningstar( row, self.mMorningstarFinancialsYears )
+				elif row[0].startswith( 'Dividends' ):
+					self.mMorningstarFinancialsDividends = cDataMorningstar( row, self.mMorningstarFinancialsYears )
+				elif row[0].startswith( 'Payout Ratio' ):
+					self.mMorningstarFinancialsPayoutRatio = cDataMorningstar( row, self.mMorningstarFinancialsYears )
+				elif row[0].startswith( 'Earnings' ):
+					self.mMorningstarFinancialsEarnings = cDataMorningstar( row, self.mMorningstarFinancialsYears )
+				elif row[0].startswith( 'Book Value Per Share' ):
+					self.mMorningstarFinancialsBook = cDataMorningstar( row, self.mMorningstarFinancialsYears )
+					
+				elif row[0].startswith( 'Profitability' ):
+					self.mMorningstarProfitabilityYears = cDataMorningstar( row )
+				elif row[0].startswith( 'Return on Equity' ):
+					self.mMorningstarProfitabilityROE = cDataMorningstar( row, self.mMorningstarProfitabilityYears )
+				elif row[0].startswith( 'Return on Invested Capital' ):
+					self.mMorningstarProfitabilityROI = cDataMorningstar( row, self.mMorningstarProfitabilityYears )
+				elif row[0].startswith( 'Interest Coverage' ):
+					self.mMorningstarProfitabilityIC = cDataMorningstar( row, self.mMorningstarProfitabilityYears )
+					
+				elif row[0].startswith( 'Key Ratios -> Growth' ):
+					row = next( reader )
+					self.mMorningstarGrowthYears = cDataMorningstar( row )
+				elif row[0].startswith( 'Revenue %' ):
+					row = next( reader )
+					self.mMorningstarGrowthRevenue = cDataMorningstar( row, self.mMorningstarGrowthYears )	# YoY
+				elif row[0].startswith( 'Net Income %' ):
+					row = next( reader )
+					self.mMorningstarGrowthNetIncome = cDataMorningstar( row, self.mMorningstarGrowthYears )	# YoY
+				elif row[0].startswith( 'EPS %' ):
+					row = next( reader )
+					self.mMorningstarGrowthEarnings = cDataMorningstar( row, self.mMorningstarGrowthYears )	# YoY
+					
+				elif row[0].startswith( 'Free Cash Flow/Sales' ):
+					self.mMorningstarCashFlowFCFOnSales = cDataMorningstar( row, self.mMorningstarProfitabilityYears )
+			
+				elif row[0].startswith( 'Liquidity/Financial Health' ):
+					self.mMorningstarHealthYears = cDataMorningstar( row )
+				elif row[0].startswith( 'Current Ratio' ):
+					self.mMorningstarHealthCurrentRatio = cDataMorningstar( row, self.mMorningstarHealthYears )
+				elif row[0].startswith( 'Debt/Equity' ):
+					self.mMorningstarHealthDebtOnEquity = cDataMorningstar( row, self.mMorningstarHealthYears )
+				
+		for i, dividend in enumerate( self.mMorningstarFinancialsDividends.mData ):
+			if not i:
+				self.mMorningstarFinancialsGrowthDividends.mData.append( '' )
+				continue
+			if not dividend or not self.mMorningstarFinancialsDividends.mData[i-1]:
+				self.mMorningstarFinancialsGrowthDividends.mData.append( '' )
+				continue
+			
+			ratio = ( float( dividend ) - float( self.mMorningstarFinancialsDividends.mData[i-1] ) ) / abs( float( dividend ) )
+			self.mMorningstarFinancialsGrowthDividends.mData.append( '{:.02f}'.format( ratio * 100 ) )
+					
+		for i, book in enumerate( self.mMorningstarFinancialsBook.mData ):
+			if not i:
+				self.mMorningstarFinancialsGrowthBook.mData.append( '' )
+				continue
+			if not book or not self.mMorningstarFinancialsBook.mData[i-1]:
+				self.mMorningstarFinancialsGrowthBook.mData.append( '' )
+				continue
+			
+			ratio = ( float( book ) - float( self.mMorningstarFinancialsBook.mData[i-1] ) ) / abs( float( book ) )
+			self.mMorningstarFinancialsGrowthBook.mData.append( '{:.02f}'.format( ratio * 100 ) )
+					
+		#---
+			
+		html_content = ''
+		with open( self.SourceFileHTMLFinancialsMorningstarValuation(), 'r', encoding='utf-8' ) as fd:
+			html_content = fd.read()
+			
+		svaluation = BeautifulSoup( html_content, 'html5lib' )
+		section = svaluation.find( 'a', attrs={'data-anchor': 'valuation'} ).parent
+		
+		self.mMorningstarValuationYears.SetTR( section, 'td', 'Calendar' )
+			
+		self.mMorningstarValuationP2S.SetTR( section, 'span', 'Price/Sales' )
+		self.mMorningstarValuationPER.SetTR( section, 'span', 'Price/Earnings' )
+		self.mMorningstarValuationP2CF.SetTR( section, 'span', 'Price/Cash Flow' )
+		self.mMorningstarValuationP2B.SetTR( section, 'span', 'Price/Book' )
+		self.mMorningstarValuationEVOnEBITDA.SetTR( section, 'span', 'Enterprise Value/EBITDA' )
 		
 		# sys.exit( 0 )
-
 
 
 

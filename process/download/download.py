@@ -194,7 +194,7 @@ def DownloadFinancialsMorningstar( iCompanies ):
 			valuation = WaitElement( '//li[@data-link="sal-components-valuation"]//button' )
 			valuation.click()
 			WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-valuation' )
-			# WaitNoElement( '//a[@data-anchor="valuation"]/..//span[contains(text(), "There is no Valuation data available")]' )
+			WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-report-table' )
 
 			with open( company.SourceFileHTMLFinancialsMorningstarValuation(), 'w' ) as output:
 				output.write( sgBrowser.page_source )

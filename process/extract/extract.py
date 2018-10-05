@@ -73,18 +73,22 @@ def Extract( iCompanies ):
 	
 	.last10 th,
 	.last10 td,
+	.fondamentals th,
+	.fondamentals td
 	{
-		padding:	7px 10px;
+		padding:	2px 2px;
 	}
 	.last10 th,
 	.fondamentals th
 	{
 		background-color: rgba( 0, 0, 0, 0.10 );
 	}
+	.last10 th:first-child,
 	.fondamentals th:first-child
 	{
 		width: 220px;
 	}
+	.last10 th,
 	.fondamentals th
 	{
 		width: 80px;
