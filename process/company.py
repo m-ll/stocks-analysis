@@ -502,7 +502,10 @@ class cCompany:
 
 		td = self.mSFinancialsB.find( id='kennzahlen' ).find_next_sibling( 'table' ).find( 'td', string='Dividende je Aktie' ).find_next_sibling()
 		while td:
-			s = td.string.strip().replace( ',', '.' ) if td.string is not None else '0'
+			if td.string is None or td.string.strip() == '-':
+				s = '0'
+			else:
+				s = td.string.strip().replace( ',', '.' )
 			self.mDividendB.append( float( s ) )
 			td = td.find_next_sibling( 'td' )
 
@@ -510,7 +513,10 @@ class cCompany:
 
 		td = self.mSFinancialsB.find( id='kennzahlen' ).find_next_sibling( 'table' ).find( 'td', string='Gewinn je Aktie (unverwässert)' ).find_next_sibling()
 		while td:
-			s = td.string.strip().replace( ',', '.' ) if td.string is not None else '0'
+			if td.string is None or td.string.strip() == '-':
+				s = '0'
+			else:
+				s = td.string.strip().replace( ',', '.' )
 			self.mBNAB.append( float( s ) )
 			td = td.find_next_sibling( 'td' )
 
