@@ -2,6 +2,14 @@
 
 Merge many information about companies from various website to have everything on the same page
 
+# dependencies
+
+pip3 install requests
+pip3 install selenium (+geckodriver)
+pip3 install bs4
+pip3 install html5lib
+pip3 install colorama
+
 # some references
 
 #### screeners

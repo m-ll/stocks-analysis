@@ -479,6 +479,10 @@ class cCompany:
 			return
 		if self.mSFinancialsB.find( string=re.compile('Bilanz \(\)') ):
 			return
+		if self.mSFinancialsB.find( id='rentabilitaet' ) is None:
+			return
+		if self.mSFinancialsB.find( id='kennzahlen' ) is None:
+			return
 			
 		td = self.mSFinancialsB.find( id='rentabilitaet' ).find_next_sibling( 'table' ).find( 'tr' ).find( 'th' ).find_next_sibling()
 		while td:

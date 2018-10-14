@@ -10,11 +10,22 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
+from colorama import init, Fore, Back, Style
+
 from ..company import *
 
 os.environ["PATH"] += os.pathsep + '.'
 sgBrowser = None
 sgTempDir = ''
+sgForceDownload = False;
+
+def GetForceDownload():
+	global sgForceDownload
+	return sgForceDownload;
+	
+def SetForceDownload( iForceDownload ):
+	global sgForceDownload
+	sgForceDownload = iForceDownload;
 
 def BrowserInit():
 	global sgBrowser
@@ -36,7 +47,7 @@ def BrowserInit():
 		sgTempDir = tempfile.gettempdir() + '/tmp-stocks'
 	
 	opts = Options()
-	opts.add_argument( '--headless' )
+	# opts.add_argument( '--headless' )
 	
 	opts.set_preference( 'browser.privatebrowsing.autostart', True )
 
@@ -67,6 +78,9 @@ def DownloadFinancialsZB( iCompanies ):
 
 	for company in iCompanies:
 		print( 'Download financials Zonebourse: {} ...'.format( company.mName ) )
+		if not GetForceDownload() and os.path.exists( company.SourceFileHTMLFinancialsZB() ):
+			print( '	skipping ...' )
+			continue
 		
 		sgBrowser.get( company.SourceUrlFinancialsZB() )
 
@@ -80,7 +94,7 @@ def WaitElement( iXPath ):
 
 	element = sgBrowser.find_elements_by_xpath( iXPath )
 	while not element:
-		print( 'sleep wait element: {}'.format( iXPath ) )
+		print( Fore.YELLOW + 'sleep wait element: {}'.format( iXPath ) )
 		time.sleep( 1 )
 		element = sgBrowser.find_elements_by_xpath( iXPath )
 	
@@ -93,7 +107,7 @@ def WaitNoElement( iXPath ):
 
 	element = sgBrowser.find_elements_by_xpath( iXPath )
 	while element:
-		print( 'sleep wait no element: {}'.format( iXPath ) )
+		print( Fore.YELLOW + 'sleep wait no element: {}'.format( iXPath ) )
 		time.sleep( 1 )
 		element = sgBrowser.find_elements_by_xpath( iXPath )
 	
@@ -108,7 +122,7 @@ def WaitFileInside( iDirectory ):
 		if files:
 			return files[0]
 			
-		print( 'sleep file ({}): {}'.format( i, iDirectory ) )
+		print( Fore.YELLOW + 'sleep file ({}): {}'.format( i, iDirectory ) )
 		time.sleep( 1 )
 			
 	# sgBrowser.refresh()
@@ -118,7 +132,7 @@ def WaitFileInside( iDirectory ):
 
 	files = os.listdir( iDirectory )
 	while not files:
-		print( 'sleep file refresh: {}'.format( iDirectory ) )
+		print( Fore.YELLOW + 'sleep file refresh: {}'.format( iDirectory ) )
 		time.sleep( 1 )
 		files = os.listdir( iDirectory )
 
@@ -132,6 +146,90 @@ def RemoveFiles( iDirectory ):
 			
 	time.sleep( 1 )
 
+def DownloadFinancialsMorningstarIncomeStatement( iCompany ):
+	global sgBrowser
+	global sgTempDir
+	
+	print( '	- Income Statement' )
+
+	if not GetForceDownload() and os.path.exists( iCompany.SourceFileHTMLFinancialsMorningstarIncomeStatement() ):
+		print( '	skipping ...' )
+		return
+	
+	sgBrowser.get( iCompany.SourceUrlFinancialsMorningstarIncomeStatement() )
+	time.sleep( 1 )
+	
+	# with open( iCompany.SourceFileHTMLFinancialsMorningstarIncomeStatement() + '.html', 'w' ) as output:
+	#	output.write( sgBrowser.page_source )
+
+	export = WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
+	export.click()
+	csv = WaitFileInside( sgTempDir )
+
+	shutil.move( sgTempDir + '/' + csv, iCompany.SourceFileHTMLFinancialsMorningstarIncomeStatement() )
+	RemoveFiles( sgTempDir )
+
+def DownloadFinancialsMorningstarBalanceSheet( iCompany ):
+	global sgBrowser
+	global sgTempDir
+	
+	print( '	- Balance Sheet' )
+
+	if not GetForceDownload() and os.path.exists( iCompany.SourceFileHTMLFinancialsMorningstarBalanceSheet() ):
+		print( '	skipping ...' )
+		return
+	
+	sgBrowser.get( iCompany.SourceUrlFinancialsMorningstarBalanceSheet() )
+	time.sleep( 1 )
+	
+	export = WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
+	export.click()
+	csv = WaitFileInside( sgTempDir )
+
+	shutil.move( sgTempDir + '/' + csv, iCompany.SourceFileHTMLFinancialsMorningstarBalanceSheet() )
+	RemoveFiles( sgTempDir )
+
+def DownloadFinancialsMorningstarRatios( iCompany ):
+	global sgBrowser
+	global sgTempDir
+
+	print( '	- Ratios' )
+	
+	if not GetForceDownload() and os.path.exists( iCompany.SourceFileHTMLFinancialsMorningstarRatios() ):
+		print( '	skipping ...' )
+		return
+	
+	sgBrowser.get( iCompany.SourceUrlFinancialsMorningstarRatios() )
+	time.sleep( 1 )
+	
+	export = WaitElement( '//a[contains(@href,"exportKeyStat2CSV")]' )
+	export.click()
+	csv = WaitFileInside( sgTempDir )
+
+	shutil.move( sgTempDir + '/' + csv, iCompany.SourceFileHTMLFinancialsMorningstarRatios() )
+	RemoveFiles( sgTempDir )
+	
+def DownloadFinancialsMorningstarValuations( iCompany ):
+	global sgBrowser
+	
+	print( '	- Valuation' )
+	
+	if not GetForceDownload() and os.path.exists( iCompany.SourceFileHTMLFinancialsMorningstarValuation() ):
+		print( '	skipping ...' )
+		return
+	
+	sgBrowser.get( iCompany.SourceUrlFinancialsMorningstarValuation() )
+	time.sleep( 1 )
+	
+	valuation = WaitElement( '//li[@data-link="sal-components-valuation"]//button' )
+	valuation.click()
+	WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-valuation' )
+	WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-report-table' )
+
+	with open( iCompany.SourceFileHTMLFinancialsMorningstarValuation(), 'w' ) as output:
+		output.write( sgBrowser.page_source )
+		
+
 def DownloadFinancialsMorningstar( iCompanies ):
 	global sgBrowser
 	global sgTempDir
@@ -141,91 +239,38 @@ def DownloadFinancialsMorningstar( iCompanies ):
 	for company in iCompanies:
 		print( 'Download financials Morningstar: {} ...'.format( company.mName ) )
 		
-		if company.mMorningstarRegion:
-			if os.path.exists( sgTempDir ):
-				shutil.rmtree( sgTempDir )
-			os.makedirs( sgTempDir )
+		if not company.mMorningstarRegion:
+			continue
 
-			print( '	- Income Statement' )
-			sgBrowser.get( company.SourceUrlFinancialsMorningstarIncomeStatement() )
-			time.sleep( 1 )
-			
-			# with open( company.SourceFileHTMLFinancialsMorningstarIncomeStatement() + '.html', 'w' ) as output:
-			#	output.write( sgBrowser.page_source )
-
-			export = WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
-			export.click()
-			csv = WaitFileInside( sgTempDir )
-
-			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarIncomeStatement() )
-			RemoveFiles( sgTempDir )
-
-			#---
-
-			print( '	- Balance Sheet' )
-			sgBrowser.get( company.SourceUrlFinancialsMorningstarBalanceSheet() )
-			time.sleep( 1 )
-			
-			# with open( company.SourceFileHTMLFinancialsMorningstarBalanceSheet() + '.html', 'w' ) as output:
-			#	output.write( sgBrowser.page_source )
-
-			if os.path.exists( sgTempDir ):
-				shutil.rmtree( sgTempDir )
-			os.makedirs( sgTempDir )
-
-			export = WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
-			export.click()
-			csv = WaitFileInside( sgTempDir )
-
-			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarBalanceSheet() )
-			RemoveFiles( sgTempDir )
-
-			#---
-
-			print( '	- Ratios' )
-			sgBrowser.get( company.SourceUrlFinancialsMorningstarRatios() )
-			time.sleep( 1 )
-			
-			# with open( company.SourceFileHTMLFinancialsMorningstarRatios() + '.html', 'w' ) as output:
-			#	output.write( sgBrowser.page_source )
-
-			if os.path.exists( sgTempDir ):
-				shutil.rmtree( sgTempDir )
-			os.makedirs( sgTempDir )
-
-			export = WaitElement( '//a[contains(@href,"exportKeyStat2CSV")]' )
-			export.click()
-			csv = WaitFileInside( sgTempDir )
-
-			shutil.move( sgTempDir + '/' + csv, company.SourceFileHTMLFinancialsMorningstarRatios() )
-			RemoveFiles( sgTempDir )
-			
-			#---
-			
-			print( '	- Valuation' )
-			sgBrowser.get( company.SourceUrlFinancialsMorningstarValuation() )
-			time.sleep( 1 )
-			
-			valuation = WaitElement( '//li[@data-link="sal-components-valuation"]//button' )
-			valuation.click()
-			WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-valuation' )
-			WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-report-table' )
-
-			with open( company.SourceFileHTMLFinancialsMorningstarValuation(), 'w' ) as output:
-				output.write( sgBrowser.page_source )
-				
+		if os.path.exists( sgTempDir ):
 			shutil.rmtree( sgTempDir )
+		os.makedirs( sgTempDir )
 
+		#---
+
+		DownloadFinancialsMorningstarIncomeStatement( company )
+		DownloadFinancialsMorningstarBalanceSheet( company )
+		DownloadFinancialsMorningstarRatios( company )
+		DownloadFinancialsMorningstarValuations( company )
+
+		#---
+		
+		shutil.rmtree( sgTempDir )
 		time.sleep( 1 )
 
 def DownloadFinancialsFV( iCompanies ):
 	for company in iCompanies:
 		print( 'Download financials Finviz: {} ...'.format( company.mName ) )
 		
-		if company.mFVSymbol:
-			r = requests.get( company.SourceUrlFinancialsFV() )
-			with open( company.SourceFileHTMLFinancialsFV(), 'w' ) as output:
-				output.write( r.text )
+		if not company.mFVSymbol:
+			continue
+		if not GetForceDownload() and os.path.exists( company.SourceFileHTMLFinancialsFV() ):
+			print( '	skipping ...' )
+			continue
+
+		r = requests.get( company.SourceUrlFinancialsFV() )
+		with open( company.SourceFileHTMLFinancialsFV(), 'w' ) as output:
+			output.write( r.text )
 			
 		time.sleep( 1 )
 
@@ -233,10 +278,15 @@ def DownloadFinancialsR( iCompanies ):
 	for company in iCompanies:
 		print( 'Download financials Reuters: {} ...'.format( company.mName ) )
 		
-		if company.mRSymbol:
-			r = requests.get( company.SourceUrlFinancialsR() )
-			with open( company.SourceFileHTMLFinancialsR(), 'w' ) as output:
-				output.write( r.text )
+		if not company.mRSymbol:
+			continue
+		if not GetForceDownload() and os.path.exists( company.SourceFileHTMLFinancialsR() ):
+			print( '	skipping ...' )
+			continue
+		
+		r = requests.get( company.SourceUrlFinancialsR() )
+		with open( company.SourceFileHTMLFinancialsR(), 'w' ) as output:
+			output.write( r.text )
 			
 		time.sleep( 1 )
 
@@ -244,10 +294,15 @@ def DownloadFinancialsYF( iCompanies ):
 	for company in iCompanies:
 		print( 'Download financials YahooFinance: {} ...'.format( company.mName ) )
 		
-		if company.mYFSymbol:
-			r = requests.get( company.SourceUrlFinancialsYF() )
-			with open( company.SourceFileHTMLFinancialsYF(), 'w' ) as output:
-				output.write( r.text )
+		if not company.mYFSymbol:
+			continue
+		if not GetForceDownload() and os.path.exists( company.SourceFileHTMLFinancialsYF() ):
+			print( '	skipping ...' )
+			continue
+		
+		r = requests.get( company.SourceUrlFinancialsYF() )
+		with open( company.SourceFileHTMLFinancialsYF(), 'w' ) as output:
+			output.write( r.text )
 			
 		time.sleep( 1 )
 
@@ -255,10 +310,15 @@ def DownloadFinancialsB( iCompanies ):
 	for company in iCompanies:
 		print( 'Download financials Boerse: {} ...'.format( company.mName ) )
 		
-		if company.mBName:
-			r = requests.get( company.SourceUrlFinancialsB() )
-			with open( company.SourceFileHTMLFinancialsB(), 'w' ) as output:
-				output.write( r.text )
+		if not company.mBName:
+			continue
+		if not GetForceDownload() and os.path.exists( company.SourceFileHTMLFinancialsB() ):
+			print( '	skipping ...' )
+			continue
+		
+		r = requests.get( company.SourceUrlFinancialsB() )
+		with open( company.SourceFileHTMLFinancialsB(), 'w' ) as output:
+			output.write( r.text )
 			
 		time.sleep( 1 )
 
@@ -268,6 +328,10 @@ def DownloadSociety( iCompanies ):
 	for company in iCompanies:
 		print( 'Download society: {} ...'.format( company.mName ) )
 		
+		if not GetForceDownload() and os.path.exists( company.SourceFileHTMLSocietyZB() ):
+			print( '	skipping ...' )
+			continue
+
 		r = requests.get( company.SourceUrlSocietyZB() )
 		with open( company.SourceFileHTMLSocietyZB(), 'w' ) as output:
 			output.write( r.text )
@@ -276,33 +340,58 @@ def DownloadSociety( iCompanies ):
 
 #---
 
+def DownloadStockPriceMax( iCompany ):
+	if not GetForceDownload() and os.path.exists( iCompany.SourceFileIMG( 9999 ) ):
+		print( '	skipping (max) ...' )
+		return
+		
+	r = requests.get( iCompany.SourceUrlStockPriceZB( 9999, 320, 260 ) )
+	with open( iCompany.SourceFileIMG( 9999 ), 'wb' ) as output:
+		output.write( r.content )
+		
+	time.sleep( 1 )
+
+def DownloadStockPrice10Years( iCompany ):
+	if not GetForceDownload() and os.path.exists( iCompany.SourceFileIMG( 10 ) ):
+		print( '	skipping (10y) ...' )
+		return
+
+	r = requests.get( iCompany.SourceUrlStockPriceZB( 120, 570, 430 ) )
+	with open( iCompany.SourceFileIMG( 10 ), 'wb' ) as output:
+		output.write( r.content )
+
+	time.sleep( 1 )
+
+def DownloadStockPrice5Years( iCompany ):
+	if not GetForceDownload() and os.path.exists( iCompany.SourceFileIMG( 5 ) ):
+		print( '	skipping (5y) ...' )
+		return
+
+	r = requests.get( iCompany.SourceUrlStockPriceZB( 60, 570, 430 ) )
+	with open( iCompany.SourceFileIMG( 5 ), 'wb' ) as output:
+		output.write( r.content )
+
+	time.sleep( 1 )
+
+def DownloadStockPrice2Years( iCompany ):
+	if not GetForceDownload() and os.path.exists( iCompany.SourceFileIMG( 2 ) ):
+		print( '	skipping (2y) ...' )
+		return
+
+	r = requests.get( iCompany.SourceUrlStockPriceZB( 24, 570, 430 ) )
+	with open( iCompany.SourceFileIMG( 2 ), 'wb' ) as output:
+		output.write( r.content )
+
+	time.sleep( 1 )
+
 def DownloadStockPrice( iCompanies ):
 	for company in iCompanies:
 		print( 'Download images: {} ...'.format( company.mName ) )
 		
-		r = requests.get( company.SourceUrlStockPriceZB( 9999, 320, 260 ) )
-		with open( company.SourceFileIMG( 9999 ), 'wb' ) as output:
-			output.write( r.content )
-			
-		time.sleep( 1 )
-
-		r = requests.get( company.SourceUrlStockPriceZB( 120, 570, 430 ) )
-		with open( company.SourceFileIMG( 10 ), 'wb' ) as output:
-			output.write( r.content )
-
-		time.sleep( 1 )
-
-		r = requests.get( company.SourceUrlStockPriceZB( 60, 570, 430 ) )
-		with open( company.SourceFileIMG( 5 ), 'wb' ) as output:
-			output.write( r.content )
-
-		time.sleep( 1 )
-
-		r = requests.get( company.SourceUrlStockPriceZB( 24, 570, 430 ) )
-		with open( company.SourceFileIMG( 2 ), 'wb' ) as output:
-			output.write( r.content )
-
-		time.sleep( 1 )
+		DownloadStockPriceMax( company )
+		DownloadStockPrice10Years( company )
+		DownloadStockPrice5Years( company )
+		DownloadStockPrice2Years( company )
 
 #---
 
@@ -312,19 +401,32 @@ def DownloadDividends( iCompanies ):
 	BrowserInit()
 
 	for company in iCompanies:
-		print( 'Download dividends: {} ...'.format( company.mName ) )
+		print( 'Download dividends TS: {} ...'.format( company.mName ) )
 		
-		if company.mTSName:
-			r = requests.get( company.SourceUrlDividendsTS() )
-			with open( company.SourceFileHTMLDividendsTS(), 'w' ) as output:
-				output.write( r.text )
+		if not company.mTSName:
+			continue
+		if not GetForceDownload() and os.path.exists( company.SourceFileHTMLDividendsTS() ):
+			print( '	skipping ...' )
+			continue
+
+		r = requests.get( company.SourceUrlDividendsTS() )
+		with open( company.SourceFileHTMLDividendsTS(), 'w' ) as output:
+			output.write( r.text )
 
 		time.sleep( 1 )
 
-		if company.mFCName:
-			r = requests.get( company.SourceUrlDividendsFC() )
-			with open( company.SourceFileHTMLDividendsFC(), 'w' ) as output:
-				output.write( r.text )
+	for company in iCompanies:
+		print( 'Download dividends FC: {} ...'.format( company.mName ) )
+		
+		if not company.mFCName:
+			continue
+		if not GetForceDownload() and os.path.exists( company.SourceFileHTMLDividendsFC() ):
+			print( '	skipping ...' )
+			continue
+
+		r = requests.get( company.SourceUrlDividendsFC() )
+		with open( company.SourceFileHTMLDividendsFC(), 'w' ) as output:
+			output.write( r.text )
 			
 		time.sleep( 1 )
 

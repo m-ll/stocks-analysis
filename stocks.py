@@ -10,6 +10,9 @@ from process.company import *
 from process.download.download import *
 from process.extract.extract import *
 
+from colorama import init, Fore, Back, Style
+init( autoreset=True )
+
 # https://graphseobourse.fr/classement-des-entreprises-les-plus-innovantes-du-monde/
 
 #---
@@ -262,12 +265,14 @@ company_groups = {
 			
 parser = argparse.ArgumentParser( description='Process group(s).' )
 parser.add_argument( 'groups', metavar='Group', nargs='*', help='One (or multiple) group(s) name')
-parser.add_argument( '--download', action='store_true', help='Download source' )
+parser.add_argument( '--download', choices=['no', 'yes', 'force'], default='no', help='Download source' )
 parser.add_argument( '--suffix', help='Set suffix of output folder', required=True )
 args = parser.parse_args()
 
-if not os.path.exists( "geckodriver" ):
-	print( "You need to download 'geckodriver' file and move it next to this file")
+SetForceDownload( args.download == 'force' )
+
+if not os.path.exists( 'geckodriver' ):
+	print( Back.RED + 'You need to download "geckodriver" file and move it next to this file' )
 	sys.exit()
 
 # Create output directories (_output-xxx and _output-xxx/img)
@@ -293,9 +298,9 @@ for group_name, company_group in company_groups.items():
 	if args.groups and not group_name in args.groups:
 		continue
 	
-	print( 'Group: {}'.format( group_name ) )
+	print( 'Group: {} ({})'.format( group_name, len( company_group ) ) )
 	
-	if args.download:
+	if args.download in ['yes', 'force']:
 		DownloadFinancialsMorningstar( company_group )
 		DownloadFinancialsZB( company_group )
 		DownloadFinancialsFV( company_group )
