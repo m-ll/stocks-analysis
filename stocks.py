@@ -164,7 +164,7 @@ company_groups = {
 	'eu': [	
 		cCompany( 'FR0000121220', 'SODEXO', 4703, 'SW', 							'fra', 'xpar',		'SW.PA',	'EXHO.PA', 		'',		'sodexo', 			'Sodexo' ),
 		cCompany( 'FR0000120073', 'AIR-LIQUIDE', 4605, 'AI', 						'fra', 'xpar',		'AI.PA',	'AIRP.PA', 		'',		'air-liquide', 		'Air_Liquide' ),
-		cCompany( 'FR0000121667', 'ESSILOR-INTERNATIONAL', 4641, 'EI', 				'', '',				'EI.PA',	'ESSI.PA', 		'',		'essilor-intl', 	'Essilor' ),
+		cCompany( 'FR0000121667', 'ESSILOR-INTERNATIONAL', 4641, 'EI', 				'', '',				'EI.PA',	'ESSI.PA', 		'',		'essilorluxottica', 'Essilor' ),
 		cCompany( 'DE0007236101', 'SIEMENS', 436605, 'SIE', 						'deu', 'xetr',		'SIE.DE',	'SIEGn.DE', 	'',		'',		 			'Siemens' ),
 		cCompany( 'DE000BAY0017', 'BAYER', 436063, 'BAYN', 							'deu', 'xetr',		'BAYN.DE',	'BAYGn.DE', 	'',		'', 				'Bayer' ),
 		cCompany( 'DE0006483001', 'LINDE-GROUP-THE', 436357, 'LIN', 				'deu', 'xetr',		'LIN.DE',	'LING.DE', 		'',		'', 				'Linde_6' ),
