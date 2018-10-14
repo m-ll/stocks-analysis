@@ -76,8 +76,8 @@ def DownloadFinancialsZB( iCompanies ):
 	
 	BrowserInit()
 
-	for company in iCompanies:
-		print( 'Download financials Zonebourse: {} ...'.format( company.mName ) )
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Download financials Zonebourse ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		if not GetForceDownload() and os.path.exists( company.SourceFileHTMLFinancialsZB() ):
 			print( '	skipping ...' )
 			continue
@@ -236,15 +236,15 @@ def DownloadFinancialsMorningstar( iCompanies ):
 	
 	BrowserInit()
 
-	for company in iCompanies:
-		print( 'Download financials Morningstar: {} ...'.format( company.mName ) )
+	if os.path.exists( sgTempDir ):
+		shutil.rmtree( sgTempDir )
+	os.makedirs( sgTempDir )
+
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Download financials Morningstar ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
 		if not company.mMorningstarRegion:
 			continue
-
-		if os.path.exists( sgTempDir ):
-			shutil.rmtree( sgTempDir )
-		os.makedirs( sgTempDir )
 
 		#---
 
@@ -252,15 +252,12 @@ def DownloadFinancialsMorningstar( iCompanies ):
 		DownloadFinancialsMorningstarBalanceSheet( company )
 		DownloadFinancialsMorningstarRatios( company )
 		DownloadFinancialsMorningstarValuations( company )
-
-		#---
-		
-		shutil.rmtree( sgTempDir )
-		time.sleep( 1 )
+	
+	shutil.rmtree( sgTempDir )
 
 def DownloadFinancialsFV( iCompanies ):
-	for company in iCompanies:
-		print( 'Download financials Finviz: {} ...'.format( company.mName ) )
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Download financials Finviz ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
 		if not company.mFVSymbol:
 			continue
@@ -275,8 +272,8 @@ def DownloadFinancialsFV( iCompanies ):
 		time.sleep( 1 )
 
 def DownloadFinancialsR( iCompanies ):
-	for company in iCompanies:
-		print( 'Download financials Reuters: {} ...'.format( company.mName ) )
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Download financials Reuters ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
 		if not company.mRSymbol:
 			continue
@@ -291,8 +288,8 @@ def DownloadFinancialsR( iCompanies ):
 		time.sleep( 1 )
 
 def DownloadFinancialsYF( iCompanies ):
-	for company in iCompanies:
-		print( 'Download financials YahooFinance: {} ...'.format( company.mName ) )
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Download financials YahooFinance ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
 		if not company.mYFSymbol:
 			continue
@@ -307,8 +304,8 @@ def DownloadFinancialsYF( iCompanies ):
 		time.sleep( 1 )
 
 def DownloadFinancialsB( iCompanies ):
-	for company in iCompanies:
-		print( 'Download financials Boerse: {} ...'.format( company.mName ) )
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Download financials Boerse ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
 		if not company.mBName:
 			continue
@@ -325,8 +322,8 @@ def DownloadFinancialsB( iCompanies ):
 #---
 
 def DownloadSociety( iCompanies ):
-	for company in iCompanies:
-		print( 'Download society: {} ...'.format( company.mName ) )
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Download society ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
 		if not GetForceDownload() and os.path.exists( company.SourceFileHTMLSocietyZB() ):
 			print( '	skipping ...' )
@@ -385,8 +382,8 @@ def DownloadStockPrice2Years( iCompany ):
 	time.sleep( 1 )
 
 def DownloadStockPrice( iCompanies ):
-	for company in iCompanies:
-		print( 'Download images: {} ...'.format( company.mName ) )
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Download images ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
 		DownloadStockPriceMax( company )
 		DownloadStockPrice10Years( company )
@@ -400,8 +397,8 @@ def DownloadDividends( iCompanies ):
 	
 	BrowserInit()
 
-	for company in iCompanies:
-		print( 'Download dividends TS: {} ...'.format( company.mName ) )
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Download dividends TS ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
 		if not company.mTSName:
 			continue
@@ -415,8 +412,8 @@ def DownloadDividends( iCompanies ):
 
 		time.sleep( 1 )
 
-	for company in iCompanies:
-		print( 'Download dividends FC: {} ...'.format( company.mName ) )
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Download dividends FC ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
 		if not company.mFCName:
 			continue

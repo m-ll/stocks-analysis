@@ -24,8 +24,8 @@ def Clean( iCompanies ):
 #---
 
 def Fill( iCompanies ):
-	for company in iCompanies:
-		print( 'Fill: {} ...'.format( company.mName ) )
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Fill ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
 		company.Fill()
 
@@ -124,8 +124,8 @@ def Extract( iCompanies ):
 
 	body = soupout.find( 'body' )
 	
-	for company in iCompanies:
-		print( 'Extract: {} ...'.format( company.mName ) )
+	for i, company in enumerate( iCompanies, start=1 ):
+		print( 'Extract ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
 		#---
 		
