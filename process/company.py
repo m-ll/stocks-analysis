@@ -5,11 +5,12 @@ import re
 import sys
 import csv
 import locale
+import requests
 
 from bs4 import BeautifulSoup
 
 class cDataMorningstar:
-	def __init__( self, iRow=None, iParent=None ):
+	def __init__( self, iRow=None, iParent=None, iComputeGrowthAverage=False ):
 		self.mData = []
 		
 		self.mTTM = ''
@@ -19,6 +20,9 @@ class cDataMorningstar:
 		self.m5Years = ''
 		self.mIndex = ''
 		
+		self.mComputeGrowthAverage=iComputeGrowthAverage
+		self.mGrowthAverage = ''
+		
 		self.mParent = iParent
 		
 		if iRow is not None:
@@ -26,6 +30,27 @@ class cDataMorningstar:
 	
 	def __repr__(self):
 		return 'cDataMorningstar( [{}], "{}", "{}" )'.format( ', '.join( map( str, self.mData ) ), self.mTTM, self.mLatestQuarter )
+	
+	def ComputeAverage( self, iData, iYears=8 ):
+		if not iData:
+			return
+		
+		data = []
+		for value in iData:
+			if not value:
+				continue
+			data.append( float( value ) )
+			
+		data = sorted( data[-1*iYears:] )
+		if len( data ) >= 5:
+			del( data[0] )
+			del( data[-1] )
+		
+		return sum( data ) / float( len( data ) )
+	
+	def Update( self ):
+		if self.mComputeGrowthAverage:
+			self.mGrowthAverage = '{:.02f}'.format( self.ComputeAverage( self.mData ) )
 	
 	def SetRow( self, iRow ):
 		if self.mParent is None:
@@ -50,6 +75,8 @@ class cDataMorningstar:
 		self.mData = list( map( self._FixLocale, self.mData ) );
 		self.mTTM = self._FixLocale( self.mTTM )
 		self.mLatestQuarter = self._FixLocale( self.mLatestQuarter )
+		
+		self.Update()
 			
 	def _FixLocale( self, iString ):
 		return iString.replace( ',', '.' ).replace( '(', '-' ).replace( ')', '' )
@@ -93,6 +120,8 @@ class cDataMorningstar:
 		self.mCurrent = self._FixLocale2( self.mCurrent )
 		self.m5Years = self._FixLocale2( self.m5Years )
 		self.mIndex = self._FixLocale2( self.mIndex )
+		
+		self.Update()
 			
 	def _FixLocale2( self, iString ):
 		return iString.replace( ',', '' ).replace( '—', '' )
@@ -201,6 +230,11 @@ class cCompany:
 	def SourceFileHTMLFinancialsMorningstarValuation( self ):
 		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarValuation.html'.format( self.mName, self.mISIN ) )
 		
+	def SourceUrlFinancialsMorningstarDividends( self ):
+		return 'https://www.morningstar.com/stocks/{}/{}/quote.html'.format( self.mMorningstarX, self.mMorningstarSymbol.lower() )
+	def SourceFileHTMLFinancialsMorningstarDividends( self ):
+		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarDividends.html'.format( self.mName, self.mISIN ) )
+		
 	def SourceUrlFinancialsFV( self ):
 		return 'https://finviz.com/quote.ashx?t={}'.format( self.mFVSymbol )
 	def SourceFileHTMLFinancialsFV( self ):
@@ -253,6 +287,23 @@ class cCompany:
 	# from where the html file is !
 	def DestinationFileIMG( self, iYears ):
 		return os.path.join( self.mDestinationDir, self.FileIMG( iYears ) )
+	
+	#---
+	
+	def SourceUrlDividendCalculator( self, iYield, iGrowth, iYears ):
+		url = 'http://www.dividend-calculator.com/annually.php?yield={:.2f}&yieldgrowth={:.2f}&shares=100&price=100&years={}&do=Calculate'
+		return url.format( iYield, iGrowth, iYears )
+	
+	def AskDividendCalculatorProjection( self, iUrl ):
+		req = requests.get( iUrl, headers={ 'User-Agent' : 'Mozilla/5.0' } )
+		
+		soup = BeautifulSoup( req.text, 'html5lib' )
+		results = soup.find( string='With Reinvestment' ).find_parent().find_next_sibling( 'p' ).find_all( 'b' )
+		cost_start = results[0].string
+		cost_stop = results[1].string
+		annual_average = results[4].string.replace( '%', '' )
+		
+		return annual_average
 	
 	#---
 	
@@ -558,7 +609,7 @@ class cCompany:
 		self.mMorningstarFinancialsRevenue = None
 		self.mMorningstarFinancialsNetIncome = None
 		self.mMorningstarFinancialsDividends = None
-		self.mMorningstarFinancialsGrowthDividends = cDataMorningstar()
+		self.mMorningstarFinancialsGrowthDividends = cDataMorningstar( iComputeGrowthAverage=True )
 		self.mMorningstarFinancialsPayoutRatio = None
 		self.mMorningstarFinancialsEarnings = None
 		self.mMorningstarFinancialsBook = None
@@ -582,6 +633,12 @@ class cCompany:
 		self.mMorningstarValuationP2CF = cDataMorningstar( iParent=self.mMorningstarValuationYears )
 		self.mMorningstarValuationP2B = cDataMorningstar( iParent=self.mMorningstarValuationYears )
 		self.mMorningstarValuationEVOnEBITDA = cDataMorningstar( iParent=self.mMorningstarValuationYears )
+		
+		self.mMorningstarFinancialsDividendsYield = cDataMorningstar( iParent=self.mMorningstarValuationYears )
+		self.mMorningstarFinancialsDividendsYield10Years = cDataMorningstar( iParent=self.mMorningstarValuationYears )
+		self.mMorningstarFinancialsDividendsYield20Years = cDataMorningstar( iParent=self.mMorningstarValuationYears )
+		self.mUrlMorningstarDividendCalculator10Years = ''
+		self.mUrlMorningstarDividendCalculator20Years = ''
 		
 		if not self.mMorningstarRegion:
 			return
@@ -626,6 +683,7 @@ class cCompany:
 			
 			ratio = float( ltd ) / float( ebitda )
 			self.mMorningstarLTDOnEBITDA.mData.append( '{:.02f}'.format( ratio ) )
+			self.mMorningstarLTDOnEBITDA.Update()
 					
 		#---
 			
@@ -671,7 +729,7 @@ class cCompany:
 					self.mMorningstarGrowthNetIncome = cDataMorningstar( row, self.mMorningstarGrowthYears )	# YoY
 				elif row[0].startswith( 'EPS %' ):
 					row = next( reader )
-					self.mMorningstarGrowthEarnings = cDataMorningstar( row, self.mMorningstarGrowthYears )	# YoY
+					self.mMorningstarGrowthEarnings = cDataMorningstar( row, self.mMorningstarGrowthYears, iComputeGrowthAverage=True )	# YoY
 					
 				elif row[0].startswith( 'Free Cash Flow/Sales' ):
 					self.mMorningstarCashFlowFCFOnSales = cDataMorningstar( row, self.mMorningstarProfitabilityYears )
@@ -693,6 +751,7 @@ class cCompany:
 			
 			ratio = ( float( dividend ) - float( self.mMorningstarFinancialsDividends.mData[i-1] ) ) / abs( float( dividend ) )
 			self.mMorningstarFinancialsGrowthDividends.mData.append( '{:.02f}'.format( ratio * 100 ) )
+			self.mMorningstarFinancialsGrowthDividends.Update()
 					
 		for i, book in enumerate( self.mMorningstarFinancialsBook.mData ):
 			if not i:
@@ -704,7 +763,8 @@ class cCompany:
 			
 			ratio = ( float( book ) - float( self.mMorningstarFinancialsBook.mData[i-1] ) ) / abs( float( book ) )
 			self.mMorningstarFinancialsGrowthBook.mData.append( '{:.02f}'.format( ratio * 100 ) )
-					
+			self.mMorningstarFinancialsGrowthBook.Update()
+		
 		#---
 			
 		html_content = ''
@@ -721,6 +781,29 @@ class cCompany:
 		self.mMorningstarValuationP2CF.SetTR( section, 'span', 'Price/Cash Flow' )
 		self.mMorningstarValuationP2B.SetTR( section, 'span', 'Price/Book' )
 		self.mMorningstarValuationEVOnEBITDA.SetTR( section, 'span', 'Enterprise Value/EBITDA' )
+		
+		#---
+		
+		html_content = ''
+		with open( self.SourceFileHTMLFinancialsMorningstarDividends(), 'r', encoding='utf-8' ) as fd:
+			html_content = fd.read()
+			
+		soup = BeautifulSoup( html_content, 'html5lib' )
+		
+		div = soup.find( id='sal-components-dividends' ).find( class_='dividend-yield' ).find_all( 'div' )[-1]
+		s = div.string.replace( ',', '.' ).replace( '%', '' ).replace( '-', '' ).replace( '—', '' )
+		self.mMorningstarFinancialsDividendsYield.mGrowthAverage = s if s else '0'
+		self.mMorningstarFinancialsDividendsYield.mCurrent = '{:.02f}'.format( float( s ) * 0.7 ) if s else '0'	# Remove 30% for PS/Impots
+		
+		self.mUrlMorningstarDividendCalculator10Years = self.SourceUrlDividendCalculator( float( self.mMorningstarFinancialsDividendsYield.mGrowthAverage ), float( self.mMorningstarFinancialsGrowthDividends.mGrowthAverage ), 10 )
+		annual_average = self.AskDividendCalculatorProjection( self.mUrlMorningstarDividendCalculator10Years )
+		self.mMorningstarFinancialsDividendsYield10Years.mGrowthAverage = annual_average
+		self.mMorningstarFinancialsDividendsYield10Years.mCurrent = '{:.02f}'.format( float( annual_average ) * 0.7 )	# Remove 30% for PS/Impots
+		
+		self.mUrlMorningstarDividendCalculator20Years = self.SourceUrlDividendCalculator( float( self.mMorningstarFinancialsDividendsYield.mGrowthAverage ), float( self.mMorningstarFinancialsGrowthDividends.mGrowthAverage ), 20 )
+		annual_average = self.AskDividendCalculatorProjection( self.mUrlMorningstarDividendCalculator20Years )
+		self.mMorningstarFinancialsDividendsYield20Years.mGrowthAverage = annual_average
+		self.mMorningstarFinancialsDividendsYield20Years.mCurrent = '{:.02f}'.format( float( annual_average ) * 0.7 )	# Remove 30% for PS/Impots
 		
 		# sys.exit( 0 )
 

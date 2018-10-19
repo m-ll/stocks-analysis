@@ -25,21 +25,36 @@ def GetCSS( iString, iCSSFunction ):
 	
 	return ''
 
-def AddTR( iSoup, iSBody, iText, iData, iCSSFunction=None, iHeader=False ):
+def AddTR( iSoup, iSBody, iText, iData, iCSSFunction=None, iCSSFunction2=None, iHeader=False, iUrl='' ):
 	if iData is None:
 		return
 	
-	td = iSoup.new_tag( 'th' )
-	td.string = iText
 	tr = iSoup.new_tag( 'tr' )
+	
+	td = iSoup.new_tag( 'th' )
+	if not iUrl:
+		td.string = iText
+	else:
+		a = iSoup.new_tag( 'a', href=iUrl )
+		a.append( iText )
+		td.append( a )
 	tr.append( td )
 	
-	for i, v in enumerate( iData.mData ):
+	data = iData.mData
+	if not data and iData.mParent:
+		data = [''] * len( iData.mParent.mData )
+	
+	for i, v in enumerate( data ):
 		td = iSoup.new_tag( 'th' if iHeader else 'td' )
 		td['class'] = GetCSS( v, iCSSFunction )
 		td.string = v
 		tr.append( td )
 		
+	td = iSoup.new_tag( 'th' if iHeader else 'td' )
+	td['class'] = GetCSS( iData.mGrowthAverage, iCSSFunction )
+	td.string = str( iData.mGrowthAverage )
+	tr.append( td )
+	
 	if iData.mTTM or iData.mLatestQuarter:
 		td = iSoup.new_tag( 'th' if iHeader else 'td' )
 		td['class'] = [ GetCSS( iData.mTTM, iCSSFunction ), 'left-space' ]
@@ -50,9 +65,12 @@ def AddTR( iSoup, iSBody, iText, iData, iCSSFunction=None, iHeader=False ):
 		td['class'] = GetCSS( iData.mLatestQuarter, iCSSFunction )
 		td.string = str( iData.mLatestQuarter )
 		tr.append( td )
-	else:
+	
+	if iData.mCurrent or iData.m5Years or iData.mIndex:
 		td = iSoup.new_tag( 'th' if iHeader else 'td' )
 		td['class'] = [ GetCSS( iData.mCurrent, iCSSFunction ), 'left-space' ]
+		if iCSSFunction2 is not None:	#PATCH: to colorize yield without PS/Impots with another lambda
+			td['class'] = [ GetCSS( iData.mCurrent, iCSSFunction2 ), 'left-space' ]
 		td.string = str( iData.mCurrent )
 		tr.append( td )
 		
@@ -80,10 +98,10 @@ def Extract( iCompany, iSoup ):
 	tbody = iSoup.new_tag( 'tbody' )
 	
 	AddTR( iSoup, tbody, '', iCompany.mMorningstarISYears, iHeader=True )
-	AddTR( iSoup, tbody, 'EBITDA', iCompany.mMorningstarEBITDA )
+	AddTR( iSoup, tbody, 'EBITDA', iCompany.mMorningstarEBITDA, iUrl=iCompany.SourceUrlFinancialsMorningstarIncomeStatement() )
 	
 	# AddTR( iSoup, tbody, '', iCompany.mMorningstarBSYears, iHeader=True )
-	AddTR( iSoup, tbody, 'LongTerm Debt', iCompany.mMorningstarLongTermDebt )
+	AddTR( iSoup, tbody, 'LongTerm Debt', iCompany.mMorningstarLongTermDebt, iUrl=iCompany.SourceUrlFinancialsMorningstarBalanceSheet() )
 	AddTR( iSoup, tbody, 'LT-Debt/EBITDA (<5)', iCompany.mMorningstarLTDOnEBITDA, lambda v : 1 if v < 5 else -1 )
 	
 	table = iSoup.new_tag( 'table' )
@@ -97,7 +115,7 @@ def Extract( iCompany, iSoup ):
 	
 	AddTR( iSoup, tbody, '', iCompany.mMorningstarFinancialsYears, iHeader=True )
 	# AddTR( iSoup, tbody, '', iCompany.mMorningstarGrowthYears, iHeader=True )
-	AddTR( iSoup, tbody, 'Revenue', iCompany.mMorningstarFinancialsRevenue )
+	AddTR( iSoup, tbody, 'Revenue', iCompany.mMorningstarFinancialsRevenue, iUrl=iCompany.SourceUrlFinancialsMorningstarRatios() )
 	AddTR( iSoup, tbody, 'Growth Revenue (%)', iCompany.mMorningstarGrowthRevenue, lambda v : 1 if v >= 0 else -1 )
 	AddTR( iSoup, tbody, 'Net Income', iCompany.mMorningstarFinancialsNetIncome )
 	AddTR( iSoup, tbody, 'Growth Net Income (%)', iCompany.mMorningstarGrowthNetIncome, lambda v : 1 if v >= 0 else -1 )
@@ -134,11 +152,15 @@ def Extract( iCompany, iSoup ):
 	tbody = iSoup.new_tag( 'tbody' )
 	
 	AddTR( iSoup, tbody, '', iCompany.mMorningstarValuationYears, iHeader=True )
-	AddTR( iSoup, tbody, 'PER (3<.<15)', iCompany.mMorningstarValuationPER, lambda v : 1 if v >=3 and v <= 12 else 0 if v >=12 and v <= 18 else -1 )
+	AddTR( iSoup, tbody, 'PER (3<.<15)', iCompany.mMorningstarValuationPER, lambda v : 1 if v >=3 and v <= 12 else 0 if v >= 12 and v <= 18 else -1, iUrl=iCompany.SourceUrlFinancialsMorningstarValuation() )
 	AddTR( iSoup, tbody, 'Price/Book (<4)', iCompany.mMorningstarValuationP2B, lambda v : 1 if v <= 4 else 0 if v <= 5 else -1 )
 	AddTR( iSoup, tbody, 'Price/Sales (<2)', iCompany.mMorningstarValuationP2S, lambda v : 1 if v <= 2 else 0 if v <= 4 else -1 )
 	AddTR( iSoup, tbody, 'Price/CashFlow (<8)', iCompany.mMorningstarValuationP2CF, lambda v : 1 if v <= 8 else 0 if v <= 12 else -1 )
 	AddTR( iSoup, tbody, 'EV/EBITDA (<8)', iCompany.mMorningstarValuationEVOnEBITDA, lambda v : 1 if v <= 5 else 0 if v <= 8 else -1 )
+	
+	AddTR( iSoup, tbody, 'Dividend Yield', iCompany.mMorningstarFinancialsDividendsYield, lambda v : 1 if v >= 4.2 else 0 if v >= 3.5 else -1, iCSSFunction2=lambda v : 1 if v >= 3 else 0 if v >= 2.5 else -1 )
+	AddTR( iSoup, tbody, 'Dividends after 10Y', iCompany.mMorningstarFinancialsDividendsYield10Years, iUrl=iCompany.mUrlMorningstarDividendCalculator10Years )
+	AddTR( iSoup, tbody, 'Dividends after 20Y ', iCompany.mMorningstarFinancialsDividendsYield20Years, iUrl=iCompany.mUrlMorningstarDividendCalculator20Years )
 	
 	table = iSoup.new_tag( 'table' )
 	table.append( tbody )

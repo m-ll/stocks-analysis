@@ -229,14 +229,13 @@ def Extract( iCompany, iSoup ):
 		
 		#--- Add '10 years result' row
 		
-		url = 'http://www.dividend-calculator.com/annually.php?yield={:.2f}&yieldgrowth={:.2f}&shares=100&price=100&years=10&do=Calculate'
-		url2 = url.format( iCompany.mYieldCurrent, iCompany.mDividendsGrowthAverage * 100 )
+		url = iCompany.SourceUrlDividendCalculator( iCompany.mYieldCurrent, iCompany.mDividendsGrowthAverage * 100, 10 )
 		
 		tr_10yearsresult = copy.copy( tr_dividends )
 		itd = tr_10yearsresult.find( 'td' )
 		# itd.string = 'After 10 years (dividend-calculator)'
 		itd.clear()
-		a = iSoup.new_tag( 'a', href=url2 )
+		a = iSoup.new_tag( 'a', href=url )
 		a.append( 'After 10 years (dividend-calculator)' )
 		itd.append( a )
 		itd = itd.find_next_sibling()
@@ -255,29 +254,21 @@ def Extract( iCompany, iSoup ):
 		# itd = itd.find_next_sibling()
 		
 		time.sleep( 2 )
-
-		req = requests.get( url2, headers={ 'User-Agent' : 'Mozilla/5.0' } )
 		
-		soup = BeautifulSoup( req.text, 'html5lib' )
-		results = soup.find( string='With Reinvestment' ).find_parent().find_next_sibling( 'p' ).find_all( 'b' )
-		cost_start = results[0].string
-		cost_stop = results[1].string
-		annual_average = results[4].string
-		
+		annual_average = iCompany.AskDividendCalculatorProjection( url )
 		td.string = '{}'.format( annual_average )
 		
 		tr_rendements.insert_after( tr_10yearsresult )
 		
 		#--- Add '20 years result' row
 		
-		url = 'http://www.dividend-calculator.com/annually.php?yield={:.2f}&yieldgrowth={:.2f}&shares=100&price=100&years=20&do=Calculate'
-		url2 = url.format( iCompany.mYieldCurrent, iCompany.mDividendsGrowthAverage * 100 )
+		url = iCompany.SourceUrlDividendCalculator( iCompany.mYieldCurrent, iCompany.mDividendsGrowthAverage * 100, 20 )
 		
 		tr_20yearsresult = copy.copy( tr_dividends )
 		itd = tr_20yearsresult.find( 'td' )
 		# itd.string = 'After 20 years (dividend-calculator)'
 		itd.clear()
-		a = iSoup.new_tag( 'a', href=url2 )
+		a = iSoup.new_tag( 'a', href=url )
 		a.append( 'After 20 years (dividend-calculator)' )
 		itd.append( a )
 		itd = itd.find_next_sibling()
@@ -297,14 +288,7 @@ def Extract( iCompany, iSoup ):
 		
 		time.sleep( 2 )
 
-		req = requests.get( url2, headers={ 'User-Agent' : 'Mozilla/5.0' } )
-		
-		soup = BeautifulSoup( req.text, 'html5lib' )
-		results = soup.find( string='With Reinvestment' ).find_parent().find_next_sibling( 'p' ).find_all( 'b' )
-		cost_start = results[0].string
-		cost_stop = results[1].string
-		annual_average = results[4].string
-		
+		annual_average = iCompany.AskDividendCalculatorProjection( url )
 		td.string = '{}'.format( annual_average )
 		
 		tr_10yearsresult.insert_after( tr_20yearsresult )

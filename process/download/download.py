@@ -221,12 +221,32 @@ def DownloadFinancialsMorningstarValuations( iCompany ):
 	sgBrowser.get( iCompany.SourceUrlFinancialsMorningstarValuation() )
 	time.sleep( 1 )
 	
-	valuation = WaitElement( '//li[@data-link="sal-components-valuation"]//button' )
+	valuation = WaitElement( '//li[@data-link="#sal-components-valuation"]//button' )
 	valuation.click()
 	WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-valuation' )
 	WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-report-table' )
 
 	with open( iCompany.SourceFileHTMLFinancialsMorningstarValuation(), 'w' ) as output:
+		output.write( sgBrowser.page_source )
+		
+def DownloadFinancialsMorningstarDividends( iCompany ):
+	global sgBrowser
+	
+	print( '	- Dividends' )
+	
+	if not GetForceDownload() and os.path.exists( iCompany.SourceFileHTMLFinancialsMorningstarDividends() ):
+		print( '	skipping ...' )
+		return
+	
+	sgBrowser.get( iCompany.SourceUrlFinancialsMorningstarDividends() )
+	time.sleep( 1 )
+	
+	dividends = WaitElement( '//li[@data-link="#sal-components-dividends"]//button' )
+	dividends.click()
+	WaitNoElement( '//a[@data-anchor="dividends"]/..//sal-components-dividends' )
+	WaitNoElement( '//a[@data-anchor="dividends"]/..//sal-components-report-table' )		# It's maybe needed to make 2 requests for the same page (valuation/dividends) to be sure to have not this element from valuation
+
+	with open( iCompany.SourceFileHTMLFinancialsMorningstarDividends(), 'w' ) as output:
 		output.write( sgBrowser.page_source )
 		
 
@@ -252,6 +272,7 @@ def DownloadFinancialsMorningstar( iCompanies ):
 		DownloadFinancialsMorningstarBalanceSheet( company )
 		DownloadFinancialsMorningstarRatios( company )
 		DownloadFinancialsMorningstarValuations( company )
+		DownloadFinancialsMorningstarDividends( company )
 	
 	shutil.rmtree( sgTempDir )
 
