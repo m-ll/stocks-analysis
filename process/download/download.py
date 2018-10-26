@@ -117,18 +117,18 @@ def WaitFileInside( iDirectory ):
 	global sgBrowser
 	
 	# Try during 5s max, then refresh the page and test again the file
-	for i in range(5):
-		files = os.listdir( iDirectory )
-		if files:
-			return files[0]
+	# for i in range(5):
+		# files = os.listdir( iDirectory )
+		# if files:
+			# return files[0]
 			
-		print( Fore.YELLOW + 'sleep file ({}): {}'.format( i, iDirectory ) )
-		time.sleep( 1 )
+		# print( Fore.YELLOW + 'sleep file ({}): {}'.format( i, iDirectory ) )
+		# time.sleep( 1 )
 			
-	# sgBrowser.refresh()
-	print( sgBrowser.current_url )
-	sgBrowser.get( sgBrowser.current_url );
-	time.sleep( 1 )
+	# sgBrowser.refresh()	# Doesn't work -_-
+	# print( sgBrowser.current_url )
+	# sgBrowser.get( sgBrowser.current_url );	# Doesn't work -_-
+	# time.sleep( 1 )
 
 	files = os.listdir( iDirectory )
 	while not files:

@@ -128,7 +128,7 @@ class cDataMorningstar:
 			
 
 class cCompany:
-	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName, iSourceDir='', iDestinationDir='' ):
+	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName, iSourceDir='', iDestinationDir='' ):
 		self.mISIN = iISIN
 		self.mName = iZBName
 		
@@ -139,6 +139,8 @@ class cCompany:
 		self.mMorningstarSymbol = iZBSymbol
 		self.mMorningstarRegion = iMorningstarRegion	# fra/gbr/usa/...
 		self.mMorningstarX = iMorningstarX				# xpar/xlon/...
+		
+		self.mTradingViewSymbol = iTradingViewSymbol	# NYSE:MMM
 		
 		self.mYFSymbol = iYFSymbol		# YF = Yahoo Finance
 		self.mFVSymbol = iFVSymbol		# FV = FinViz
