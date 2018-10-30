@@ -9,8 +9,12 @@ from ..company import *
 
 def Extract( iCompany, iSoup ):
 	link_graph = iSoup.new_tag( 'a' )
-	link_graph['href'] = iCompany.SourceUrlChartZB()
+	link_graph['href'] = iCompany.SourceUrlChartZB( eZBChartAppletMode.kStatic )
 	link_graph.append( ' [Graphique]' )
+	
+	link_graph2 = iSoup.new_tag( 'a' )
+	link_graph2['href'] = iCompany.SourceUrlChartZB( eZBChartAppletMode.kDynamic )
+	link_graph2.append( ' [Dyn]' )
 	
 	link_fond = iSoup.new_tag( 'a' )
 	link_fond['href'] = iCompany.SourceUrlFinancialsZB()
@@ -48,6 +52,7 @@ def Extract( iCompany, iSoup ):
 	h_title.append( ' {} ] '.format( currency ) )
 	h_title.append( '{}: {}'.format( iCompany.mZBName, iCompany.mISIN ) )
 	h_title.append( link_graph )
+	h_title.append( link_graph2 )
 	h_title.append( link_fond )
 	h_title.append( link_societe )
 	if link_dividends_fc is not None:

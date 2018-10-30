@@ -11,6 +11,7 @@ from . import histo
 from . import fondamentals
 from . import data
 from . import images
+from . import ichimoku
 from . import dividendsTS
 from . import dividendsFC
 
@@ -148,6 +149,9 @@ def Extract( iCompanies ):
 		body.append( div )
 		
 		div = images.Extract( company, soupout )
+		body.append( div )
+		
+		div = ichimoku.Extract( company, soupout )
 		body.append( div )
 		
 		div = dividendsFC.Extract( company, soupout )

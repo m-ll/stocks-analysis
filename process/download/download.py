@@ -1,16 +1,21 @@
 #!/usr/bin/python3
 
 import os
+import io
 import sys
 import time
 import shutil
+import base64
 import tempfile
 import requests
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 from colorama import init, Fore, Back, Style
+# from PIL import Image
 
 from ..company import *
 
@@ -59,7 +64,8 @@ def BrowserInit():
 	sgBrowser = webdriver.Firefox( firefox_options=opts )
 	sgBrowser.implicitly_wait( 4 ) # seconds
 	
-	sgBrowser.set_window_size( 1920, 1200 )
+	sgBrowser.set_window_size( 1920, 1500 )
+	# sgBrowser.set_window_position( 0, 500 )
 	
 def BrowserQuit():
 	global sgBrowser
@@ -402,6 +408,146 @@ def DownloadStockPrice2Years( iCompany ):
 
 	time.sleep( 1 )
 
+def DownloadStockPriceIchimoku( iCompany ):
+	global sgBrowser
+	
+	if( not GetForceDownload() and 
+		os.path.exists( iCompany.SourceFileIMGIchimoku( 'chart' ) ) and 
+		os.path.exists( iCompany.SourceFileIMGIchimoku( 'prices' ) ) and 
+		os.path.exists( iCompany.SourceFileIMGIchimoku( 'times' ) ) ):
+		print( '	skipping (ichimoku) ...' )
+		return
+
+	sgBrowser.get( iCompany.SourceUrlChartZB( eZBChartAppletMode.kDynamic ) )
+	
+	# Resize the iframe container
+	sgBrowser.execute_script( 'document.getElementById("tv_chart_container").style.width = "2000px"' )
+	
+	# Remove cookie popup
+	element = sgBrowser.find_elements_by_xpath( '//a[@id="cookieChoiceDismiss"]' )
+	if element:
+		element[0].click()
+	
+	# Find the iframe and switch to it
+	iframe = WaitElement( '//iframe[contains(@id, "tradingview_") and contains(@name, "tradingview_")]' )
+	sgBrowser.switch_to.frame( iframe )
+	
+	#---
+	
+	# Disable the technic analysis
+	remove_technic_analysis = WaitElement( '//div[contains(@class, "header-chart-panel")]//div[@id="_btAT"]/..' )
+	remove_technic_analysis.click()
+	
+	#---
+	
+	# Open the indicator list
+	open_indicators = WaitElement( '//div[contains(@class, "header-chart-panel")]//a[contains(@class, "indicators")]' )
+	open_indicators.click()
+	
+	# Scroll the indicator list to have the 'ichimoku' indicator displayed
+	rows = WaitElement( '//div[contains(@class, "insert-study-dialog")]//div[contains(@class, "insert-study-pages") and contains(@class, "insert-study-row")]' )
+	# t = sgBrowser.execute_script( 'var t = arguments[0].scrollTop; arguments[0].scrollTop = 400; return t;', rows )
+	# print( t )
+	rows.send_keys(Keys.PAGE_DOWN);
+	
+	# Activate the ichimoku indicator
+	indicators = WaitElement( '//div[contains(@class, "insert-study-dialog")]//span[contains(@title, "Ichimoku")]/..' )
+	# actions = ActionChains( sgBrowser )
+	# actions.move_to_element( indicators ).perform()
+	indicators.click()
+	
+	# Close the indicator list
+	close_indicators = WaitElement( '//div[contains(@class, "insert-study-dialog")]//a[contains(@class, "tv-dialog-title-close")]' )
+	close_indicators.click()
+	
+	#---
+	
+	# Move to right to display the right part of the 'future' cloud
+	move_right = WaitElement( '//div[contains(@class, "control-bar-wrapper")]//*[name()="svg" and contains(@class, "move-right-button-control-bar")]' )
+	for _ in range( 21 ):
+		move_right.click()
+	
+	# Zoom out to compute more left cloud
+	zoom_out = WaitElement( '//div[contains(@class, "control-bar-wrapper")]//*[name()="svg" and contains(@class, "zoom-out-right-button-control-bar")]' )
+	for _ in range( 5 ):
+		zoom_out.click()
+	
+	# Zoom in to not display the not computed left part of the cloud
+	zoom_in = WaitElement( '//div[contains(@class, "control-bar-wrapper")]//*[name()="svg" and contains(@class, "zoom-in-button-control-bar")]' )
+	for _ in range( 2 ):
+		zoom_in.click()
+	
+	#---
+	
+	# Disable the default volume indicator
+	close_volume = WaitElement( '//td[contains(@class, "chart-markup-table") and contains(@class, "pane")]//table[contains(@class, "pane-legend")]//span[contains(text(), "Volume")]/..//a[contains(@class, "delete")]' )
+	close_volume.click()
+	# Disable the default MA(*) indicator
+	close_mma = WaitElement( '//td[contains(@class, "chart-markup-table") and contains(@class, "pane")]//table[contains(@class, "pane-legend")]//span[contains(text(), "MA (20)")]/..//a[contains(@class, "delete")]' )
+	close_mma.click()
+	# Disable the default MA(*) indicator
+	close_mma = WaitElement( '//td[contains(@class, "chart-markup-table") and contains(@class, "pane")]//table[contains(@class, "pane-legend")]//span[contains(text(), "MA (50)")]/..//a[contains(@class, "delete")]' )
+	close_mma.click()
+	# Disable the default MA(*) indicator
+	close_mma = WaitElement( '//td[contains(@class, "chart-markup-table") and contains(@class, "pane")]//table[contains(@class, "pane-legend")]//span[contains(text(), "MA (100)")]/..//a[contains(@class, "delete")]' )
+	close_mma.click()
+	
+	#---
+	
+	# Get the data of the image chart
+	canvas = WaitElement( '(//td[contains(@class, "chart-markup-table") and contains(@class, "pane")]//canvas)[1]' )
+	canvas_base64 = sgBrowser.execute_script( 'return arguments[0].toDataURL("image/png").substring( 21 );', canvas )
+	canvas_data = base64.b64decode( canvas_base64 )
+	
+	# Get the data of the image time axis
+	prices = WaitElement( '((//td[contains(@class, "chart-markup-table") and contains(@class, "price-axis")])[2]//canvas)[1]' )
+	prices_base64 = sgBrowser.execute_script( 'return arguments[0].toDataURL("image/png").substring( 21 );', prices )
+	prices_data = base64.b64decode( prices_base64 )
+	
+	# Get the data of the image price axis
+	times = WaitElement( '((//td[contains(@class, "chart-markup-table") and contains(@class, "time-axis")])//canvas)[1]' )
+	times_base64 = sgBrowser.execute_script( 'return arguments[0].toDataURL("image/png").substring( 21 );', times )
+	times_data = base64.b64decode( times_base64 )
+	
+	with open( iCompany.SourceFileIMGIchimoku( 'chart' ), 'wb' ) as output:
+		output.write( canvas_data )
+
+	with open( iCompany.SourceFileIMGIchimoku( 'prices' ), 'wb' ) as output:
+		output.write( prices_data )
+
+	with open( iCompany.SourceFileIMGIchimoku( 'times' ), 'wb' ) as output:
+		output.write( times_data )
+
+	#---
+		
+# pip3 install pillow
+# [DON'T WORK ON CYGWIN -_-]
+# download the corresponding wheel file: https://pypi.org/project/Pillow/#files
+# see which name to choose: import pip._internal; print(pip._internal.pep425tags.get_supported())
+# rename it to: Pillow-5.3.0-cp36-cp36m-cygwin_2_8_1_x86_64.whl
+# pip3 install Pillow-5.3.0-cp36-cp36m-cygwin_2_8_1_x86_64.whl
+
+	# canvas_png = Image.open( io.BytesIO( canvas_data ) )
+	# prices_png = Image.open( io.BytesIO( prices_data ) )
+	# times_png = Image.open( io.BytesIO( times_data ) )
+	
+	# total_width = canvas_png.width + prices_png.width
+	# total_height = canvas_png.height + times_png.height
+	
+	# full_image = Image.new( 'RGB', ( total_width, total_height ) )
+	# full_image.paste( canvas_png, ( 0, 0 ) )
+	# full_image.paste( prices_png, ( canvas_png.width, 0 ) )
+	# full_image.paste( times_png, ( 0, canvas_png.height ) )
+	
+	# with open( iCompany.SourceFileIMGIchimoku(), 'wb' ) as output:
+		# output.write( full_image.tobytes() )
+
+	#---
+	
+	sgBrowser.switch_to.default_content()
+
+	time.sleep( 1 )
+
 def DownloadStockPrice( iCompanies ):
 	for i, company in enumerate( iCompanies, start=1 ):
 		print( 'Download images ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
@@ -410,6 +556,8 @@ def DownloadStockPrice( iCompanies ):
 		DownloadStockPrice10Years( company )
 		DownloadStockPrice5Years( company )
 		DownloadStockPrice2Years( company )
+		
+		DownloadStockPriceIchimoku( company )
 
 #---
 

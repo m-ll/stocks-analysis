@@ -327,6 +327,8 @@ for group_name, company_group in company_groups.items():
 print( 'Write images ...' )
 for file in glob.glob( data_name + '/*.gif' ):
 	shutil.copy( file, output_image_name )
+for file in glob.glob( data_name + '/*.png' ):
+	shutil.copy( file, output_image_name )
 	
 # Clean	
 BrowserQuit()

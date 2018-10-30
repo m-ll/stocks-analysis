@@ -6,6 +6,7 @@ import sys
 import csv
 import locale
 import requests
+from enum import Enum, auto
 
 from bs4 import BeautifulSoup
 
@@ -126,6 +127,9 @@ class cDataMorningstar:
 	def _FixLocale2( self, iString ):
 		return iString.replace( ',', '' ).replace( '—', '' )
 			
+class eZBChartAppletMode( Enum ):
+    kStatic = auto()
+    kDynamic = auto()
 
 class cCompany:
 	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName, iSourceDir='', iDestinationDir='' ):
@@ -275,20 +279,29 @@ class cCompany:
 	def SourceFileHTMLDividendsFC( self ):
 		return os.path.join( self.mSourceDir, '{}.{}.divFC.html'.format( self.mName, self.mISIN ) )
 		
-	def SourceUrlChartZB( self ):
-		return 'https://www.zonebourse.com/{}-{}/{}/'.format( self.mZBName, self.mZBCode, 'graphiques' )
+	def SourceUrlChartZB( self, iAppletMode ):
+		applet_mode = 'statique'
+		if iAppletMode is eZBChartAppletMode.kDynamic:
+			applet_mode = 'dynamic2'
+		return 'https://www.zonebourse.com/{}-{}/{}/&applet_mode={}'.format( self.mZBName, self.mZBCode, 'graphiques', applet_mode )
 	def SourceUrlStockPriceZB( self, iDuration, iWidth, iHeight ):
 		return 'https://www.zonebourse.com/zbcache/charts/ObjectChart.aspx?Name={0}&Type=Custom&Intraday=1&Width={2}&Height={3}&Cycle=NONE&Duration={1}&TopMargin=10&Render=Candle&ShowName=0'.format( self.mZBCode, iDuration, iWidth, iHeight )
 		
 	def FileIMG( self, iYears ):
 		return '{}.{}.{}.{}.gif'.format( self.mName, self.mISIN, self.mZBCode, iYears )
+	def FileIMGIchimoku( self, iPart ):
+		return '{}.{}.{}.{}-{}.png'.format( self.mName, self.mISIN, self.mZBCode, iPart, 'ichimoku' )
 
 	def SourceFileIMG( self, iYears ):
 		return os.path.join( self.mSourceDir, self.FileIMG( iYears ) )
+	def SourceFileIMGIchimoku( self, iPart ):
+		return os.path.join( self.mSourceDir, self.FileIMGIchimoku( iPart ) )
 
 	# from where the html file is !
 	def DestinationFileIMG( self, iYears ):
 		return os.path.join( self.mDestinationDir, self.FileIMG( iYears ) )
+	def DestinationFileIMGIchimoku( self, iPart ):
+		return os.path.join( self.mDestinationDir, self.FileIMGIchimoku( iPart ) )
 	
 	#---
 	
