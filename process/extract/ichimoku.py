@@ -8,7 +8,7 @@ from ..company import *
 
 def Extract( iCompany, iSoup ):
 	div_graph = iSoup.new_tag( 'div' )
-	div_graph['class'] = 'clear'
+	div_graph['class'] = ['clear', 'image-holder']
 	
 	img = iSoup.new_tag( 'img' )
 	img['src'] = iCompany.DestinationFileIMGIchimoku( 'chart' )

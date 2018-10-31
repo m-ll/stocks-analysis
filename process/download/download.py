@@ -428,6 +428,14 @@ def DownloadStockPriceIchimoku( iCompany ):
 	if element:
 		element[0].click()
 	
+	# Remove account creation
+	element = sgBrowser.find_elements_by_xpath( '//div[@id="PopupCertif" and not(contains(@style, "display:none"))]//img[@alt="fermer"]' )
+	if element:
+		element[0].click()
+	element = sgBrowser.find_elements_by_xpath( '//div[@id="dPubInter" and not(contains(@style, "display: none"))]//img[@alt="fermer"]' )
+	if element:
+		element[0].click()
+
 	# Find the iframe and switch to it
 	iframe = WaitElement( '//iframe[contains(@id, "tradingview_") and contains(@name, "tradingview_")]' )
 	sgBrowser.switch_to.frame( iframe )
@@ -476,6 +484,8 @@ def DownloadStockPriceIchimoku( iCompany ):
 	zoom_in = WaitElement( '//div[contains(@class, "control-bar-wrapper")]//*[name()="svg" and contains(@class, "zoom-in-button-control-bar")]' )
 	for _ in range( 2 ):
 		zoom_in.click()
+		
+	time.sleep( 1 )
 	
 	#---
 	
