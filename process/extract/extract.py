@@ -137,13 +137,13 @@ def Extract( iCompanies ):
 	}
 	.vertical
 	{
-		width	: 1px;
+		width	: 2px;
 		height	: 100%;
 	}
 	.horizontal
 	{
 		width	: 100%;
-		height	: 1px;
+		height	: 2px;
 	}
 </style>
 </head>

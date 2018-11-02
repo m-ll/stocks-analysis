@@ -421,12 +421,7 @@ def DownloadStockPriceIchimoku( iCompany ):
 	sgBrowser.get( iCompany.SourceUrlChartZB( eZBChartAppletMode.kDynamic ) )
 	
 	# Resize the iframe container
-	sgBrowser.execute_script( 'document.getElementById("tv_chart_container").style.width = "2000px"' )
-	
-	# Remove cookie popup
-	element = sgBrowser.find_elements_by_xpath( '//a[@id="cookieChoiceDismiss"]' )
-	if element:
-		element[0].click()
+	sgBrowser.execute_script( 'document.getElementById("tv_chart_container").style.width = "1800px"' )
 	
 	# Remove account creation
 	element = sgBrowser.find_elements_by_xpath( '//div[@id="PopupCertif" and not(contains(@style, "display:none"))]//img[@alt="fermer"]' )
@@ -436,6 +431,11 @@ def DownloadStockPriceIchimoku( iCompany ):
 	if element:
 		element[0].click()
 
+	# Remove cookie popup
+	element = sgBrowser.find_elements_by_xpath( '//a[@id="cookieChoiceDismiss"]' )
+	if element:
+		element[0].click()
+	
 	# Find the iframe and switch to it
 	iframe = WaitElement( '//iframe[contains(@id, "tradingview_") and contains(@name, "tradingview_")]' )
 	sgBrowser.switch_to.frame( iframe )
@@ -475,16 +475,21 @@ def DownloadStockPriceIchimoku( iCompany ):
 	for _ in range( 21 ):
 		move_right.click()
 	
+	time.sleep( 1 )
+	
 	# Zoom out to compute more left cloud
 	zoom_out = WaitElement( '//div[contains(@class, "control-bar-wrapper")]//*[name()="svg" and contains(@class, "zoom-out-right-button-control-bar")]' )
 	for _ in range( 5 ):
 		zoom_out.click()
+	
+	time.sleep( 1 )
 	
 	# Zoom in to not display the not computed left part of the cloud
 	zoom_in = WaitElement( '//div[contains(@class, "control-bar-wrapper")]//*[name()="svg" and contains(@class, "zoom-in-button-control-bar")]' )
 	for _ in range( 2 ):
 		zoom_in.click()
 		
+	time.sleep( 1 )
 	time.sleep( 1 )
 	
 	#---

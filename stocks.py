@@ -69,29 +69,29 @@ company_groups = {
 	
 	'to-take-eu': [	
 		cCompany( 'FR0000120271', 'TOTAL', 4717, 'FP', 								'fra', 'xpar',		'EURONEXT:FP',		'FP.PA',	'TOTF.PA', 		'',		'total', 			'TOTAL' ),
-		cCompany( 'FR0000121014', 'LVMH-MOET-HENNESSY-VUITTO', 4669, 'MC', 			'fra', 'xpar',		'EURONEXT:MC',		'MC.PA',	'LVMH.PA', 		'',		'lvmh', 			'LVMH' ),
 		cCompany( 'BE0003470755', 'SOLVAY', 5966, 'SOLB', 							'bel', 'xbru',		'EURONEXT:SOLB',	'SOLB.BR',	'SOLB.BR', 		'',		'solvay', 			'Solvay' ),
-		cCompany( 'FR0000120321', 'L-OREAL', 4666, 'OR', 							'fra', 'xpar',		'EURONEXT:OR',		'OR.PA',	'OREP.PA', 		'',		'loreal', 			'LOréal' ),
 		cCompany( 'DE0007236101', 'SIEMENS', 436605, 'SIE', 						'deu', 'xetr',		'XETR:SIE',			'SIE.DE',	'SIEGn.DE', 	'',		'',		 			'Siemens' ),
-	],	
-	
-	'to-think-eu': [	
-		cCompany( 'FR0000120503', 'BOUYGUES', 4620, 'EN', 							'fra', 'xpar',		'EURONEXT:EN',		'EN.PA',	'BOUY.PA', 		'',		'bouygues', 		'Bouygues' ),
-		cCompany( 'NL0000009355', 'UNILEVER-NL', 6290, 'UNA', 						'nld', 'xams',		'EURONEXT:UNA',		'UNA.AS',	'UNc.AS', 		'',		'',					'Unilever' ),
 		cCompany( 'GB0000566504', 'BHP-BILLITON-PLC', 4001096, 'BLT', 				'gbr', 'xlon',		'LSE:BLT',			'BLT.L',	'BLT.L', 		'',		'', 				'BHP_Billiton' ),
 		cCompany( 'GB00B03MLX29', 'ROYAL-DUTCH-SHELL', 6273, 'RDSA', 				'gbr', 'xlon',		'EURONEXT:RDSA',	'RDSA.L',	'RDSa.L', 		'',		'',					'Shell' ),
 		cCompany( 'DE000BAY0017', 'BAYER', 436063, 'BAYN', 							'deu', 'xetr',		'XETR:BAYN',		'BAYN.DE',	'BAYGn.DE', 	'',		'', 				'Bayer' ),
 		cCompany( 'FR0000073298', 'IPSOS', 4663, 'IPS', 							'fra', 'xpar',		'EURONEXT:IPS',		'IPS.PA',	'ISOS.PA', 		'',		'ipsos', 			'' ),
+	],	
+	
+	'to-think-eu': [	
+		cCompany( 'FR0000121014', 'LVMH-MOET-HENNESSY-VUITTO', 4669, 'MC', 			'fra', 'xpar',		'EURONEXT:MC',		'MC.PA',	'LVMH.PA', 		'',		'lvmh', 			'LVMH' ),
+		cCompany( 'FR0000120321', 'L-OREAL', 4666, 'OR', 							'fra', 'xpar',		'EURONEXT:OR',		'OR.PA',	'OREP.PA', 		'',		'loreal', 			'LOréal' ),
+		cCompany( 'FR0000120503', 'BOUYGUES', 4620, 'EN', 							'fra', 'xpar',		'EURONEXT:EN',		'EN.PA',	'BOUY.PA', 		'',		'bouygues', 		'Bouygues' ),
+		cCompany( 'NL0000009355', 'UNILEVER-NL', 6290, 'UNA', 						'nld', 'xams',		'EURONEXT:UNA',		'UNA.AS',	'UNc.AS', 		'',		'',					'Unilever' ),
 		cCompany( 'GB0002374006', 'DIAGEO', 4000514, 'DGE', 						'gbr', 'xlon',		'LSE:DGE',			'DGE.L',	'DGE.L', 		'',		'diageo', 			'Diageo' ),
 		cCompany( 'FR0000120073', 'AIR-LIQUIDE', 4605, 'AI', 						'fra', 'xpar',		'EURONEXT:AI',		'AI.PA',	'AIRP.PA', 		'',		'air-liquide', 		'Air_Liquide' ),
 	],	
 	
 	'to-take-us': [	
 		cCompany( 'US00206R1023', 'AT-T', 14324, 'T', 								'usa', 'xnys',		'NYSE:T',			'T',		'T.N', 			'T',	'', 				'AT_T' ),
-		cCompany( 'US6703461052', 'NUCOR', 13823, 'NUE', 							'usa', 'xnys',		'NYSE:NUE',			'NUE',		'NUE.N', 		'NUE',	'', 				'Nucor' ),
 	],
 	
 	'to-think-us': [	
+		cCompany( 'US6703461052', 'NUCOR', 13823, 'NUE', 							'usa', 'xnys',		'NYSE:NUE',			'NUE',		'NUE.N', 		'NUE',	'', 				'Nucor' ),
 		cCompany( 'US5486611073', 'LOWE-S-COMPANIES', 13416, 'LOW', 				'usa', 'xnys',		'NYSE:LOW',			'LOW',		'LOW.N', 		'LOW',	'', 				'Lowes_Companies' ),
 		cCompany( 'US30231G1022', 'EXXON-MOBIL-CORPORATION', 4822, 'XOM', 			'usa', 'xnys',		'NYSE:XOM',			'XOM',		'XOM.N', 		'XOM',		'', 			'ExxonMobil' ),
 		cCompany( 'US4781601046', 'JOHNSON-JOHNSON', 4832, 'JNJ', 					'usa', 'xnys',		'NYSE:JNJ',			'JNJ',		'JNJ.N', 		'JNJ',		'', 			'JohnsonJohnson' ),

@@ -699,7 +699,7 @@ class cCompany:
 			ratio = float( ltd ) / float( ebitda )
 			self.mMorningstarLTDOnEBITDA.mData.append( '{:.02f}'.format( ratio ) )
 			self.mMorningstarLTDOnEBITDA.Update()
-					
+			
 		#---
 			
 		with open( self.SourceFileHTMLFinancialsMorningstarRatios(), newline='' ) as csvfile:
@@ -764,7 +764,8 @@ class cCompany:
 				self.mMorningstarFinancialsGrowthDividends.mData.append( '' )
 				continue
 			
-			ratio = ( float( dividend ) - float( self.mMorningstarFinancialsDividends.mData[i-1] ) ) / abs( float( dividend ) )
+			previous_dividend = self.mMorningstarFinancialsDividends.mData[i-1]
+			ratio = ( float( dividend ) - float( previous_dividend ) ) / abs( float( previous_dividend ) )
 			self.mMorningstarFinancialsGrowthDividends.mData.append( '{:.02f}'.format( ratio * 100 ) )
 			self.mMorningstarFinancialsGrowthDividends.Update()
 					
@@ -776,7 +777,8 @@ class cCompany:
 				self.mMorningstarFinancialsGrowthBook.mData.append( '' )
 				continue
 			
-			ratio = ( float( book ) - float( self.mMorningstarFinancialsBook.mData[i-1] ) ) / abs( float( book ) )
+			previous_book = self.mMorningstarFinancialsBook.mData[i-1]
+			ratio = ( float( book ) - float( previous_book ) ) / abs( float( previous_book ) )
 			self.mMorningstarFinancialsGrowthBook.mData.append( '{:.02f}'.format( ratio * 100 ) )
 			self.mMorningstarFinancialsGrowthBook.Update()
 		
