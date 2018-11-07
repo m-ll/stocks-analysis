@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import csv
+import shutil
 import locale
 import requests
 from enum import Enum, auto
@@ -132,7 +133,7 @@ class eZBChartAppletMode( Enum ):
     kDynamic = auto()
 
 class cCompany:
-	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName, iSourceDir='', iDestinationDir='' ):
+	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName ):
 		self.mISIN = iISIN
 		self.mName = iZBName
 		
@@ -155,48 +156,10 @@ class cCompany:
 		
 		self.mFCName = iFCName			# FC = Finances.net
 		
-		self.mSourceDir = iSourceDir
-		self.mDestinationDir = iDestinationDir
+		self.mSourceDir = ''
+		self.mDestinationDir = ''
+		self.mGroup = ''
 		
-		self.Clean()
-		
-	#---
-	
-	def Clean( self ):
-		self.mSFinancialsZB = None
-		self.mSFinancialsZBTable = None
-		self.mSFinancialsFV = None
-		self.mSFinancialsR = None
-		self.mSFinancialsYF = None
-		self.mSFinancialsB = None
-		self.mSSocietyZB = None
-		self.mSDividendsFC = None
-		self.mSDividendsTS = None
-		
-		self.mBNAGrowthFV5 = {}				# string 'xx%'
-		self.mBNAGrowthR5 = {}				# string 'xx'
-		self.mGrowthYF5 = {}				# string 'xx%'
-		
-		# B
-		self.mYearsB = []
-		self.mPERB = []
-		self.mBNAB = []
-		self.mBNAGrowthB = []
-		self.mBNAGrowthAverageB = 0
-		self.mBNAGrowthAverageLast5YB = 0
-		self.mDividendB = []
-		self.mDividendGrowthB = []
-		self.mDividendGrowthAverageB = 0
-		self.mDividendGrowthAverageLast5YB = 0
-		self.mDividendYieldB = []
-		
-		# ZB
-		self.mBNAGrowth = []
-		self.mBNAGrowthAverage = 0
-		self.mDividendsGrowth = []
-		self.mDividendsGrowthAverage = 0	# 0.0 < ... < 1.0
-		self.mYieldCurrent = 0				# 0.0 < ... < 100.0
-	
 	#---
 	
 	def DataDir( self, iDirectory ):
@@ -204,6 +167,9 @@ class cCompany:
 	
 	def ImageDir( self, iDirectory ):
 		self.mDestinationDir = iDirectory
+	
+	def Group( self, iGroup ):
+		self.mGroup = iGroup
 	
 	def SourceUrlFinancialsZB( self ):
 		return 'https://www.zonebourse.com/{}-{}/{}/'.format( self.mZBName, self.mZBCode, 'fondamentaux' )
@@ -322,6 +288,16 @@ class cCompany:
 	
 	#---
 	
+	def WriteImages( self, iOutputDirectory ):
+		shutil.copy( self.SourceFileIMG( 9999 ), os.path.join( iOutputDirectory, self.DestinationFileIMG( 9999 ) ) )
+		shutil.copy( self.SourceFileIMG( 10 ), os.path.join( iOutputDirectory, self.DestinationFileIMG( 10 ) ) )
+		shutil.copy( self.SourceFileIMG( 5 ), os.path.join( iOutputDirectory, self.DestinationFileIMG( 5 ) ) )
+		shutil.copy( self.SourceFileIMG( 2 ), os.path.join( iOutputDirectory, self.DestinationFileIMG( 2 ) ) )
+		
+		shutil.copy( self.SourceFileIMGIchimoku( 'chart' ), os.path.join( iOutputDirectory, self.DestinationFileIMGIchimoku( 'chart' ) ) )
+		shutil.copy( self.SourceFileIMGIchimoku( 'prices' ), os.path.join( iOutputDirectory, self.DestinationFileIMGIchimoku( 'prices' ) ) )
+		shutil.copy( self.SourceFileIMGIchimoku( 'times' ), os.path.join( iOutputDirectory, self.DestinationFileIMGIchimoku( 'times' ) ) )
+	
 	def ComputeCroissanceTr( self, iTr ):
 		bs = iTr.find_all( 'b' )
 		prices = []
@@ -364,6 +340,18 @@ class cCompany:
 		self.FillMorningstar()
 		
 	def FillZoneBourse( self ):
+		self.mSFinancialsZB = None
+		self.mSFinancialsZBTable = None
+		self.mSSocietyZB = None
+		
+		self.mBNAGrowth = []
+		self.mBNAGrowthAverage = 0
+		self.mDividendsGrowth = []
+		self.mDividendsGrowthAverage = 0	# 0.0 < ... < 1.0
+		self.mYieldCurrent = 0				# 0.0 < ... < 100.0
+		
+		#---
+		
 		html_content = ''
 		with open( self.SourceFileHTMLFinancialsZB(), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
@@ -408,10 +396,15 @@ class cCompany:
 		self.mSSocietyZB = BeautifulSoup( html_content, 'html5lib' )
 		
 	def FillFinviz( self ):
+		self.mSFinancialsFV = None
+		self.mBNAGrowthFV5 = {}				# string 'xx%'
+		
 		self.mBNAGrowthFV5['-5'] = '-'
 		self.mBNAGrowthFV5['0'] = '-'
 		self.mBNAGrowthFV5['+1'] = '-'
 		self.mBNAGrowthFV5['+5'] = '-'
+		
+		#---
 		
 		if not self.mFVSymbol:
 			return
@@ -449,9 +442,14 @@ class cCompany:
 		self.mBNAGrowthFV5['-5'] = td_value
 		
 	def FillReuters( self ):
+		self.mSFinancialsR = None
+		self.mBNAGrowthR5 = {}				# string 'xx'
+		
 		self.mBNAGrowthR5['-1'] = '-'
 		self.mBNAGrowthR5['-3'] = '-'
 		self.mBNAGrowthR5['-5'] = '-'
+		
+		#---
 		
 		if not self.mRSymbol:
 			return
@@ -480,10 +478,14 @@ class cCompany:
 		self.mBNAGrowthR5['-5'] = td_value
 		
 	def FillYahooFinance( self ):
+		self.mSFinancialsYF = None
+		self.mGrowthYF5 = {}				# string 'xx%'
 		self.mGrowthYF5['-5'] = '-'
 		self.mGrowthYF5['0'] = '-'
 		self.mGrowthYF5['+1'] = '-'
 		self.mGrowthYF5['+5'] = '-'
+		
+		#---
 		
 		if not self.mYFSymbol:
 			return
@@ -518,6 +520,7 @@ class cCompany:
 		self.mGrowthYF5['0'] = td_value
 		
 	def FillBoerse( self ):
+		self.mSFinancialsB = None
 		self.mYearsB = []
 		self.mPERB = []
 		self.mBNAB = []
@@ -529,6 +532,8 @@ class cCompany:
 		self.mDividendGrowthAverageB = 0
 		self.mDividendGrowthAverageLast5YB = 0
 		self.mDividendYieldB = []
+		
+		#---
 		
 		if not self.mBName:
 			return
@@ -593,6 +598,8 @@ class cCompany:
 		self.mBNAGrowthB, self.mBNAGrowthAverageB, self.mBNAGrowthAverageLast5YB = self.ComputeCroissance( self.mBNAB )
 
 	def FillFinances( self ):
+		self.mSDividendsFC = None
+		
 		if not self.mFCName:
 			return
 			
@@ -603,6 +610,8 @@ class cCompany:
 		self.mSDividendsFC = BeautifulSoup( html_content, 'html5lib' )
 			
 	def FillTradingSat( self ):
+		self.mSDividendsTS = None
+		
 		if not self.mTSName:
 			return
 			
