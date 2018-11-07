@@ -497,15 +497,19 @@ def DownloadStockPriceIchimoku( iCompany ):
 	# Disable the default volume indicator
 	close_volume = WaitElement( '//td[contains(@class, "chart-markup-table") and contains(@class, "pane")]//table[contains(@class, "pane-legend")]//span[contains(text(), "Volume")]/..//a[contains(@class, "delete")]' )
 	close_volume.click()
+	time.sleep( 0.5 )
 	# Disable the default MA(*) indicator
 	close_mma = WaitElement( '//td[contains(@class, "chart-markup-table") and contains(@class, "pane")]//table[contains(@class, "pane-legend")]//span[contains(text(), "MA (20)")]/..//a[contains(@class, "delete")]' )
 	close_mma.click()
+	time.sleep( 0.5 )
 	# Disable the default MA(*) indicator
 	close_mma = WaitElement( '//td[contains(@class, "chart-markup-table") and contains(@class, "pane")]//table[contains(@class, "pane-legend")]//span[contains(text(), "MA (50)")]/..//a[contains(@class, "delete")]' )
 	close_mma.click()
+	time.sleep( 0.5 )
 	# Disable the default MA(*) indicator
 	close_mma = WaitElement( '//td[contains(@class, "chart-markup-table") and contains(@class, "pane")]//table[contains(@class, "pane-legend")]//span[contains(text(), "MA (100)")]/..//a[contains(@class, "delete")]' )
 	close_mma.click()
+	time.sleep( 0.5 )
 	
 	#---
 	
@@ -536,7 +540,7 @@ def DownloadStockPriceIchimoku( iCompany ):
 	#---
 		
 # pip3 install pillow
-# [DON'T WORK ON CYGWIN -_-]
+# [DON'T WORK ON CYGWIN -_- as the wheel is not precompiled for it]
 # download the corresponding wheel file: https://pypi.org/project/Pillow/#files
 # see which name to choose: import pip._internal; print(pip._internal.pep425tags.get_supported())
 # rename it to: Pillow-5.3.0-cp36-cp36m-cygwin_2_8_1_x86_64.whl
