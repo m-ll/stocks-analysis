@@ -31,7 +31,7 @@ data_groups = json.loads( data )
 #---
 		
 parser = argparse.ArgumentParser( description='Process group(s).' )
-parser.add_argument( 'groups', metavar='Group', nargs='*', help='One (or multiple) group(s) name')
+parser.add_argument( 'groups', metavar='Group', nargs='*', help='One (or multiple) group(s) name (may also be company name)')
 parser.add_argument( '--download', choices=['no', 'yes', 'force'], default='yes', help='Download source' )
 parser.add_argument( '--suffix', help='Set suffix of output folder', required=True )
 args = parser.parse_args()
@@ -84,6 +84,10 @@ if not args.groups:
 
 for group in args.groups:
 	companies_of_current_group = list( filter( lambda v: v.mGroup == group, companies ) )
+	if not companies_of_current_group:
+		companies_of_current_group = list( filter( lambda v: v.mName == group, companies ) )
+	if not companies_of_current_group:
+		continue
 	
 	print( 'Group: {} ({})'.format( group, len( companies_of_current_group ) ) )
 	
