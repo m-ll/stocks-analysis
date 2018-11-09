@@ -8,6 +8,7 @@ import shutil
 import locale
 import requests
 from enum import Enum, auto
+from datetime import date, datetime
 
 from bs4 import BeautifulSoup
 
@@ -664,6 +665,8 @@ class cCompany:
 		self.mUrlMorningstarDividendCalculator10Years = ''
 		self.mUrlMorningstarDividendCalculator20Years = ''
 		
+		self.mMorningstarDividendNextDates = []
+		
 		if not self.mMorningstarRegion:
 			return
 			
@@ -798,7 +801,7 @@ class cCompany:
 			html_content = fd.read()
 			
 		svaluation = BeautifulSoup( html_content, 'html5lib' )
-		section = svaluation.find( 'a', attrs={'data-anchor': 'valuation'} ).parent
+		section = svaluation.find( 'a', attrs={'data-anchor': 'valuation'} ).parent		# https://www.crummy.com/software/BeautifulSoup/bs4/doc/#the-keyword-arguments
 		
 		self.mMorningstarValuationYears.SetTR( section, 'td', 'Calendar' )
 			
@@ -830,6 +833,19 @@ class cCompany:
 		annual_average = self.AskDividendCalculatorProjection( self.mUrlMorningstarDividendCalculator20Years )
 		self.mMorningstarFinancialsDividendsYield20Years.mGrowthAverage = annual_average
 		self.mMorningstarFinancialsDividendsYield20Years.mCurrent = '{:.02f}'.format( float( annual_average ) * 0.7 )	# Remove 30% for PS/Impots
+		
+		#---
+		
+		tr = soup.find( id='sal-components-dividends' ).find( 'table', class_='dividends-recent-table' ).find( 'tr', attrs={'ng-show': re.compile( 'upcomingDate.length' ) } )
+		trs = tr.find_next_siblings( 'tr' )
+		next_dates = []
+		for tr in trs:
+			next_date = tr.find( 'td' ).get_text( strip=True ).replace( '*', '' )	# https://www.crummy.com/software/BeautifulSoup/bs4/doc/#get-text
+			next_date = datetime.strptime( next_date, '%b %d, %Y' ).date()
+			if next_date > date.today():
+				self.mMorningstarDividendNextDates.append( next_date )
+		
+		self.mMorningstarDividendNextDates.reverse()
 		
 		# sys.exit( 0 )
 

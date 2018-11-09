@@ -2,6 +2,7 @@
 
 import os
 from bs4 import BeautifulSoup
+from datetime import date, datetime
 
 from ..company import *
 
@@ -59,6 +60,16 @@ def Extract( iCompany, iSoup ):
 		h_title.append( link_dividends_fc )
 	if link_dividends_ts is not None:
 		h_title.append( link_dividends_ts )
+		
+	for next_date in iCompany.mMorningstarDividendNextDates:
+		br = iSoup.new_tag( 'br' )
+		h_title.append( br )
+		h_title.append( 'Next Dividend: ' )
+		span = iSoup.new_tag( 'span' )
+		diff = next_date - date.today()
+		span['class'] = 'far' if diff.days > 7 else 'close'
+		span.append( next_date.strftime( '%d/%m/%Y' ) )
+		h_title.append( span )
 	
 	return h_title
 
