@@ -2,10 +2,8 @@
 
 import os
 import re
-import sys
 import csv
 import shutil
-import locale
 import requests
 from enum import Enum, auto
 from datetime import date, datetime
@@ -319,33 +317,16 @@ class cCompany:
 		
 		self.mZoneBourse = cZoneBourse( self, iZBName, iZBCode, iZBSymbol )
 		self.mFinviz = cFinviz( self, iFVSymbol )
-		self.mMorningstar = cMorningstar( self, iZBSymbol, iMorningstarRegion, iMorningstarX )
+		self.mMorningstar = cMorningstar( self, iZBSymbol, iMorningstarRegion, iMorningstarX )	# ( ..., fra/gbr/usa/..., xpar/xlon/... )
 		self.mYahooFinance = cYahooFinance( self, iYFSymbol )
 		self.mReuters = cReuters( self, iRSymbol )
-		self.mBoerse = cBoerse( self, iZBName )
+		self.mBoerse = cBoerse( self, iZBName )	# use the same name as ZoneBourse, may use anything in fact
 		self.mTradingSat = cTradingSat( self, iTSName )
 		self.mFinances = cFinances( self, iFCName )
 		
 		#---
 		
-		self.mZBName = iZBName			# ZB = ZoneBourse
-		self.mZBCode = iZBCode
-		self.mZBSymbol = iZBSymbol
-
-		self.mMorningstarSymbol = iZBSymbol
-		self.mMorningstarRegion = iMorningstarRegion	# fra/gbr/usa/...
-		self.mMorningstarX = iMorningstarX				# xpar/xlon/...
-		
-		self.mTradingViewSymbol = iTradingViewSymbol	# NYSE:MMM
-		
-		self.mYFSymbol = iYFSymbol		# YF = Yahoo Finance
-		self.mFVSymbol = iFVSymbol		# FV = FinViz
-		self.mRSymbol = iRSymbol		# R = Reuters
-		
-		self.mTSName = iTSName			# TS = TradingSat
-		self.mBName = iZBName			# B = boerse (use the same name as TradingSat, may use anything in fact)
-		
-		self.mFCName = iFCName			# FC = Finances.net
+		self.mTradingViewSymbol = iTradingViewSymbol	# NYSE:MMM		# Not use yet
 		
 		self.mDataPath = ''
 		self.mOutputPath = ''
@@ -574,7 +555,7 @@ class cCompany:
 		
 		#---
 		
-		if not self.mFVSymbol:
+		if not self.mFinviz.Symbol():
 			return
 			
 		html_content = ''
@@ -619,7 +600,7 @@ class cCompany:
 		
 		#---
 		
-		if not self.mRSymbol:
+		if not self.mReuters.Symbol():
 			return
 			
 		html_content = ''
@@ -655,7 +636,7 @@ class cCompany:
 		
 		#---
 		
-		if not self.mYFSymbol:
+		if not self.mYahooFinance.Symbol():
 			return
 			
 		html_content = ''
@@ -703,7 +684,7 @@ class cCompany:
 		
 		#---
 		
-		if not self.mBName:
+		if not self.mBoerse.Name():
 			return
 			
 		html_content = ''
@@ -768,7 +749,7 @@ class cCompany:
 	def FillFinances( self ):
 		self.mSDividendsFC = None
 		
-		if not self.mFCName:
+		if not self.mFinances.Name():
 			return
 			
 		html_content = ''
@@ -780,7 +761,7 @@ class cCompany:
 	def FillTradingSat( self ):
 		self.mSDividendsTS = None
 		
-		if not self.mTSName:
+		if not self.mTradingSat.Name():
 			return
 			
 		html_content = ''
@@ -834,7 +815,7 @@ class cCompany:
 		
 		self.mMorningstarDividendNextDates = []
 		
-		if not self.mMorningstarRegion:
+		if not self.mMorningstar.Region():
 			return
 			
 		with open( self.DataPathFile( self.mMorningstar.FileNameIncomeStatement() ), newline='' ) as csvfile:
@@ -1014,8 +995,5 @@ class cCompany:
 		
 		self.mMorningstarDividendNextDates.reverse()
 		
-		# sys.exit( 0 )
-
-
 
 

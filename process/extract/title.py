@@ -24,13 +24,13 @@ def Extract( iCompany, iSoup ):
 	link_societe.append( ' [Societe]' )
 	
 	link_dividends_fc = None
-	if iCompany.mFCName:
+	if iCompany.mFinances.Name():
 		link_dividends_fc = iSoup.new_tag( 'a' )
 		link_dividends_fc['href'] = iCompany.mFinances.Url()
 		link_dividends_fc.append( ' [DividendsFC]' )
 		
 	link_dividends_ts = None
-	if iCompany.mTSName:
+	if iCompany.mTradingSat.Name():
 		link_dividends_ts = iSoup.new_tag( 'a' )
 		link_dividends_ts['href'] = iCompany.mTradingSat.Url()
 		link_dividends_ts.append( ' [DividendsTS]' )
@@ -49,7 +49,7 @@ def Extract( iCompany, iSoup ):
 	h_title.append( '[' )
 	h_title.append( price )
 	h_title.append( ' {} ] '.format( currency ) )
-	h_title.append( '{}: {}'.format( iCompany.mZBName, iCompany.mISIN ) )
+	h_title.append( '{}: {}'.format( iCompany.Name(), iCompany.ISIN() ) )
 	h_title.append( link_graph )
 	h_title.append( link_graph2 )
 	h_title.append( link_fond )

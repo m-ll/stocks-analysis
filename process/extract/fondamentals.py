@@ -85,7 +85,7 @@ def Extract( iCompany, iSoup ):
 	div_data = iSoup.new_tag( 'div' )
 	div_data['class'] = 'clear fondamentals'
 	
-	if not iCompany.mMorningstarRegion:
+	if not iCompany.mMorningstar.Region():
 		return div_data
 	
 	#---
