@@ -1,9 +1,5 @@
 #!/usr/bin/python3
 
-from bs4 import BeautifulSoup
-
-from ..company import *
-
 #---
 
 def Extract( iCompany, iSoup ):

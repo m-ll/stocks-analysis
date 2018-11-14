@@ -1,12 +1,6 @@
 #!/usr/bin/python3
 
-import time
-import copy
-import requests
 import math
-from bs4 import BeautifulSoup
-
-from ..company import *
 
 #---
 

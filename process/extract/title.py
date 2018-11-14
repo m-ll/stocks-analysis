@@ -1,10 +1,8 @@
 #!/usr/bin/python3
 
-import os
-from bs4 import BeautifulSoup
 from datetime import date, datetime
 
-from ..company import cZoneBourse
+from company.company import cZoneBourse
 
 #---
 

@@ -41,7 +41,7 @@ class cBrowser:
 		opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,application/octet-stream,text/html' );
 
 		self.mDriver = webdriver.Firefox( firefox_options=opts, executable_path=os.path.join( os.getcwd(), 'geckodriver' ) )
-		self.mDriver.implicitly_wait( 4 ) # seconds
+		self.mDriver.implicitly_wait( 2 ) # seconds
 		
 		self.mDriver.set_window_size( 1920, 1500 )
 		# sgBrowser.set_window_position( 0, 500 )

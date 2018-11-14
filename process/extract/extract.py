@@ -3,8 +3,6 @@
 # https://www.crummy.com/software/BeautifulSoup/bs4/doc/
 from bs4 import BeautifulSoup
 
-from ..company import *
-
 from . import title
 from . import info
 from . import histo

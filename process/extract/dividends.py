@@ -2,8 +2,6 @@
 
 from enum import Enum
 
-from ..company import *
-
 #---
 
 def CreateCanvasChart( iName, iLabels, iData, iColors ):

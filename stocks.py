@@ -9,7 +9,7 @@ from datetime import datetime
 from colorama import init, Fore, Back, Style
 init( autoreset=True )
 
-from process.company import *
+from company.company import *
 from process.extract.extract import *
 
 from download.options import cOptions
@@ -17,9 +17,9 @@ from download.browser import cBrowser
 
 # https://graphseobourse.fr/classement-des-entreprises-les-plus-innovantes-du-monde/
 
-#---
-
 # https://www.suredividend.com/warren-buffett-stocks/
+
+#---
 
 #PATCH: to remove 'pseudo' comments
 data = ''
