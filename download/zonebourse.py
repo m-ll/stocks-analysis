@@ -31,12 +31,12 @@ class cZoneBourse:
 	def _DownloadData( self, iBrowser, iCompany ):
 		print( '		- Data' )
 
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNameData() ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mZoneBourse.FileNameData() ) ):
 			print( Fore.CYAN + '		skipping ... (existing file)' )
 			return
 
 		iBrowser.Driver().get( iCompany.mZoneBourse.UrlData() )
-		with open( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNameData() ), 'w' ) as output:
+		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNameData() ), 'w' ) as output:
 			output.write( iBrowser.Driver().page_source )
 			
 		time.sleep( 1 )
@@ -44,12 +44,12 @@ class cZoneBourse:
 	def _DownloadSociety( self, iBrowser, iCompany ):
 		print( '		- Society' )
 
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNameSociety() ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mZoneBourse.FileNameSociety() ) ):
 			print( Fore.CYAN + '		skipping ... (existing file)' )
 			return
 
 		r = requests.get( iCompany.mZoneBourse.UrlSociety() )
-		with open( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNameSociety() ), 'w' ) as output:
+		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNameSociety() ), 'w' ) as output:
 			output.write( r.text )
 			
 		time.sleep( 1 )
@@ -65,45 +65,45 @@ class cZoneBourse:
 		self._DownloadPricesSimple2Y( iBrowser, iCompany )
 		
 	def _DownloadPricesSimpleMax( self, iBrowser, iCompany ):
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNamePricesSimple( 9999 ) ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 9999 ) ) ):
 			print( Fore.CYAN + '		skipping (max) ... (existing file)' )
 			return
 			
 		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 9999, 320, 260 ) )
-		with open( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNamePricesSimple( 9999 ) ), 'wb' ) as output:
+		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 9999 ) ), 'wb' ) as output:
 			output.write( r.content )
 			
 		time.sleep( 1 )
 		
 	def _DownloadPricesSimple10Y( self, iBrowser, iCompany ):
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNamePricesSimple( 10 ) ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 10 ) ) ):
 			print( Fore.CYAN + '		skipping (10y) ... (existing file)' )
 			return
 			
 		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 120, 570, 430 ) )
-		with open( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNamePricesSimple( 10 ) ), 'wb' ) as output:
+		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 10 ) ), 'wb' ) as output:
 			output.write( r.content )
 			
 		time.sleep( 1 )
 
 	def _DownloadPricesSimple5Y( self, iBrowser, iCompany ):
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNamePricesSimple( 5 ) ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 5 ) ) ):
 			print( Fore.CYAN + '		skipping (5y) ... (existing file)' )
 			return
 			
 		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 60, 570, 430 ) )
-		with open( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNamePricesSimple( 5 ) ), 'wb' ) as output:
+		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 5 ) ), 'wb' ) as output:
 			output.write( r.content )
 			
 		time.sleep( 1 )
 
 	def _DownloadPricesSimple2Y( self, iBrowser, iCompany ):
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNamePricesSimple( 2 ) ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 2 ) ) ):
 			print( Fore.CYAN + '		skipping (2y) ... (existing file)' )
 			return
 			
 		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 24, 570, 430 ) )
-		with open( iCompany.DataFileHTML( iCompany.mZoneBourse.FileNamePricesSimple( 2 ) ), 'wb' ) as output:
+		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 2 ) ), 'wb' ) as output:
 			output.write( r.content )
 			
 		time.sleep( 1 )
@@ -115,9 +115,9 @@ class cZoneBourse:
 		
 		filenames = iCompany.mZoneBourse.FileNamesPricesIchimoku()
 		if( not iBrowser.Options().ForceDownload() and 
-			os.path.exists( iCompany.DataFileHTML( filenames[0] ) ) and 
-			os.path.exists( iCompany.DataFileHTML( filenames[1] ) ) and 
-			os.path.exists( iCompany.DataFileHTML( filenames[2] ) ) ):
+			os.path.exists( iCompany.DataPathFile( filenames[0] ) ) and 
+			os.path.exists( iCompany.DataPathFile( filenames[1] ) ) and 
+			os.path.exists( iCompany.DataPathFile( filenames[2] ) ) ):
 			print( '		skipping (ichimoku) ...' )
 			return
 			
@@ -234,13 +234,13 @@ class cZoneBourse:
 		times_base64 = driver.execute_script( 'return arguments[0].toDataURL("image/png").substring( 21 );', times )
 		times_data = base64.b64decode( times_base64 )
 		
-		with open( iCompany.DataFileHTML( filenames[0] ), 'wb' ) as output:
+		with open( iCompany.DataPathFile( filenames[0] ), 'wb' ) as output:
 			output.write( canvas_data )
 
-		with open( iCompany.DataFileHTML( filenames[1] ), 'wb' ) as output:
+		with open( iCompany.DataPathFile( filenames[1] ), 'wb' ) as output:
 			output.write( prices_data )
 
-		with open( iCompany.DataFileHTML( filenames[2] ), 'wb' ) as output:
+		with open( iCompany.DataPathFile( filenames[2] ), 'wb' ) as output:
 			output.write( times_data )
 
 		#---

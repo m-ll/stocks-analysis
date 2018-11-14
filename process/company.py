@@ -347,22 +347,13 @@ class cCompany:
 		
 		self.mFCName = iFCName			# FC = Finances.net
 		
-		self.mSourceDir = ''
-		self.mDestinationDir = ''
+		self.mDataPath = ''
+		self.mOutputPath = ''
+		self.mOutputImgPath = ''
+		self.mImgDirRelativeToHTML = ''
 		self.mGroup = ''
 		
 	#---
-	
-	def DataDir( self, iDirectory=None ):
-		if iDirectory is None:
-			return self.mSourceDir
-		
-		previous_value = self.mSourceDir
-		self.mSourceDir = iDirectory
-		return self.mSourceDir
-	
-	def ImageDir( self, iDirectory ):
-		self.mDestinationDir = iDirectory
 	
 	def Group( self, iGroup ):
 		self.mGroup = iGroup
@@ -372,15 +363,54 @@ class cCompany:
 	def Name( self ):
 		return self.mName
 	
-	def DataFileHTML( self, iFileName ):
-		return os.path.join( self.mSourceDir, iFileName )
+	#---
 	
-	# from where the html file is !
-	def DestinationFile( self, iFileName ):
-		return os.path.join( self.mDestinationDir, iFileName )
+	def DataPath( self, iDirectory=None ):
+		if iDirectory is None:
+			return self.mDataPath
+		
+		previous_value = self.mDataPath
+		self.mDataPath = iDirectory
+		return previous_value
+	
+	def OutputPath( self, iOutputPath=None, iOutputImgPath=None ):
+		if iOutputPath is None and iOutputImgPath is None:
+			return ( self.mOutputPath, self.mOutputImgPath )
+		
+		previous_value = ( self.mOutputPath, self.mOutputImgPath )
+		if iOutputPath is not None:
+			self.mOutputPath = iOutputPath
+		if iOutputImgPath is not None:
+			self.mOutputImgPath = iOutputImgPath
+			
+		self.mImgDirRelativeToHTML = os.path.relpath( self.mOutputImgPath, self.mOutputPath )
+		
+		return previous_value
+		
+	#---
+	
+	def DataPathFile( self, iFileName ):
+		return os.path.join( self.mDataPath, iFileName )
+	
+	def OutputPathFile( self, iFileName ):
+		return os.path.join( self.mOutputPath, iFileName )
+	
+	def OutputImgPathFile( self, iFileName ):
+		return os.path.join( self.mOutputImgPath, iFileName )
+	
+	def OutputImgPathFileRelativeToHTMLFile( self, iFileName ):
+		return '{}/{}'.format( self.mImgDirRelativeToHTML, iFileName )	# Always '/' as it's for html
+	
+	#---
+	
+	@staticmethod
+	def Downloads( iBrowser, iCompanies ):
+		for i, company in enumerate( iCompanies, start=1 ):
+			print( 'Download ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
+			company.Download( iBrowser )
 	
 	def Download( self, iBrowser ):
-		print( 'Download: {}'.format( self.mName ) )
+		# print( 'Download: {}'.format( self.mName ) )
 		
 		dl = cDLZoneBourse()
 		dl.Download( iBrowser, self )
@@ -418,21 +448,21 @@ class cCompany:
 	
 	#---
 	
-	def WriteImages( self, iOutputDirectory ):
-		#TOIMPROVE
+	def WriteImages( self ):
+		#TOIMPROVE: with tuple/dict/... like ichimoku (?)
 		filename = self.mZoneBourse.FileNamePricesSimple( 9999 )
-		shutil.copy( self.DataFileHTML( filename ), os.path.join( iOutputDirectory, self.DestinationFile( filename ) ) )
+		shutil.copy( self.DataPathFile( filename ), self.OutputImgPathFile( filename ) )
 		filename = self.mZoneBourse.FileNamePricesSimple( 10 )
-		shutil.copy( self.DataFileHTML( filename ), os.path.join( iOutputDirectory, self.DestinationFile( filename ) ) )
+		shutil.copy( self.DataPathFile( filename ), self.OutputImgPathFile( filename ) )
 		filename = self.mZoneBourse.FileNamePricesSimple( 5 )
-		shutil.copy( self.DataFileHTML( filename ), os.path.join( iOutputDirectory, self.DestinationFile( filename ) ) )
+		shutil.copy( self.DataPathFile( filename ), self.OutputImgPathFile( filename ) )
 		filename = self.mZoneBourse.FileNamePricesSimple( 2 )
-		shutil.copy( self.DataFileHTML( filename ), os.path.join( iOutputDirectory, self.DestinationFile( filename ) ) )
+		shutil.copy( self.DataPathFile( filename ), self.OutputImgPathFile( filename ) )
 		
 		filenames = self.mZoneBourse.FileNamesPricesIchimoku()
-		shutil.copy( self.DataFileHTML( filenames[0] ), os.path.join( iOutputDirectory, self.DestinationFile( filenames[0] ) ) )
-		shutil.copy( self.DataFileHTML( filenames[1] ), os.path.join( iOutputDirectory, self.DestinationFile( filenames[1] ) ) )
-		shutil.copy( self.DataFileHTML( filenames[2] ), os.path.join( iOutputDirectory, self.DestinationFile( filenames[2] ) ) )
+		shutil.copy( self.DataPathFile( filenames[0] ), self.OutputImgPathFile( filenames[0] ) )
+		shutil.copy( self.DataPathFile( filenames[1] ), self.OutputImgPathFile( filenames[1] ) )
+		shutil.copy( self.DataPathFile( filenames[2] ), self.OutputImgPathFile( filenames[2] ) )
 	
 	#---
 	
@@ -491,7 +521,7 @@ class cCompany:
 		#---
 		
 		html_content = ''
-		with open( self.DataFileHTML( self.mZoneBourse.FileNameData() ), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataPathFile( self.mZoneBourse.FileNameData() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSFinancialsZB = BeautifulSoup( html_content, 'html5lib' )
@@ -528,7 +558,7 @@ class cCompany:
 		#---
 		
 		html_content = ''
-		with open( self.DataFileHTML( self.mZoneBourse.FileNameSociety() ), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataPathFile( self.mZoneBourse.FileNameSociety() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSSocietyZB = BeautifulSoup( html_content, 'html5lib' )
@@ -548,7 +578,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.DataFileHTML( self.mFinviz.FileName() ), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataPathFile( self.mFinviz.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSFinancialsFV = BeautifulSoup( html_content, 'html5lib' )
@@ -593,7 +623,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.DataFileHTML( self.mReuters.FileName() ), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataPathFile( self.mReuters.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSFinancialsR = BeautifulSoup( html_content, 'html5lib' )
@@ -629,7 +659,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.DataFileHTML( self.mYahooFinance.FileName() ), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataPathFile( self.mYahooFinance.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSFinancialsYF = BeautifulSoup( html_content, 'html5lib' )
@@ -677,7 +707,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.DataFileHTML( self.mBoerse.FileName() ), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataPathFile( self.mBoerse.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSFinancialsB = BeautifulSoup( html_content, 'html5lib' )
@@ -742,7 +772,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.DataFileHTML( self.mFinances.FileName() ), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataPathFile( self.mFinances.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSDividendsFC = BeautifulSoup( html_content, 'html5lib' )
@@ -754,7 +784,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.DataFileHTML( self.mTradingSat.FileName() ), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataPathFile( self.mTradingSat.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSDividendsTS = BeautifulSoup( html_content, 'html5lib' )
@@ -807,7 +837,7 @@ class cCompany:
 		if not self.mMorningstarRegion:
 			return
 			
-		with open( self.DataFileHTML( self.mMorningstar.FileNameIncomeStatement() ), newline='' ) as csvfile:
+		with open( self.DataPathFile( self.mMorningstar.FileNameIncomeStatement() ), newline='' ) as csvfile:
 			reader = csv.reader( csvfile )
 			
 			for row in reader:
@@ -825,7 +855,7 @@ class cCompany:
 		
 		#---
 		
-		with open( self.DataFileHTML( self.mMorningstar.FileNameBalanceSheet() ), newline='' ) as csvfile:
+		with open( self.DataPathFile( self.mMorningstar.FileNameBalanceSheet() ), newline='' ) as csvfile:
 			reader = csv.reader( csvfile )
 			
 			for row in reader:
@@ -851,7 +881,7 @@ class cCompany:
 			
 		#---
 			
-		with open( self.DataFileHTML( self.mMorningstar.FileNameRatios() ), newline='' ) as csvfile:
+		with open( self.DataPathFile( self.mMorningstar.FileNameRatios() ), newline='' ) as csvfile:
 			reader = csv.reader( csvfile )
 			
 			for row in reader:
@@ -934,7 +964,7 @@ class cCompany:
 		#---
 			
 		html_content = ''
-		with open( self.DataFileHTML( self.mMorningstar.FileNameValuation() ), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataPathFile( self.mMorningstar.FileNameValuation() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		svaluation = BeautifulSoup( html_content, 'html5lib' )
@@ -951,7 +981,7 @@ class cCompany:
 		#---
 		
 		html_content = ''
-		with open( self.DataFileHTML( self.mMorningstar.FileNameDividends() ), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataPathFile( self.mMorningstar.FileNameDividends() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )

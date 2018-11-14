@@ -17,12 +17,12 @@ class cReuters:
 			print( Fore.CYAN + '	skipping ... (no id)' )
 			return
 			
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mReuters.FileName() ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mReuters.FileName() ) ):
 			print( Fore.CYAN + '	skipping ... (existing file)' )
 			return
 
 		r = requests.get( iCompany.mReuters.Url() )
-		with open( iCompany.DataFileHTML( iCompany.mReuters.FileName() ), 'w' ) as output:
+		with open( iCompany.DataPathFile( iCompany.mReuters.FileName() ), 'w' ) as output:
 			output.write( r.text )
 			
 		time.sleep( 1 )

@@ -17,12 +17,12 @@ class cFinances:
 			print( Fore.CYAN + '	skipping ... (no id)' )
 			return
 			
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mFinances.FileName() ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mFinances.FileName() ) ):
 			print( Fore.CYAN + '	skipping ... (existing file)' )
 			return
 
 		r = requests.get( iCompany.mFinances.Url() )
-		with open( iCompany.DataFileHTML( iCompany.mFinances.FileName() ), 'w' ) as output:
+		with open( iCompany.DataPathFile( iCompany.mFinances.FileName() ), 'w' ) as output:
 			output.write( r.text )
 			
 		time.sleep( 1 )

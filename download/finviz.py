@@ -17,12 +17,12 @@ class cFinviz:
 			print( Fore.CYAN + '	skipping ... (no id)' )
 			return
 			
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mFinviz.FileName() ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mFinviz.FileName() ) ):
 			print( Fore.CYAN + '	skipping ... (existing file)' )
 			return
 
 		r = requests.get( iCompany.mFinviz.Url() )
-		with open( iCompany.DataFileHTML( iCompany.mFinviz.FileName() ), 'w' ) as output:
+		with open( iCompany.DataPathFile( iCompany.mFinviz.FileName() ), 'w' ) as output:
 			output.write( r.text )
 			
 		time.sleep( 1 )

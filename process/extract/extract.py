@@ -17,11 +17,11 @@ from . import dividendsFC
 
 #---
 
-def WriteImages( iCompanies, iOutputDirectory ):
+def WriteImages( iCompanies ):
 	for i, company in enumerate( iCompanies, start=1 ):
 		print( 'WriteImages ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
 		
-		company.WriteImages( iOutputDirectory )
+		company.WriteImages()
 
 #---
 

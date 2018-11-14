@@ -37,27 +37,27 @@ class cMorningstar:
 	def _DownloadIncomeStatement( self, iBrowser, iCompany ):
 		print( '		- Income Statement' )
 
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mMorningstar.FileNameIncomeStatement() ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mMorningstar.FileNameIncomeStatement() ) ):
 			print( Fore.CYAN + '		skipping ... (existing file)' )
 			return
 		
 		iBrowser.Driver().get( iCompany.mMorningstar.UrlIncomeStatement() )
 		time.sleep( 1 )
 		
-		# with open( iCompany.DataFileHTML( iCompany.mMorningstar.FileNameIncomeStatement() ) + '.html', 'w' ) as output:
+		# with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameIncomeStatement() ) + '.html', 'w' ) as output:
 		#	output.write( iBrowser.Driver().page_source )
 
 		export = iBrowser.WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
 		export.click()
 		csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
-		shutil.move( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataFileHTML( iCompany.mMorningstar.FileNameIncomeStatement() ) )
+		shutil.move( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameIncomeStatement() ) )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 
 	def _DownloadBalanceSheet( self, iBrowser, iCompany ):
 		print( '		- Balance Sheet' )
 
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mMorningstar.FileNameBalanceSheet() ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mMorningstar.FileNameBalanceSheet() ) ):
 			print( Fore.CYAN + '		skipping ... (existing file)' )
 			return
 		
@@ -68,13 +68,13 @@ class cMorningstar:
 		export.click()
 		csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
-		shutil.move( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataFileHTML( iCompany.mMorningstar.FileNameBalanceSheet() ) )
+		shutil.move( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameBalanceSheet() ) )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 
 	def _DownloadRatios( self, iBrowser, iCompany ):
 		print( '		- Ratios' )
 		
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mMorningstar.FileNameRatios() ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mMorningstar.FileNameRatios() ) ):
 			print( Fore.CYAN + '		skipping ... (existing file)' )
 			return
 		
@@ -85,13 +85,13 @@ class cMorningstar:
 		export.click()
 		csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
-		shutil.move( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataFileHTML( iCompany.mMorningstar.FileNameRatios() ) )
+		shutil.move( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameRatios() ) )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 		
 	def _DownloadValuation( self, iBrowser, iCompany ):
 		print( '		- Valuation' )
 		
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mMorningstar.FileNameValuation() ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mMorningstar.FileNameValuation() ) ):
 			print( Fore.CYAN + '		skipping ... (existing file)' )
 			return
 		
@@ -103,13 +103,13 @@ class cMorningstar:
 		iBrowser.WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-valuation' )
 		iBrowser.WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-report-table' )
 
-		with open( iCompany.DataFileHTML( iCompany.mMorningstar.FileNameValuation() ), 'w' ) as output:
+		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameValuation() ), 'w' ) as output:
 			output.write( iBrowser.Driver().page_source )
 			
 	def _DownloadDividends( self, iBrowser, iCompany ):
 		print( '		- Dividends' )
 		
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataFileHTML( iCompany.mMorningstar.FileNameDividends() ) ):
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mMorningstar.FileNameDividends() ) ):
 			print( Fore.CYAN + '		skipping ... (existing file)' )
 			return
 		
@@ -121,6 +121,6 @@ class cMorningstar:
 		iBrowser.WaitNoElement( '//a[@data-anchor="dividends"]/..//sal-components-dividends' )
 		iBrowser.WaitNoElement( '//a[@data-anchor="dividends"]/..//sal-components-report-table' )		# It's maybe needed to make 2 requests for the same page (valuation/dividends) to be sure to have not this element from valuation
 
-		with open( iCompany.DataFileHTML( iCompany.mMorningstar.FileNameDividends() ), 'w' ) as output:
+		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameDividends() ), 'w' ) as output:
 			output.write( iBrowser.Driver().page_source )
 			

@@ -305,7 +305,7 @@ def Extract( iCompany, iSoup ):
 		div_data.append( copy.copy( bnadiv ) )
 	
 	img_max = iSoup.new_tag( 'img' )
-	img_max['src'] = iCompany.DestinationFile( iCompany.mZoneBourse.FileNamePricesSimple( 9999 ) )
+	img_max['src'] = iCompany.OutputImgPathFileRelativeToHTMLFile( iCompany.mZoneBourse.FileNamePricesSimple( 9999 ) )
 	div_data.append( img_max )
 
 	#---

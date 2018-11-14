@@ -45,30 +45,19 @@ if not os.path.exists( 'geckodriver' ):
 
 #---
 
-# root_path = os.path.abspath( '.' )
+root_path = os.path.abspath( '.' )
 
 # Create input (data) directory (_data/xxx)
-# data_path = os.path.join( root_path, '_data', args.suffix )
-# os.makedirs( data_path, exist_ok=True )
+data_path = os.path.join( root_path, '_data', args.suffix )
+os.makedirs( data_path, exist_ok=True )
 
 # Create output directories (_output/xxx and _output/xxx/img)
-# output_path = os.path.join( root_path, '_output', args.suffix )
-# os.makedirs( output_path, exist_ok=True )
+output_path = os.path.join( root_path, '_output', args.suffix )
+os.makedirs( output_path, exist_ok=True )
 
-# image_name = 'img'
-# output_path_img = os.path.join( output_path, image_name )
-# os.makedirs( output_path_img, exist_ok=True )
-
-# Create output directories (_output-xxx and _output-xxx/img)
-output_name = f'_output-{args.suffix}'
-os.makedirs( output_name, exist_ok=True )
 image_name = 'img'
-output_image_name = f'{output_name}/{image_name}'
-os.makedirs( output_image_name, exist_ok=True )
-
-# Create input (data) directory (_data-xxx)
-data_name = f'_data-{args.suffix}'
-os.makedirs( data_name, exist_ok=True )
+output_path_img = os.path.join( output_path, image_name )
+os.makedirs( output_path_img, exist_ok=True )
 
 #---
 
@@ -83,11 +72,11 @@ for data_group_name in data_groups:
 							data[7], data[8], data[9], 
 							data[10], data[11] )
 		company.Group( data_group_name )
-		company.DataDir( data_name )
-		company.ImageDir( image_name )
+		company.DataPath( data_path )
+		company.OutputPath( output_path, output_path_img )
 		
 		companies.append( company )
-
+		
 #---
 
 # If no group as argument, take them all
@@ -116,9 +105,7 @@ for group in args.groups:
 	
 	if args.download in ['yes', 'force']:
 		browser.Init()
-
-		for company in companies_of_current_group:
-			company.Download( browser )
+		cCompany.Downloads( browser, companies_of_current_group )
 		
 	Fill( companies_of_current_group )
 	
@@ -127,10 +114,10 @@ for group in args.groups:
 	content_html = Extract( companies_sorted_by_yield )
 
 	print( 'Write html ...' )
-	with open( '{}/{}-[{}].html'.format( output_name, group, len( companies_sorted_by_yield ) ), 'w' ) as output:
+	with open( '{}/{}-[{}].html'.format( output_path, group, len( companies_sorted_by_yield ) ), 'w' ) as output:
 		output.write( content_html )
 		
-	WriteImages( companies_sorted_by_yield, output_name )
+	WriteImages( companies_sorted_by_yield )
 	
 	print( '' )
 	
