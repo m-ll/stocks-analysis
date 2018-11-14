@@ -37,15 +37,3 @@ var myChart = new Chart(ctx, {\
 </script>\
 </div>'
 
-class eType( Enum ):
-	kNone = 0
-	kDividend = 1
-	kSplit = 2
-	kActionOnly = 3		# add Exceptionel (BIC) ?
-	
-class cDividend:
-	def __init__( self ):
-		self.mType = eType.kNone
-		self.mYear = 0
-		self.mPrice = 0
-

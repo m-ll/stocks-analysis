@@ -100,17 +100,17 @@ def Extract( iCompany, iSoup ):
 		a.append( 'Croissance (YahooFinance) -5/0/+1/+5' )
 		td.append( a )
 		td = td.find_next_sibling()
-		td.find( 'b' ).string = iCompany.mGrowthYF5['-5']
+		td.find( 'b' ).string = iCompany.mYahooFinance.mGrowth['-5']
 		td = td.find_next_sibling()
 		td.find( 'b' ).string = ''
 		td = td.find_next_sibling()
-		td.find( 'b' ).string = iCompany.mGrowthYF5['0']
+		td.find( 'b' ).string = iCompany.mYahooFinance.mGrowth['0']
 		td = td.find_next_sibling()
-		td.find( 'b' ).string = iCompany.mGrowthYF5['+1']
+		td.find( 'b' ).string = iCompany.mYahooFinance.mGrowth['+1']
 		td = td.find_next_sibling()
 		td.find( 'b' ).string = ''
 		td = td.find_next_sibling()
-		td.find( 'b' ).string = iCompany.mGrowthYF5['+5']
+		td.find( 'b' ).string = iCompany.mYahooFinance.mGrowth['+5']
 		td = td.find_next_sibling()
 		td.string = ''
 		td = td.find_next_sibling()
@@ -154,17 +154,17 @@ def Extract( iCompany, iSoup ):
 		a.append( 'Croissance BNA (Finviz) -5/0/+1/+5' )
 		td.append( a )
 		td = td.find_next_sibling()
-		td.find( 'b' ).string = iCompany.mBNAGrowthFV5['-5']
+		td.find( 'b' ).string = iCompany.mFinviz.mBNAGrowth['-5']
 		td = td.find_next_sibling()
 		td.find( 'b' ).string = ''
 		td = td.find_next_sibling()
-		td.find( 'b' ).string = iCompany.mBNAGrowthFV5['0']
+		td.find( 'b' ).string = iCompany.mFinviz.mBNAGrowth['0']
 		td = td.find_next_sibling()
-		td.find( 'b' ).string = iCompany.mBNAGrowthFV5['+1']
+		td.find( 'b' ).string = iCompany.mFinviz.mBNAGrowth['+1']
 		td = td.find_next_sibling()
 		td.find( 'b' ).string = ''
 		td = td.find_next_sibling()
-		td.find( 'b' ).string = iCompany.mBNAGrowthFV5['+5']
+		td.find( 'b' ).string = iCompany.mFinviz.mBNAGrowth['+5']
 		td = td.find_next_sibling()
 		td.string = ''
 		td = td.find_next_sibling()
@@ -182,11 +182,11 @@ def Extract( iCompany, iSoup ):
 		a.append( 'Croissance BNA (Reuters) -5/-3/-1' )
 		td.append( a )
 		td = td.find_next_sibling()
-		td.find( 'b' ).string = '{}%'.format( iCompany.mBNAGrowthR5['-5'] )
+		td.find( 'b' ).string = '{}%'.format( iCompany.mReuters.mBNAGrowth['-5'] )
 		td = td.find_next_sibling()
-		td.find( 'b' ).string = '{}%'.format( iCompany.mBNAGrowthR5['-3'] )
+		td.find( 'b' ).string = '{}%'.format( iCompany.mReuters.mBNAGrowth['-3'] )
 		td = td.find_next_sibling()
-		td.find( 'b' ).string = '{}%'.format( iCompany.mBNAGrowthR5['-1'] )
+		td.find( 'b' ).string = '{}%'.format( iCompany.mReuters.mBNAGrowth['-1'] )
 		td = td.find_next_sibling()
 		td.find( 'b' ).string = ''
 		td = td.find_next_sibling()

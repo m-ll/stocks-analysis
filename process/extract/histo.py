@@ -6,7 +6,7 @@ def Extract( iCompany, iSoup ):
 	div_data = iSoup.new_tag( 'div' )
 	div_data['class'] = 'clear last10'
 	
-	if not iCompany.mYearsB:
+	if not iCompany.mBoerse.mYears:
 		return div_data
 	
 	tbody = iSoup.new_tag( 'tbody' )
@@ -17,7 +17,7 @@ def Extract( iCompany, iSoup ):
 	td.string = ''
 	tr = iSoup.new_tag( 'tr' )
 	tr.append( td )
-	for year in iCompany.mYearsB:
+	for year in iCompany.mBoerse.mYears:
 		td = iSoup.new_tag( 'th' )
 		td.string = year
 		tr.append( td )
@@ -32,7 +32,7 @@ def Extract( iCompany, iSoup ):
 	td.string = 'PER'
 	tr = iSoup.new_tag( 'tr' )
 	tr.append( td )
-	for value in iCompany.mPERB:
+	for value in iCompany.mBoerse.mPER:
 		td = iSoup.new_tag( 'td' )
 		td.string = '{}'.format( value )
 		tr.append( td )
@@ -47,7 +47,7 @@ def Extract( iCompany, iSoup ):
 	tr = iSoup.new_tag( 'tr' )
 	tr['class'] = 'imp'
 	tr.append( td )
-	for value in iCompany.mBNAB:
+	for value in iCompany.mBoerse.mBNA:
 		td = iSoup.new_tag( 'td' )
 		td.string = '{}'.format( value )
 		tr.append( td )
@@ -61,14 +61,14 @@ def Extract( iCompany, iSoup ):
 	tr.append( td )
 	td = iSoup.new_tag( 'td' )	# empty first td
 	tr.append( td )
-	for value in iCompany.mBNAGrowthB:
+	for value in iCompany.mBoerse.mBNAGrowth:
 		td = iSoup.new_tag( 'td' )
 		td.string = '{:.2f}%'.format( value * 100 )
 		td['class'] = 'plus' if value >= 0 else 'minus'
 		tr.append( td )
 	td = iSoup.new_tag( 'td' )
-	td.string = '~{:.2f}%'.format( iCompany.mBNAGrowthAverageLast5YB * 100 )
-	td['class'] = 'plus' if iCompany.mBNAGrowthAverageLast5YB >= 0 else 'minus'
+	td.string = '~{:.2f}%'.format( iCompany.mBoerse.mBNAGrowthAverageLast5Y * 100 )
+	td['class'] = 'plus' if iCompany.mBoerse.mBNAGrowthAverageLast5Y >= 0 else 'minus'
 	tr.append( td )
 	tbody.append( tr )
 	
@@ -79,7 +79,7 @@ def Extract( iCompany, iSoup ):
 	tr = iSoup.new_tag( 'tr' )
 	tr['class'] = 'imp'
 	tr.append( td )
-	for value in iCompany.mDividendB:
+	for value in iCompany.mBoerse.mDividend:
 		td = iSoup.new_tag( 'td' )
 		td.string = '{}'.format( value )
 		tr.append( td )
@@ -93,14 +93,14 @@ def Extract( iCompany, iSoup ):
 	tr.append( td )
 	td = iSoup.new_tag( 'td' )	# empty first td
 	tr.append( td )
-	for value in iCompany.mDividendGrowthB:
+	for value in iCompany.mBoerse.mDividendGrowth:
 		td = iSoup.new_tag( 'td' )
 		td.string = '{:.2f}%'.format( value * 100 )
 		td['class'] = 'plus' if value >= 0 else 'minus'
 		tr.append( td )
 	td = iSoup.new_tag( 'td' )
-	td.string = '~{:.2f}%'.format( iCompany.mDividendGrowthAverageLast5YB * 100 )
-	td['class'] = 'plus' if iCompany.mDividendGrowthAverageLast5YB >= 0 else 'minus'
+	td.string = '~{:.2f}%'.format( iCompany.mBoerse.mDividendGrowthAverageLast5Y * 100 )
+	td['class'] = 'plus' if iCompany.mBoerse.mDividendGrowthAverageLast5Y >= 0 else 'minus'
 	tr.append( td )
 	tbody.append( tr )
 	
@@ -111,7 +111,7 @@ def Extract( iCompany, iSoup ):
 	tr = iSoup.new_tag( 'tr' )
 	tr['class'] = 'imp'
 	tr.append( td )
-	for value in iCompany.mDividendYieldB:
+	for value in iCompany.mBoerse.mDividendYield:
 		td = iSoup.new_tag( 'td' )
 		td.string = value
 		tr.append( td )

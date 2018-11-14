@@ -59,7 +59,7 @@ def Extract( iCompany, iSoup ):
 	if link_dividends_ts is not None:
 		h_title.append( link_dividends_ts )
 		
-	for next_date in iCompany.mMorningstarDividendNextDates:
+	for next_date in iCompany.mMorningstar.mDividendNextDates:
 		br = iSoup.new_tag( 'br' )
 		h_title.append( br )
 		h_title.append( 'Next Dividend: ' )
