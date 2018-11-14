@@ -4,37 +4,37 @@ import os
 from bs4 import BeautifulSoup
 from datetime import date, datetime
 
-from ..company import *
+from ..company import cZoneBourse
 
 #---
 
 def Extract( iCompany, iSoup ):
 	link_graph = iSoup.new_tag( 'a' )
-	link_graph['href'] = iCompany.SourceUrlChartZB( eZBChartAppletMode.kStatic )
+	link_graph['href'] = iCompany.mZoneBourse.UrlGraphic( cZoneBourse.eAppletMode.kStatic )
 	link_graph.append( ' [Graphique]' )
 	
 	link_graph2 = iSoup.new_tag( 'a' )
-	link_graph2['href'] = iCompany.SourceUrlChartZB( eZBChartAppletMode.kDynamic )
+	link_graph2['href'] = iCompany.mZoneBourse.UrlGraphic( cZoneBourse.eAppletMode.kDynamic )
 	link_graph2.append( ' [Dyn]' )
 	
 	link_fond = iSoup.new_tag( 'a' )
-	link_fond['href'] = iCompany.SourceUrlFinancialsZB()
+	link_fond['href'] = iCompany.mZoneBourse.UrlData()
 	link_fond.append( ' [Fondamentaux]' )
 	
 	link_societe = iSoup.new_tag( 'a' )
-	link_societe['href'] = iCompany.SourceUrlSocietyZB()
+	link_societe['href'] = iCompany.mZoneBourse.UrlSociety()
 	link_societe.append( ' [Societe]' )
 	
 	link_dividends_fc = None
 	if iCompany.mFCName:
 		link_dividends_fc = iSoup.new_tag( 'a' )
-		link_dividends_fc['href'] = iCompany.SourceUrlDividendsFC()
+		link_dividends_fc['href'] = iCompany.mFinances.Url()
 		link_dividends_fc.append( ' [DividendsFC]' )
 		
 	link_dividends_ts = None
 	if iCompany.mTSName:
 		link_dividends_ts = iSoup.new_tag( 'a' )
-		link_dividends_ts['href'] = iCompany.SourceUrlDividendsTS()
+		link_dividends_ts['href'] = iCompany.mTradingSat.Url()
 		link_dividends_ts.append( ' [DividendsTS]' )
 	
 	sprice = iCompany.mSFinancialsZB.find( id='zbjsfv_dr' )

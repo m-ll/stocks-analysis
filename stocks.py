@@ -5,12 +5,15 @@ import sys
 import json
 import argparse
 from datetime import datetime
-from process.company import *
-from process.download.download import *
-from process.extract.extract import *
 
 from colorama import init, Fore, Back, Style
 init( autoreset=True )
+
+from process.company import *
+from process.extract.extract import *
+
+from download.options import cOptions
+from download.browser import cBrowser
 
 # https://graphseobourse.fr/classement-des-entreprises-les-plus-innovantes-du-monde/
 
@@ -36,13 +39,25 @@ parser.add_argument( '--download', choices=['no', 'yes', 'force'], default='yes'
 parser.add_argument( '--suffix', help='Set suffix of output folder', required=True )
 args = parser.parse_args()
 
-SetForceDownload( args.download == 'force' )
-
 if not os.path.exists( 'geckodriver' ):
 	print( Back.RED + 'You need to download "geckodriver" file and move it next to this file' )
 	sys.exit()
 
 #---
+
+# root_path = os.path.abspath( '.' )
+
+# Create input (data) directory (_data/xxx)
+# data_path = os.path.join( root_path, '_data', args.suffix )
+# os.makedirs( data_path, exist_ok=True )
+
+# Create output directories (_output/xxx and _output/xxx/img)
+# output_path = os.path.join( root_path, '_output', args.suffix )
+# os.makedirs( output_path, exist_ok=True )
+
+# image_name = 'img'
+# output_path_img = os.path.join( output_path, image_name )
+# os.makedirs( output_path_img, exist_ok=True )
 
 # Create output directories (_output-xxx and _output-xxx/img)
 output_name = f'_output-{args.suffix}'
@@ -82,6 +97,14 @@ if not args.groups:
 
 #---
 
+options = cOptions()
+options.ForceDownload( args.download == 'force' )
+options.TempDirectory( '' )
+
+browser = cBrowser( options )
+
+#---
+
 for group in args.groups:
 	companies_of_current_group = list( filter( lambda v: v.mGroup == group, companies ) )
 	if not companies_of_current_group:
@@ -92,16 +115,11 @@ for group in args.groups:
 	print( 'Group: {} ({})'.format( group, len( companies_of_current_group ) ) )
 	
 	if args.download in ['yes', 'force']:
-		DownloadFinancialsMorningstar( companies_of_current_group )
-		DownloadFinancialsZB( companies_of_current_group )
-		DownloadFinancialsFV( companies_of_current_group )
-		DownloadFinancialsR( companies_of_current_group )
-		DownloadFinancialsYF( companies_of_current_group )
-		DownloadFinancialsB( companies_of_current_group )
-		DownloadSociety( companies_of_current_group )
-		DownloadStockPrice( companies_of_current_group )
-		DownloadDividends( companies_of_current_group )
-	
+		browser.Init()
+
+		for company in companies_of_current_group:
+			company.Download( browser )
+		
 	Fill( companies_of_current_group )
 	
 	companies_sorted_by_yield = sorted( companies_of_current_group, key=lambda company: company.mYieldCurrent, reverse=True )
@@ -118,5 +136,5 @@ for group in args.groups:
 	
 #---
 
-# Clean	
-BrowserQuit()
+if browser is not None:
+	browser.Quit()

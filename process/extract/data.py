@@ -98,7 +98,7 @@ def Extract( iCompany, iSoup ):
 		tr_croissance_yf['class'] = tr_croissance_yf.get( 'class', [] ) + [ 'croissance5' ]
 		td = tr_croissance_yf.find( 'td' )
 		td.clear()
-		a = iSoup.new_tag( 'a', href=iCompany.SourceUrlFinancialsYF() )
+		a = iSoup.new_tag( 'a', href=iCompany.mYahooFinance.Url() )
 		a.append( 'Croissance (YahooFinance) -5/0/+1/+5' )
 		td.append( a )
 		td = td.find_next_sibling()
@@ -152,7 +152,7 @@ def Extract( iCompany, iSoup ):
 		td = tr_croissance_bna_fv.find( 'td' )
 		# td.string = 'Croissance BNA (Finviz) -5/0/+1/+5'
 		td.clear()
-		a = iSoup.new_tag( 'a', href=iCompany.SourceUrlFinancialsFV() )
+		a = iSoup.new_tag( 'a', href=iCompany.mFinviz.Url() )
 		a.append( 'Croissance BNA (Finviz) -5/0/+1/+5' )
 		td.append( a )
 		td = td.find_next_sibling()
@@ -180,7 +180,7 @@ def Extract( iCompany, iSoup ):
 		td = tr_croissance_bna_r.find( 'td' )
 		# td.string = 'Croissance BNA (Reuters) -5/-3/-1'
 		td.clear()
-		a = iSoup.new_tag( 'a', href=iCompany.SourceUrlFinancialsR() )
+		a = iSoup.new_tag( 'a', href=iCompany.mReuters.Url() )
 		a.append( 'Croissance BNA (Reuters) -5/-3/-1' )
 		td.append( a )
 		td = td.find_next_sibling()
@@ -305,7 +305,7 @@ def Extract( iCompany, iSoup ):
 		div_data.append( copy.copy( bnadiv ) )
 	
 	img_max = iSoup.new_tag( 'img' )
-	img_max['src'] = iCompany.DestinationFileIMG( 9999 )
+	img_max['src'] = iCompany.DestinationFile( iCompany.mZoneBourse.FileNamePricesSimple( 9999 ) )
 	div_data.append( img_max )
 
 	#---

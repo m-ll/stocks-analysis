@@ -12,6 +12,15 @@ from datetime import date, datetime
 
 from bs4 import BeautifulSoup
 
+from download.zonebourse import cZoneBourse as cDLZoneBourse
+from download.finviz import cFinviz as cDLFinviz
+from download.morningstar import cMorningstar as cDLMorningstar
+from download.yahoofinance import cYahooFinance as cDLYahooFinance
+from download.reuters import cReuters as cDLReuters
+from download.boerse import cBoerse as cDLBoerse
+from download.tradingsat import cTradingSat as cDLTradingSat
+from download.finances import cFinances as cDLFinances
+
 class cDataMorningstar:
 	def __init__( self, iRow=None, iParent=None, iComputeGrowthAverage=False ):
 		self.mData = []
@@ -128,15 +137,196 @@ class cDataMorningstar:
 			
 	def _FixLocale2( self, iString ):
 		return iString.replace( ',', '' ).replace( '—', '' )
-			
-class eZBChartAppletMode( Enum ):
-    kStatic = auto()
-    kDynamic = auto()
+		
+#---
+
+class cZoneBourse:
+	class eAppletMode( Enum ):
+		kStatic = auto()
+		kDynamic = auto()
+	
+	def __init__( self, iCompany, iName, iCode, iSymbol ):
+		self.mCompany = iCompany
+		self.mName = iName
+		self.mCode = iCode
+		self.mSymbol = iSymbol
+		
+	def Name( self ):
+		return self.mName
+	def Code( self ):
+		return self.mCode
+	def Symbol( self ):
+		return self.mSymbol
+		
+	def UrlData( self ):
+		return 'https://www.zonebourse.com/{}-{}/{}/'.format( self.mName, self.mCode, 'fondamentaux' )
+	def FileNameData( self ):
+		return '{}.{}.zonebourse-data.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+		
+	def UrlSociety( self ):
+		return 'https://www.zonebourse.com/{}-{}/{}/'.format( self.mName, self.mCode, 'societe' )
+	def FileNameSociety( self ):
+		return '{}.{}.zonebourse-society.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+		
+	def UrlGraphic( self, iAppletMode ):
+		applet_mode = 'statique'
+		if iAppletMode is self.eAppletMode.kDynamic:
+			applet_mode = 'dynamic2'
+		return 'https://www.zonebourse.com/{}-{}/{}/&applet_mode={}'.format( self.mName, self.mCode, 'graphiques', applet_mode )
+		
+	def UrlPricesSimple( self, iDuration, iWidth, iHeight ):
+		return 'https://www.zonebourse.com/zbcache/charts/ObjectChart.aspx?Name={0}&Type=Custom&Intraday=1&Width={2}&Height={3}&Cycle=NONE&Duration={1}&TopMargin=10&Render=Candle&ShowName=0'.format( self.mCode, iDuration, iWidth, iHeight )
+	def FileNamePricesSimple( self, iYears ):
+		return '{}.{}.{}.{}.gif'.format( self.mCompany.Name(), self.mCompany.ISIN(), self.mCode, iYears )
+	
+	def UrlPricesIchimoku( self ):
+		return self.UrlGraphic( self.eAppletMode.kDynamic )
+	def FileNamesPricesIchimoku( self ):
+		return ( '{}.{}.{}.{}-{}.png'.format( self.mCompany.Name(), self.mCompany.ISIN(), self.mCode, 'content', 'ichimoku' ),
+				'{}.{}.{}.{}-{}.png'.format( self.mCompany.Name(), self.mCompany.ISIN(), self.mCode, 'prices', 'ichimoku' ),
+				'{}.{}.{}.{}-{}.png'.format( self.mCompany.Name(), self.mCompany.ISIN(), self.mCode, 'times', 'ichimoku' ) )
+	
+class cFinviz:
+	def __init__( self, iCompany, iSymbol ):
+		self.mCompany = iCompany
+		self.mSymbol = iSymbol
+		
+	def Symbol( self ):
+		return self.mSymbol
+		
+	def Url( self ):
+		return 'https://finviz.com/quote.ashx?t={}'.format( self.mSymbol )
+	def FileName( self ):
+		return '{}.{}.finviz.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+class cYahooFinance:
+	def __init__( self, iCompany, iSymbol ):
+		self.mCompany = iCompany
+		self.mSymbol = iSymbol
+		
+	def Symbol( self ):
+		return self.mSymbol
+		
+	def Url( self ):
+		if self.mCompany.ISIN() == 'GB0008847096':
+			return 'https://uk.finance.yahoo.com/quote/{}/analysis?p={}'.format( self.mSymbol, self.mSymbol )
+		else:
+			return 'https://finance.yahoo.com/quote/{}/analysis?p={}'.format( self.mSymbol, self.mSymbol )
+	def FileName( self ):
+		return '{}.{}.yahoofinance.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+class cReuters:
+	def __init__( self, iCompany, iSymbol ):
+		self.mCompany = iCompany
+		self.mSymbol = iSymbol
+		
+	def Symbol( self ):
+		return self.mSymbol
+		
+	def Url( self ):
+		return 'https://www.reuters.com/finance/stocks/financial-highlights/{}'.format( self.mSymbol )
+	def FileName( self ):
+		return '{}.{}.reuters.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+class cBoerse:
+	def __init__( self, iCompany, iName ):
+		self.mCompany = iCompany
+		self.mName = iName
+		
+	def Name( self ):
+		return self.mName
+		
+	def Url( self ):
+		return 'https://www.boerse.de/fundamental-analyse/{}-Aktie/{}'.format( self.mName, self.mCompany.ISIN() )
+	def FileName( self ):
+		return '{}.{}.boerse.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+class cTradingSat:
+	def __init__( self, iCompany, iName ):
+		self.mCompany = iCompany
+		self.mName = iName
+		
+	def Name( self ):
+		return self.mName
+		
+	def Url( self ):
+		return 'https://www.tradingsat.com/{}-{}/dividende.html'.format( self.mName, self.mCompany.ISIN() )
+	def FileName( self ):
+		return '{}.{}.tradingsat.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+class cFinances:
+	def __init__( self, iCompany, iName ):
+		self.mCompany = iCompany
+		self.mName = iName
+		
+	def Name( self ):
+		return self.mName
+		
+	def Url( self ):
+		return 'http://www.finances.net/dividendes/{}'.format( self.mName )
+	def FileName( self ):
+		return '{}.{}.finances.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+class cMorningstar:
+	def __init__( self, iCompany, iSymbol, iRegion, iCity ):
+		self.mCompany = iCompany
+		self.mSymbol = iSymbol
+		self.mRegion = iRegion
+		self.mCity = iCity
+		
+	def Symbol( self ):
+		return self.mSymbol
+	def Region( self ):
+		return self.mRegion
+	def City( self ):
+		return self.mCity
+		
+	def UrlIncomeStatement( self ):
+		if self.mCity == 'xetr':
+			return 'http://financials.morningstar.com/income-statement/is.html?t={}:{}&region={}&culture=en-US'.format( self.mCity, self.mSymbol, self.mRegion )
+		return 'http://financials.morningstar.com/income-statement/is.html?t={}&region={}&culture=en-US'.format( self.mSymbol, self.mRegion )
+	def FileNameIncomeStatement( self ):
+		return '{}.{}.{}.csv'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-income-statement' )
+		
+	def UrlBalanceSheet( self ):
+		if self.mCity == 'xetr':
+			return 'http://financials.morningstar.com/balance-sheet/bs.html?t={}:{}&region={}&culture=en-US'.format( self.mCity, self.mSymbol, self.mRegion )
+		return 'http://financials.morningstar.com/balance-sheet/bs.html?t={}&region={}&culture=en-US'.format( self.mSymbol, self.mRegion )
+	def FileNameBalanceSheet( self ):
+		return '{}.{}.{}.csv'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-balance-sheet' )
+		
+	def UrlRatios( self ):
+		if self.mCity == 'xetr':
+			return 'http://financials.morningstar.com/ratios/r.html?t={}:{}&region={}&culture=en-US'.format( self.mCity, self.mSymbol, self.mRegion )
+		return 'http://financials.morningstar.com/ratios/r.html?t={}&region={}&culture=en-US'.format( self.mSymbol, self.mRegion )
+	def FileNameRatios( self ):
+		return '{}.{}.{}.csv'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-ratios' )
+		
+	def UrlValuation( self ):
+		return 'https://www.morningstar.com/stocks/{}/{}/quote.html'.format( self.mCity, self.mSymbol.lower() )
+	def FileNameValuation( self ):
+		return '{}.{}.{}.html'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-valuation' )
+		
+	def UrlDividends( self ):
+		return 'https://www.morningstar.com/stocks/{}/{}/quote.html'.format( self.mCity, self.mSymbol.lower() )
+	def FileNameDividends( self ):
+		return '{}.{}.{}.html'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-dividends' )
 
 class cCompany:
 	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName ):
 		self.mISIN = iISIN
 		self.mName = iZBName
+		
+		self.mZoneBourse = cZoneBourse( self, iZBName, iZBCode, iZBSymbol )
+		self.mFinviz = cFinviz( self, iFVSymbol )
+		self.mMorningstar = cMorningstar( self, iZBSymbol, iMorningstarRegion, iMorningstarX )
+		self.mYahooFinance = cYahooFinance( self, iYFSymbol )
+		self.mReuters = cReuters( self, iRSymbol )
+		self.mBoerse = cBoerse( self, iZBName )
+		self.mTradingSat = cTradingSat( self, iTSName )
+		self.mFinances = cFinances( self, iFCName )
+		
+		#---
 		
 		self.mZBName = iZBName			# ZB = ZoneBourse
 		self.mZBCode = iZBCode
@@ -163,112 +353,51 @@ class cCompany:
 		
 	#---
 	
-	def DataDir( self, iDirectory ):
+	def DataDir( self, iDirectory=None ):
+		if iDirectory is None:
+			return self.mSourceDir
+		
+		previous_value = self.mSourceDir
 		self.mSourceDir = iDirectory
+		return self.mSourceDir
 	
 	def ImageDir( self, iDirectory ):
 		self.mDestinationDir = iDirectory
 	
 	def Group( self, iGroup ):
 		self.mGroup = iGroup
+		
+	def ISIN( self ):
+		return self.mISIN
+	def Name( self ):
+		return self.mName
 	
-	def SourceUrlFinancialsZB( self ):
-		return 'https://www.zonebourse.com/{}-{}/{}/'.format( self.mZBName, self.mZBCode, 'fondamentaux' )
-	def SourceFileHTMLFinancialsZB( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.finZB.html'.format( self.mName, self.mISIN ) )
-		
-	def SourceUrlFinancialsMorningstarIncomeStatement( self ):
-		if self.mMorningstarX == 'xetr':
-			return 'http://financials.morningstar.com/income-statement/is.html?t={}:{}&region={}&culture=en-US'.format( self.mMorningstarX, self.mMorningstarSymbol, self.mMorningstarRegion )
-		return 'http://financials.morningstar.com/income-statement/is.html?t={}&region={}&culture=en-US'.format( self.mMorningstarSymbol, self.mMorningstarRegion )
-	def SourceFileHTMLFinancialsMorningstarIncomeStatement( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarIncomeStatement.csv'.format( self.mName, self.mISIN ) )
-
-	def SourceUrlFinancialsMorningstarBalanceSheet( self ):
-		if self.mMorningstarX == 'xetr':
-			return 'http://financials.morningstar.com/balance-sheet/bs.html?t={}:{}&region={}&culture=en-US'.format( self.mMorningstarX, self.mMorningstarSymbol, self.mMorningstarRegion )
-		return 'http://financials.morningstar.com/balance-sheet/bs.html?t={}&region={}&culture=en-US'.format( self.mMorningstarSymbol, self.mMorningstarRegion )
-	def SourceFileHTMLFinancialsMorningstarBalanceSheet( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarBalanceSheet.csv'.format( self.mName, self.mISIN ) )
-
-	def SourceUrlFinancialsMorningstarRatios( self ):
-		if self.mMorningstarX == 'xetr':
-			return 'http://financials.morningstar.com/ratios/r.html?t={}:{}&region={}&culture=en-US'.format( self.mMorningstarX, self.mMorningstarSymbol, self.mMorningstarRegion )
-		return 'http://financials.morningstar.com/ratios/r.html?t={}&region={}&culture=en-US'.format( self.mMorningstarSymbol, self.mMorningstarRegion )
-	def SourceFileHTMLFinancialsMorningstarRatios( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarRatios.csv'.format( self.mName, self.mISIN ) )
-		
-	def SourceUrlFinancialsMorningstarValuation( self ):
-		return 'https://www.morningstar.com/stocks/{}/{}/quote.html'.format( self.mMorningstarX, self.mMorningstarSymbol.lower() )
-	def SourceFileHTMLFinancialsMorningstarValuation( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarValuation.html'.format( self.mName, self.mISIN ) )
-		
-	def SourceUrlFinancialsMorningstarDividends( self ):
-		return 'https://www.morningstar.com/stocks/{}/{}/quote.html'.format( self.mMorningstarX, self.mMorningstarSymbol.lower() )
-	def SourceFileHTMLFinancialsMorningstarDividends( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.finMorningstarDividends.html'.format( self.mName, self.mISIN ) )
-		
-	def SourceUrlFinancialsFV( self ):
-		return 'https://finviz.com/quote.ashx?t={}'.format( self.mFVSymbol )
-	def SourceFileHTMLFinancialsFV( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.finFV.html'.format( self.mName, self.mISIN ) )
-		
-	def SourceUrlFinancialsR( self ):
-		return 'https://www.reuters.com/finance/stocks/financial-highlights/{}'.format( self.mRSymbol )
-	def SourceFileHTMLFinancialsR( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.finR.html'.format( self.mName, self.mISIN ) )
-		
-	def SourceUrlFinancialsYF( self ):
-		if self.mISIN == 'GB0008847096':
-			return 'https://uk.finance.yahoo.com/quote/{}/analysis?p={}'.format( self.mYFSymbol, self.mYFSymbol )
-		else:
-			return 'https://finance.yahoo.com/quote/{}/analysis?p={}'.format( self.mYFSymbol, self.mYFSymbol )
-	def SourceFileHTMLFinancialsYF( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.finYF.html'.format( self.mName, self.mISIN ) )
-		
-	def SourceUrlFinancialsB( self ):
-		return 'https://www.boerse.de/fundamental-analyse/{}-Aktie/{}'.format( self.mBName, self.mISIN )
-	def SourceFileHTMLFinancialsB( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.finB.html'.format( self.mName, self.mISIN ) )
-		
-	def SourceUrlSocietyZB( self ):
-		return 'https://www.zonebourse.com/{}-{}/{}/'.format( self.mZBName, self.mZBCode, 'societe' )
-	def SourceFileHTMLSocietyZB( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.socZB.html'.format( self.mName, self.mISIN ) )
-		
-	def SourceUrlDividendsTS( self ):
-		return 'https://www.tradingsat.com/{}-{}/dividende.html'.format( self.mTSName, self.mISIN )
-	def SourceFileHTMLDividendsTS( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.divTS.html'.format( self.mName, self.mISIN ) )
-		
-	def SourceUrlDividendsFC( self ):
-		return 'http://www.finances.net/dividendes/{}'.format( self.mFCName )
-	def SourceFileHTMLDividendsFC( self ):
-		return os.path.join( self.mSourceDir, '{}.{}.divFC.html'.format( self.mName, self.mISIN ) )
-		
-	def SourceUrlChartZB( self, iAppletMode ):
-		applet_mode = 'statique'
-		if iAppletMode is eZBChartAppletMode.kDynamic:
-			applet_mode = 'dynamic2'
-		return 'https://www.zonebourse.com/{}-{}/{}/&applet_mode={}'.format( self.mZBName, self.mZBCode, 'graphiques', applet_mode )
-	def SourceUrlStockPriceZB( self, iDuration, iWidth, iHeight ):
-		return 'https://www.zonebourse.com/zbcache/charts/ObjectChart.aspx?Name={0}&Type=Custom&Intraday=1&Width={2}&Height={3}&Cycle=NONE&Duration={1}&TopMargin=10&Render=Candle&ShowName=0'.format( self.mZBCode, iDuration, iWidth, iHeight )
-		
-	def FileIMG( self, iYears ):
-		return '{}.{}.{}.{}.gif'.format( self.mName, self.mISIN, self.mZBCode, iYears )
-	def FileIMGIchimoku( self, iPart ):
-		return '{}.{}.{}.{}-{}.png'.format( self.mName, self.mISIN, self.mZBCode, iPart, 'ichimoku' )
-
-	def SourceFileIMG( self, iYears ):
-		return os.path.join( self.mSourceDir, self.FileIMG( iYears ) )
-	def SourceFileIMGIchimoku( self, iPart ):
-		return os.path.join( self.mSourceDir, self.FileIMGIchimoku( iPart ) )
-
+	def DataFileHTML( self, iFileName ):
+		return os.path.join( self.mSourceDir, iFileName )
+	
 	# from where the html file is !
-	def DestinationFileIMG( self, iYears ):
-		return os.path.join( self.mDestinationDir, self.FileIMG( iYears ) )
-	def DestinationFileIMGIchimoku( self, iPart ):
-		return os.path.join( self.mDestinationDir, self.FileIMGIchimoku( iPart ) )
+	def DestinationFile( self, iFileName ):
+		return os.path.join( self.mDestinationDir, iFileName )
+	
+	def Download( self, iBrowser ):
+		print( 'Download: {}'.format( self.mName ) )
+		
+		dl = cDLZoneBourse()
+		dl.Download( iBrowser, self )
+		dl = cDLFinviz()
+		dl.Download( iBrowser, self )
+		dl = cDLMorningstar()
+		dl.Download( iBrowser, self )
+		dl = cDLYahooFinance()
+		dl.Download( iBrowser, self )
+		dl = cDLReuters()
+		dl.Download( iBrowser, self )
+		dl = cDLBoerse()
+		dl.Download( iBrowser, self )
+		dl = cDLTradingSat()
+		dl.Download( iBrowser, self )
+		dl = cDLFinances()
+		dl.Download( iBrowser, self )
 	
 	#---
 	
@@ -290,14 +419,22 @@ class cCompany:
 	#---
 	
 	def WriteImages( self, iOutputDirectory ):
-		shutil.copy( self.SourceFileIMG( 9999 ), os.path.join( iOutputDirectory, self.DestinationFileIMG( 9999 ) ) )
-		shutil.copy( self.SourceFileIMG( 10 ), os.path.join( iOutputDirectory, self.DestinationFileIMG( 10 ) ) )
-		shutil.copy( self.SourceFileIMG( 5 ), os.path.join( iOutputDirectory, self.DestinationFileIMG( 5 ) ) )
-		shutil.copy( self.SourceFileIMG( 2 ), os.path.join( iOutputDirectory, self.DestinationFileIMG( 2 ) ) )
+		#TOIMPROVE
+		filename = self.mZoneBourse.FileNamePricesSimple( 9999 )
+		shutil.copy( self.DataFileHTML( filename ), os.path.join( iOutputDirectory, self.DestinationFile( filename ) ) )
+		filename = self.mZoneBourse.FileNamePricesSimple( 10 )
+		shutil.copy( self.DataFileHTML( filename ), os.path.join( iOutputDirectory, self.DestinationFile( filename ) ) )
+		filename = self.mZoneBourse.FileNamePricesSimple( 5 )
+		shutil.copy( self.DataFileHTML( filename ), os.path.join( iOutputDirectory, self.DestinationFile( filename ) ) )
+		filename = self.mZoneBourse.FileNamePricesSimple( 2 )
+		shutil.copy( self.DataFileHTML( filename ), os.path.join( iOutputDirectory, self.DestinationFile( filename ) ) )
 		
-		shutil.copy( self.SourceFileIMGIchimoku( 'chart' ), os.path.join( iOutputDirectory, self.DestinationFileIMGIchimoku( 'chart' ) ) )
-		shutil.copy( self.SourceFileIMGIchimoku( 'prices' ), os.path.join( iOutputDirectory, self.DestinationFileIMGIchimoku( 'prices' ) ) )
-		shutil.copy( self.SourceFileIMGIchimoku( 'times' ), os.path.join( iOutputDirectory, self.DestinationFileIMGIchimoku( 'times' ) ) )
+		filenames = self.mZoneBourse.FileNamesPricesIchimoku()
+		shutil.copy( self.DataFileHTML( filenames[0] ), os.path.join( iOutputDirectory, self.DestinationFile( filenames[0] ) ) )
+		shutil.copy( self.DataFileHTML( filenames[1] ), os.path.join( iOutputDirectory, self.DestinationFile( filenames[1] ) ) )
+		shutil.copy( self.DataFileHTML( filenames[2] ), os.path.join( iOutputDirectory, self.DestinationFile( filenames[2] ) ) )
+	
+	#---
 	
 	def ComputeCroissanceTr( self, iTr ):
 		bs = iTr.find_all( 'b' )
@@ -354,7 +491,7 @@ class cCompany:
 		#---
 		
 		html_content = ''
-		with open( self.SourceFileHTMLFinancialsZB(), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataFileHTML( self.mZoneBourse.FileNameData() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSFinancialsZB = BeautifulSoup( html_content, 'html5lib' )
@@ -391,7 +528,7 @@ class cCompany:
 		#---
 		
 		html_content = ''
-		with open( self.SourceFileHTMLSocietyZB(), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataFileHTML( self.mZoneBourse.FileNameSociety() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSSocietyZB = BeautifulSoup( html_content, 'html5lib' )
@@ -411,7 +548,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.SourceFileHTMLFinancialsFV(), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataFileHTML( self.mFinviz.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSFinancialsFV = BeautifulSoup( html_content, 'html5lib' )
@@ -456,7 +593,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.SourceFileHTMLFinancialsR(), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataFileHTML( self.mReuters.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSFinancialsR = BeautifulSoup( html_content, 'html5lib' )
@@ -492,7 +629,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.SourceFileHTMLFinancialsYF(), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataFileHTML( self.mYahooFinance.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSFinancialsYF = BeautifulSoup( html_content, 'html5lib' )
@@ -540,7 +677,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.SourceFileHTMLFinancialsB(), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataFileHTML( self.mBoerse.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSFinancialsB = BeautifulSoup( html_content, 'html5lib' )
@@ -605,7 +742,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.SourceFileHTMLDividendsFC(), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataFileHTML( self.mFinances.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSDividendsFC = BeautifulSoup( html_content, 'html5lib' )
@@ -617,7 +754,7 @@ class cCompany:
 			return
 			
 		html_content = ''
-		with open( self.SourceFileHTMLDividendsTS(), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataFileHTML( self.mTradingSat.FileName() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		self.mSDividendsTS = BeautifulSoup( html_content, 'html5lib' )
@@ -670,7 +807,7 @@ class cCompany:
 		if not self.mMorningstarRegion:
 			return
 			
-		with open( self.SourceFileHTMLFinancialsMorningstarIncomeStatement(), newline='' ) as csvfile:
+		with open( self.DataFileHTML( self.mMorningstar.FileNameIncomeStatement() ), newline='' ) as csvfile:
 			reader = csv.reader( csvfile )
 			
 			for row in reader:
@@ -688,7 +825,7 @@ class cCompany:
 		
 		#---
 		
-		with open( self.SourceFileHTMLFinancialsMorningstarBalanceSheet(), newline='' ) as csvfile:
+		with open( self.DataFileHTML( self.mMorningstar.FileNameBalanceSheet() ), newline='' ) as csvfile:
 			reader = csv.reader( csvfile )
 			
 			for row in reader:
@@ -714,7 +851,7 @@ class cCompany:
 			
 		#---
 			
-		with open( self.SourceFileHTMLFinancialsMorningstarRatios(), newline='' ) as csvfile:
+		with open( self.DataFileHTML( self.mMorningstar.FileNameRatios() ), newline='' ) as csvfile:
 			reader = csv.reader( csvfile )
 			
 			for row in reader:
@@ -797,7 +934,7 @@ class cCompany:
 		#---
 			
 		html_content = ''
-		with open( self.SourceFileHTMLFinancialsMorningstarValuation(), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataFileHTML( self.mMorningstar.FileNameValuation() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		svaluation = BeautifulSoup( html_content, 'html5lib' )
@@ -814,7 +951,7 @@ class cCompany:
 		#---
 		
 		html_content = ''
-		with open( self.SourceFileHTMLFinancialsMorningstarDividends(), 'r', encoding='utf-8' ) as fd:
+		with open( self.DataFileHTML( self.mMorningstar.FileNameDividends() ), 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )

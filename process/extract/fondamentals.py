@@ -99,10 +99,10 @@ def Extract( iCompany, iSoup ):
 	tbody = iSoup.new_tag( 'tbody' )
 	
 	AddTR( iSoup, tbody, '', iCompany.mMorningstarISYears, iHeader=True )
-	AddTR( iSoup, tbody, 'EBITDA', iCompany.mMorningstarEBITDA, iUrl=iCompany.SourceUrlFinancialsMorningstarIncomeStatement() )
+	AddTR( iSoup, tbody, 'EBITDA', iCompany.mMorningstarEBITDA, iUrl=iCompany.mMorningstar.UrlIncomeStatement() )
 	
 	# AddTR( iSoup, tbody, '', iCompany.mMorningstarBSYears, iHeader=True )
-	AddTR( iSoup, tbody, 'LongTerm Debt', iCompany.mMorningstarLongTermDebt, iUrl=iCompany.SourceUrlFinancialsMorningstarBalanceSheet() )
+	AddTR( iSoup, tbody, 'LongTerm Debt', iCompany.mMorningstarLongTermDebt, iUrl=iCompany.mMorningstar.UrlBalanceSheet() )
 	AddTR( iSoup, tbody, 'LT-Debt/EBITDA (<5)', iCompany.mMorningstarLTDOnEBITDA, lambda v : 1 if v < 5.0 else -1 )
 	
 	table = iSoup.new_tag( 'table' )
@@ -116,7 +116,7 @@ def Extract( iCompany, iSoup ):
 	
 	AddTR( iSoup, tbody, '', iCompany.mMorningstarFinancialsYears, iHeader=True )
 	# AddTR( iSoup, tbody, '', iCompany.mMorningstarGrowthYears, iHeader=True )
-	AddTR( iSoup, tbody, 'Revenue', iCompany.mMorningstarFinancialsRevenue, iUrl=iCompany.SourceUrlFinancialsMorningstarRatios() )
+	AddTR( iSoup, tbody, 'Revenue', iCompany.mMorningstarFinancialsRevenue, iUrl=iCompany.mMorningstar.UrlRatios() )
 	AddTR( iSoup, tbody, 'Growth Revenue (%)', iCompany.mMorningstarGrowthRevenue, lambda v : 0 if math.isclose( v, 0.0 ) else 1 if v > 0 else -1 )
 	AddTR( iSoup, tbody, 'Net Income', iCompany.mMorningstarFinancialsNetIncome )
 	AddTR( iSoup, tbody, 'Growth Net Income (%)', iCompany.mMorningstarGrowthNetIncome, lambda v : 0 if math.isclose( v, 0.0 ) else 1 if v > 0 else -1 )
@@ -153,7 +153,7 @@ def Extract( iCompany, iSoup ):
 	tbody = iSoup.new_tag( 'tbody' )
 	
 	AddTR( iSoup, tbody, '', iCompany.mMorningstarValuationYears, iHeader=True )
-	AddTR( iSoup, tbody, 'PER (3<.<15)', iCompany.mMorningstarValuationPER, lambda v : 1 if v >=3.0 and v <= 12.0 else 0 if v >= 12.0 and v <= 18.0 else -1, iUrl=iCompany.SourceUrlFinancialsMorningstarValuation() )
+	AddTR( iSoup, tbody, 'PER (3<.<15)', iCompany.mMorningstarValuationPER, lambda v : 1 if v >=3.0 and v <= 12.0 else 0 if v >= 12.0 and v <= 18.0 else -1, iUrl=iCompany.mMorningstar.UrlValuation() )
 	AddTR( iSoup, tbody, 'Price/Book (<4)', iCompany.mMorningstarValuationP2B, lambda v : 1 if v <= 4.0 else 0 if v <= 5.0 else -1 )
 	AddTR( iSoup, tbody, 'Price/Sales (<2)', iCompany.mMorningstarValuationP2S, lambda v : 1 if v <= 2.0 else 0 if v <= 4.0 else -1 )
 	AddTR( iSoup, tbody, 'Price/CashFlow (<8)', iCompany.mMorningstarValuationP2CF, lambda v : 1 if v <= 8.0 else 0 if v <= 12.0 else -1 )

@@ -10,18 +10,20 @@ def Extract( iCompany, iSoup ):
 	div_graph = iSoup.new_tag( 'div' )
 	div_graph['class'] = ['clear', 'image-holder']
 	
+	filenames = iCompany.mZoneBourse.FileNamesPricesIchimoku()
+	
 	img = iSoup.new_tag( 'img' )
-	img['src'] = iCompany.DestinationFileIMGIchimoku( 'chart' )
+	img['src'] = iCompany.DestinationFile( filenames[0] )
 	div_graph.append( img )
 	img = iSoup.new_tag( 'img' )
-	img['src'] = iCompany.DestinationFileIMGIchimoku( 'prices' )
+	img['src'] = iCompany.DestinationFile( filenames[1] )
 	div_graph.append( img )
 	
 	br = iSoup.new_tag( 'br' )
 	div_graph.append( br )
 	
 	img = iSoup.new_tag( 'img' )
-	img['src'] = iCompany.DestinationFileIMGIchimoku( 'times' )
+	img['src'] = iCompany.DestinationFile( filenames[2] )
 	div_graph.append( img )
 	
 	return div_graph
