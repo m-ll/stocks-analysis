@@ -35,12 +35,13 @@ def Extract( iCompany, iSoup ):
 		link_dividends_ts['href'] = iCompany.mTradingSat.Url()
 		link_dividends_ts.append( ' [DividendsTS]' )
 	
-	sprice = iCompany.mSFinancialsZB.find( id='zbjsfv_dr' )
 	price = iSoup.new_tag( 'span' )
 	price['class'] = 'price'
-	price.append( sprice.string )
+	# sprice = iCompany.mSFinancialsZB.find( id='zbjsfv_dr' )
+	# price.append( sprice.string )
+	price.append( iCompany.mZoneBourse.mPrice )
 	
-	currency = sprice.find_next_sibling( 'td' ).string
+	# currency = sprice.find_next_sibling( 'td' ).string
 	
 	# ---
 	
@@ -48,7 +49,7 @@ def Extract( iCompany, iSoup ):
 	h_title['class'] = 'clear title'
 	h_title.append( '[' )
 	h_title.append( price )
-	h_title.append( ' {} ] '.format( currency ) )
+	h_title.append( ' {} ] '.format( iCompany.mZoneBourse.mCurrency ) )
 	h_title.append( '{}: {}'.format( iCompany.Name(), iCompany.ISIN() ) )
 	h_title.append( link_graph )
 	h_title.append( link_graph2 )

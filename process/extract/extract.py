@@ -15,22 +15,6 @@ from . import dividendsFC
 
 #---
 
-def WriteImages( iCompanies ):
-	for i, company in enumerate( iCompanies, start=1 ):
-		print( 'WriteImages ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
-		
-		company.WriteImages()
-
-#---
-
-def Fill( iCompanies ):
-	for i, company in enumerate( iCompanies, start=1 ):
-		print( 'Fill ({}/{}): {} ...'.format( i, len( iCompanies ), company.mName ) )
-		
-		company.Fill()
-
-#---
-
 def Extract( iCompanies ):
 
 	css = ''

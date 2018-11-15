@@ -105,11 +105,11 @@ for group in args.groups:
 	
 	if args.download in ['yes', 'force']:
 		browser.Init()
-		cCompany.Downloads( browser, companies_of_current_group )
+		cCompany.Download( browser, companies_of_current_group )
 		
-	Fill( companies_of_current_group )
+	cCompany.Parse( companies_of_current_group )
 	
-	companies_sorted_by_yield = sorted( companies_of_current_group, key=lambda company: company.mYieldCurrent, reverse=True )
+	companies_sorted_by_yield = sorted( companies_of_current_group, key=lambda company: company.mZoneBourse.mYieldCurrent, reverse=True )
 
 	content_html = Extract( companies_sorted_by_yield )
 
@@ -117,7 +117,7 @@ for group in args.groups:
 	with open( '{}/{}-[{}].html'.format( output_path, group, len( companies_sorted_by_yield ) ), 'w' ) as output:
 		output.write( content_html )
 		
-	WriteImages( companies_sorted_by_yield )
+	cCompany.WriteImages( companies_sorted_by_yield )
 	
 	print( '' )
 	

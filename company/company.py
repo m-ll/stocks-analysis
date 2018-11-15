@@ -16,6 +16,7 @@ from download.boerse import cBoerse as cDLBoerse
 from download.tradingsat import cTradingSat as cDLTradingSat
 from download.finances import cFinances as cDLFinances
 
+from parser.zonebourse import cZoneBourse as cParserZoneBourse
 from parser.finviz import cFinviz as cParserFinviz
 from parser.morningstar import cMorningstar as cParserMorningstar
 from parser.yahoofinance import cYahooFinance as cParserYahooFinance
@@ -153,6 +154,20 @@ class cZoneBourse:
 		self.mName = iName
 		self.mCode = iCode
 		self.mSymbol = iSymbol
+		
+		self.mSoupSociety = None
+		
+		self.mSoupPER = None
+		self.mSoupBNA = None
+		self.mPrice = ''
+		self.mCurrency = ''
+		
+		self.mSoupData = None	#TODO: TMP: must have 1 variable per line like morningstar !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		self.mBNAGrowth = []
+		self.mBNAGrowthAverage = 0
+		self.mDividendsGrowth = []
+		self.mDividendsGrowthAverage = 0	# 0.0 < ... < 1.0
+		self.mYieldCurrent = 0				# 0.0 < ... < 100.0
 		
 	def Name( self ):
 		return self.mName
@@ -482,13 +497,30 @@ class cCompany:
 	
 	#---
 	
+	def SourceUrlDividendCalculator( self, iYield, iGrowth, iYears ):
+		url = 'http://www.dividend-calculator.com/annually.php?yield={:.2f}&yieldgrowth={:.2f}&shares=100&price=100&years={}&do=Calculate'
+		return url.format( iYield, iGrowth, iYears )
+	
+	def AskDividendCalculatorProjection( self, iUrl ):
+		req = requests.get( iUrl, headers={ 'User-Agent' : 'Mozilla/5.0' } )
+		
+		soup = BeautifulSoup( req.text, 'html5lib' )
+		results = soup.find( string='With Reinvestment' ).find_parent().find_next_sibling( 'p' ).find_all( 'b' )
+		cost_start = results[0].string
+		cost_stop = results[1].string
+		annual_average = results[4].string.replace( '%', '' )
+		
+		return annual_average
+	
+	#---
+	
 	@staticmethod
-	def Downloads( iBrowser, iCompanies ):
+	def Download( iBrowser, iCompanies ):
 		for i, company in enumerate( iCompanies, start=1 ):
 			print( 'Download ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
-			company.Download( iBrowser )
+			company._Download( iBrowser )
 	
-	def Download( self, iBrowser ):
+	def _Download( self, iBrowser ):
 		# print( 'Download: {}'.format( self.mName ) )
 		
 		dl = cDLZoneBourse()
@@ -511,53 +543,42 @@ class cCompany:
 	#---
 	
 	@staticmethod
-	def Parses( iCompanies ):
+	def Parse( iCompanies ):
 		for i, company in enumerate( iCompanies, start=1 ):
 			print( 'Parse ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
-			company.Parse()
+			company._Parse()
 	
-	def Parse( self ):
+	def _Parse( self ):
 		# print( 'Parse: {}'.format( self.mName ) )
 		
-		pass
-		
-		# parser = cParserZoneBourse()
-		# parser.Parse( self )
-		# parser = cParserFinviz()
-		# parser.Parse( self )
-		# parser = cParserMorningstar()
-		# parser.Parse( self )
-		# parser = cParserYahooFinance()
-		# parser.Parse( self )
-		# parser = cParserReuters()
-		# parser.Parse( self )
-		# parser = cParserBoerse()
-		# parser.Parse( self )
-		# parser = cParserTradingSat()
-		# parser.Parse( self )
-		# parser = cParserFinances()
-		# parser.Parse( self )
+		parser = cParserZoneBourse()
+		parser.Parse( self )
+		parser = cParserFinviz()
+		parser.Parse( self )
+		parser = cParserMorningstar()
+		parser.Parse( self )
+		parser = cParserReuters()
+		parser.Parse( self )
+		parser = cParserYahooFinance()
+		parser.Parse( self )
+		parser = cParserBoerse()
+		parser.Parse( self )
+		parser = cParserFinances()
+		parser.Parse( self )
+		parser = cParserTradingSat()
+		parser.Parse( self )
 	
 	#---
 	
-	def SourceUrlDividendCalculator( self, iYield, iGrowth, iYears ):
-		url = 'http://www.dividend-calculator.com/annually.php?yield={:.2f}&yieldgrowth={:.2f}&shares=100&price=100&years={}&do=Calculate'
-		return url.format( iYield, iGrowth, iYears )
+	@staticmethod
+	def WriteImages( iCompanies ):
+		for i, company in enumerate( iCompanies, start=1 ):
+			print( 'WriteImages ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
+			company._WriteImages()
 	
-	def AskDividendCalculatorProjection( self, iUrl ):
-		req = requests.get( iUrl, headers={ 'User-Agent' : 'Mozilla/5.0' } )
+	def _WriteImages( self ):
+		# print( 'WriteImages: {}'.format( self.mName ) )
 		
-		soup = BeautifulSoup( req.text, 'html5lib' )
-		results = soup.find( string='With Reinvestment' ).find_parent().find_next_sibling( 'p' ).find_all( 'b' )
-		cost_start = results[0].string
-		cost_stop = results[1].string
-		annual_average = results[4].string.replace( '%', '' )
-		
-		return annual_average
-	
-	#---
-	
-	def WriteImages( self ):
 		#TOIMPROVE: with tuple/dict/... like ichimoku (?)
 		filename = self.mZoneBourse.FileNamePricesSimple( 9999 )
 		shutil.copy( self.DataPathFile( filename ), self.OutputImgPathFile( filename ) )
@@ -573,97 +594,3 @@ class cCompany:
 		shutil.copy( self.DataPathFile( filenames[1] ), self.OutputImgPathFile( filenames[1] ) )
 		shutil.copy( self.DataPathFile( filenames[2] ), self.OutputImgPathFile( filenames[2] ) )
 	
-	#---
-	
-	def Fill( self ):
-		self.FillZoneBourse()
-		
-		parser = cParserFinviz()
-		parser.Parse( self )
-		parser = cParserMorningstar()
-		parser.Parse( self )
-		parser = cParserReuters()
-		parser.Parse( self )
-		parser = cParserYahooFinance()
-		parser.Parse( self )
-		parser = cParserBoerse()
-		parser.Parse( self )
-		parser = cParserFinances()
-		parser.Parse( self )
-		parser = cParserTradingSat()
-		parser.Parse( self )
-		
-	def ComputeCroissanceTr( self, iTr ):
-		bs = iTr.find_all( 'b' )
-		prices = []
-		for b in bs:
-			price_str = b.string.strip().replace( ',', '.' ).replace( ' ', '' )
-			if price_str == '-':
-				continue
-			prices.append( float( price_str ) )
-		
-		croissances = []
-		for i in range( 5 ):
-			if not i:
-				continue
-			av = ( prices[i] - prices[i-1] ) / abs( prices[i-1] )
-			croissances.append( av )
-		
-		return ( croissances, sum( croissances ) / len( croissances ) )
-
-	def FillZoneBourse( self ):
-		self.mSFinancialsZB = None
-		self.mSFinancialsZBTable = None
-		self.mSSocietyZB = None
-		
-		self.mBNAGrowth = []
-		self.mBNAGrowthAverage = 0
-		self.mDividendsGrowth = []
-		self.mDividendsGrowthAverage = 0	# 0.0 < ... < 1.0
-		self.mYieldCurrent = 0				# 0.0 < ... < 100.0
-		
-		#---
-		
-		html_content = ''
-		with open( self.DataPathFile( self.mZoneBourse.FileNameData() ), 'r', encoding='utf-8' ) as fd:
-			html_content = fd.read()
-			
-		self.mSFinancialsZB = BeautifulSoup( html_content, 'html5lib' )
-		
-		#---
-		
-		self.mSFinancialsZBTable = self.mSFinancialsZB.find( 'table', class_='BordCollapseYear' )
-		if not self.mSFinancialsZBTable:
-			return
-			
-		for tr in self.mSFinancialsZBTable.find_all( 'tr' ):
-			tr.append( self.mSFinancialsZB.new_tag( 'td' ) )
-		
-		tr_years = self.mSFinancialsZBTable.find( 'tr' ).find_next_sibling()
-		tr_ca = tr_years.find_next_sibling()
-		tr_ebitda = tr_ca.find_next_sibling()
-		tr_ebitda.find_next_sibling().decompose()
-		tr_ebitda.find_next_sibling().decompose()
-		tr_net = tr_ebitda.find_next_sibling()
-		
-		tr_bna = tr_net.find_next_sibling().find_next_sibling()
-		tr_dividends = tr_bna.find_next_sibling()
-		tr_rendements = tr_dividends.find_next_sibling()
-		
-		#---
-		
-		self.mDividendsGrowth, self.mDividendsGrowthAverage = self.ComputeCroissanceTr( tr_dividends )
-		
-		self.mBNAGrowth, self.mBNAGrowthAverage = self.ComputeCroissanceTr( tr_bna )
-		
-		td_rendement = tr_rendements.find( 'td' ).find_next_sibling().find_next_sibling().find_next_sibling().find_next_sibling().find( 'b' ).string
-		self.mYieldCurrent = float( td_rendement.strip().replace( '%', '' ).replace( ',', '.' ) )
-		
-		#---
-		
-		html_content = ''
-		with open( self.DataPathFile( self.mZoneBourse.FileNameSociety() ), 'r', encoding='utf-8' ) as fd:
-			html_content = fd.read()
-			
-		self.mSSocietyZB = BeautifulSoup( html_content, 'html5lib' )
-		

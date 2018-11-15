@@ -11,8 +11,8 @@ def Extract( iCompany, iSoup ):
 	div_data = iSoup.new_tag( 'div' )
 	div_data['class'] = 'clear'
 	
-	if iCompany.mSFinancialsZBTable:
-		table = copy.copy( iCompany.mSFinancialsZBTable )
+	if iCompany.mZoneBourse.mSoupData:
+		table = copy.copy( iCompany.mZoneBourse.mSoupData )
 		table['class'] = 'float'
 		del table.find( 'td' )['style']		# first td which limit width to 150px
 		del table['style']
@@ -125,7 +125,7 @@ def Extract( iCompany, iSoup ):
 		td = td.find_next_sibling()
 		td.find( 'b' ).string = ''
 		td = td.find_next_sibling()
-		for bna_growth in iCompany.mBNAGrowth:
+		for bna_growth in iCompany.mZoneBourse.mBNAGrowth:
 			td.find( 'b' ).string = '{:.2f}%'.format( bna_growth * 100.0 )
 			if bna_growth < 0:
 				td['style'] = 'background-color: rgba( 255, 0, 0, 0.25 ); ' + td.get( 'style', '' )
@@ -135,11 +135,11 @@ def Extract( iCompany, iSoup ):
 			
 		td.find( 'b' ).string = ''
 		td = td.find_next_sibling()
-		if iCompany.mBNAGrowthAverage < 0:
+		if iCompany.mZoneBourse.mBNAGrowthAverage < 0:
 			td['style'] = 'background-color: rgba( 255, 0, 0, 0.25 ); ' + td.get( 'style', '' )
 		else:
 			td['style'] = 'background-color: rgba( 0, 255, 0, 0.25 ); ' + td.get( 'style', '' )
-		td.string = '~{:.2f}%'.format( iCompany.mBNAGrowthAverage * 100.0 )
+		td.string = '~{:.2f}%'.format( iCompany.mZoneBourse.mBNAGrowthAverage * 100.0 )
 		
 		tr_bna.insert_after( tr_croissance_bna )
 		
@@ -207,7 +207,7 @@ def Extract( iCompany, iSoup ):
 		td = td.find_next_sibling()
 		td.find( 'b' ).string = ''
 		td = td.find_next_sibling()
-		for dividend_growth in iCompany.mDividendsGrowth:
+		for dividend_growth in iCompany.mZoneBourse.mDividendsGrowth:
 			td.find( 'b' ).string = '{:.2f}%'.format( dividend_growth * 100.0 )
 			if dividend_growth < 0:
 				td['style'] = 'background-color: rgba( 255, 0, 0, 0.25 ); ' + td.get( 'style', '' )
@@ -217,17 +217,17 @@ def Extract( iCompany, iSoup ):
 			
 		td.find( 'b' ).string = ''
 		td = td.find_next_sibling()
-		if iCompany.mDividendsGrowthAverage < 0:
+		if iCompany.mZoneBourse.mDividendsGrowthAverage < 0:
 			td['style'] = 'background-color: rgba( 255, 0, 0, 0.25 ); ' + td.get( 'style', '' )
 		else:
 			td['style'] = 'background-color: rgba( 0, 255, 0, 0.25 ); ' + td.get( 'style', '' )
-		td.string = '~{:.2f}%'.format( iCompany.mDividendsGrowthAverage * 100.0 )
+		td.string = '~{:.2f}%'.format( iCompany.mZoneBourse.mDividendsGrowthAverage * 100.0 )
 		
 		tr_dividends.insert_after( tr_croissance_div )
 		
 		#--- Add '10 years result' row
 		
-		url = iCompany.SourceUrlDividendCalculator( iCompany.mYieldCurrent, iCompany.mDividendsGrowthAverage * 100, 10 )
+		url = iCompany.SourceUrlDividendCalculator( iCompany.mZoneBourse.mYieldCurrent, iCompany.mZoneBourse.mDividendsGrowthAverage * 100, 10 )
 		
 		tr_10yearsresult = copy.copy( tr_dividends )
 		itd = tr_10yearsresult.find( 'td' )
@@ -260,7 +260,7 @@ def Extract( iCompany, iSoup ):
 		
 		#--- Add '20 years result' row
 		
-		url = iCompany.SourceUrlDividendCalculator( iCompany.mYieldCurrent, iCompany.mDividendsGrowthAverage * 100, 20 )
+		url = iCompany.SourceUrlDividendCalculator( iCompany.mZoneBourse.mYieldCurrent, iCompany.mZoneBourse.mDividendsGrowthAverage * 100, 20 )
 		
 		tr_20yearsresult = copy.copy( tr_dividends )
 		itd = tr_20yearsresult.find( 'td' )
@@ -292,15 +292,15 @@ def Extract( iCompany, iSoup ):
 		tr_10yearsresult.insert_after( tr_20yearsresult )
 		
 		
-	per = iCompany.mSFinancialsZB.find( id='graphPER' )
+	per = iCompany.mZoneBourse.mSoupPER
 	if per is not None:
 		per['class'] = 'float'
 		div_data.append( copy.copy( per ) )
 	
-	bnadiv = iCompany.mSFinancialsZB.find( id='graphBnaDiv' )
-	if bnadiv is not None:
-		bnadiv['class'] = 'float'
-		div_data.append( copy.copy( bnadiv ) )
+	bna = iCompany.mZoneBourse.mSoupBNA
+	if bna is not None:
+		bna['class'] = 'float'
+		div_data.append( copy.copy( bna ) )
 	
 	img_max = iSoup.new_tag( 'img' )
 	img_max['src'] = iCompany.OutputImgPathFileRelativeToHTMLFile( iCompany.mZoneBourse.FileNamePricesSimple( 9999 ) )
