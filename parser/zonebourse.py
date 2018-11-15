@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import copy
+
 from bs4 import BeautifulSoup
 from colorama import init, Fore, Back, Style
 
@@ -38,7 +40,7 @@ class cZoneBourse:
 		#---
 		
 		root = soup.find( 'table', class_='tabElemNoBor' ).find( 'td', class_='std_txt' )
-		iCompany.mZoneBourse.mSoupSociety = root
+		iCompany.mZoneBourse.mSoupSociety = copy.copy( root )
 		
 	def _ComputeCroissanceTr( self, iTr ):
 		bs = iTr.find_all( 'b' )
@@ -59,9 +61,11 @@ class cZoneBourse:
 		return ( croissances, sum( croissances ) / len( croissances ) )
 
 	def _ParseData( self, iCompany, iSoup ):
-		iCompany.mZoneBourse.mSoupData = iSoup.find( 'table', class_='BordCollapseYear' )
-		if not iCompany.mZoneBourse.mSoupData:
+		root = iSoup.find( 'table', class_='BordCollapseYear' )
+		if not root:
 			return
+			
+		iCompany.mZoneBourse.mSoupData = copy.copy( root )
 			
 		for tr in iCompany.mZoneBourse.mSoupData.find_all( 'tr' ):
 			tr.append( iSoup.new_tag( 'td' ) )
@@ -94,6 +98,11 @@ class cZoneBourse:
 		iCompany.mZoneBourse.mCurrency = scurrency.string
 		
 	def _ParseGraphics( self, iCompany, iSoup ):
-		iCompany.mZoneBourse.mSoupPER = iSoup.find( id='graphPER' ).find( 'svg' )
-		iCompany.mZoneBourse.mSoupBNA = iSoup.find( id='graphBnaDiv' ).find( 'svg' )
+		root = iSoup.find( id='graphPER' ).find( 'svg' )
+		if root:
+			iCompany.mZoneBourse.mSoupPER = copy.copy( root )
+		
+		root = iSoup.find( id='graphBnaDiv' ).find( 'svg' )
+		if root:
+			iCompany.mZoneBourse.mSoupBNA = copy.copy( root )
 		

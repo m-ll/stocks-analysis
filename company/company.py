@@ -572,14 +572,7 @@ class cCompany:
 	
 	#---
 	
-	@staticmethod
-	def WriteImages( iCompanies ):
-		for i, company in enumerate( iCompanies, start=1 ):
-			print( 'WriteImages ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
-			company._WriteImages()
-			# print( '' )
-	
-	def _WriteImages( self ):
+	def WriteImages( self ):
 		# print( 'WriteImages: {}'.format( self.mName ) )
 		
 		#TOIMPROVE: with tuple/dict/... like ichimoku (?)

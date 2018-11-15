@@ -1,13 +1,13 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 #---
 
-def Extract( iCompany, iSoup ):
-	div_data = iSoup.new_tag( 'div' )
-	div_data['class'] = 'clear last10'
+def Data( iCompany, iSoup ):
+	root = iSoup.new_tag( 'div' )
+	root['class'] = ['boerse', 'last10']
 	
 	if not iCompany.mBoerse.mYears:
-		return div_data
+		return root
 	
 	tbody = iSoup.new_tag( 'tbody' )
 	
@@ -124,7 +124,6 @@ def Extract( iCompany, iSoup ):
 	table = iSoup.new_tag( 'table' )
 	table.append( tbody )
 	
-	div_data.append( table )
+	root.append( table )
 	
-	return div_data;
-
+	return root

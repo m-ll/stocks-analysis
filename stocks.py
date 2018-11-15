@@ -10,10 +10,9 @@ from colorama import init, Fore, Back, Style
 init( autoreset=True )
 
 from company.company import *
-from process.extract.extract import *
-
 from download.options import cOptions
 from download.browser import cBrowser
+from renderer.renderer import cRenderer
 
 # https://graphseobourse.fr/classement-des-entreprises-les-plus-innovantes-du-monde/
 
@@ -111,13 +110,9 @@ for group in args.groups:
 	
 	companies_sorted_by_yield = sorted( companies_of_current_group, key=lambda company: company.mZoneBourse.mYieldCurrent, reverse=True )
 
-	content_html = Extract( companies_sorted_by_yield )
-
-	print( 'Write html ...' )
-	with open( '{}/{}-[{}].html'.format( output_path, group, len( companies_sorted_by_yield ) ), 'w' ) as output:
-		output.write( content_html )
-		
-	cCompany.WriteImages( companies_sorted_by_yield )
+	renderer = cRenderer( companies_sorted_by_yield )
+	renderer.Render()
+	renderer.Export()
 	
 	print( '' )
 	

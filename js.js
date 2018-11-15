@@ -38,3 +38,12 @@ $('.image-holder').on('mouseenter', function(e)
 	$h.hide();
 	//$v.hide();
 });
+
+//---
+
+$('.dividend-chart .title a.toggle').click( function(e)
+{
+	$( this ).closest( '.dividend-chart' ).children( '.chart' ).toggle();
+	
+	return false;
+});

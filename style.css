@@ -1,19 +1,74 @@
 
+.society
+.title,
+.next-dividend-date,
+.fondamentals,
+/*.zonebourse,*/
+.boerse,
+.graphics,
+.dividend-chart
+{
+	clear: 		both;
+}
+
+/*---*/
+
+.society
+{
+}
+
+.title
+{
+	display: 	block;
+	
+	text-align: center;
+	font-size: 	25px;
+	font-weight:bold;
+}
+.title .price .value
+{
+	color:		rgb( 100, 100, 255 ); 
+}
+
+.next-dividend-date
+{
+	display: 	block;
+	
+	text-align: center;
+}
+.next-dividend-date .entry
+{
+	display: 	block;
+	text-align: center;
+}
+
+.zonebourse
+{
+	display:	inline-block;
+	vertical-align: middle;		/* don't know why juste for zonebourse -_- */
+}
+
+.dividend-chart .chart
+{
+	display:	none;
+}
+
+/*---*/
+
 h1 
 { 
 	text-align: center;
-	font-size: 25px; 
+	font-size: 	25px; 
 }
 
 hr
 {
 }
-.price
-{
-	color:		rgb( 100, 100, 255 ); 
-}
 
-table.BordCollapseYear{ width: 700px; }
+table.BordCollapseYear
+{ 
+	width: 700px; 
+}
 tr.imp td
 { 
 	background-color: rgb( 200, 200, 255 ); 

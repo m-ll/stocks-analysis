@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import math
 
@@ -81,12 +81,12 @@ def AddTR( iSoup, iSBody, iText, iData, iCSSFunction=None, iCSSFunction2=None, i
 	
 	iSBody.append( tr )
 
-def Extract( iCompany, iSoup ):
-	div_data = iSoup.new_tag( 'div' )
-	div_data['class'] = 'clear fondamentals'
+def Data( iCompany, iSoup ):
+	root = iSoup.new_tag( 'div' )
+	root['class'] = 'fondamentals'
 	
 	if not iCompany.mMorningstar.Region():
-		return div_data
+		return root
 	
 	#---
 	
@@ -102,7 +102,7 @@ def Extract( iCompany, iSoup ):
 	table = iSoup.new_tag( 'table' )
 	table.append( tbody )
 	
-	div_data.append( table )
+	root.append( table )
 	
 	#---
 	
@@ -140,7 +140,7 @@ def Extract( iCompany, iSoup ):
 	table = iSoup.new_tag( 'table' )
 	table.append( tbody )
 	
-	div_data.append( table )
+	root.append( table )
 	
 	#---
 	
@@ -160,7 +160,7 @@ def Extract( iCompany, iSoup ):
 	table = iSoup.new_tag( 'table' )
 	table.append( tbody )
 	
-	div_data.append( table )
+	root.append( table )
 	
-	return div_data;
+	return root
 
