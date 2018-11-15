@@ -519,6 +519,7 @@ class cCompany:
 		for i, company in enumerate( iCompanies, start=1 ):
 			print( 'Download ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
 			company._Download( iBrowser )
+			print( '' )
 	
 	def _Download( self, iBrowser ):
 		# print( 'Download: {}'.format( self.mName ) )
@@ -547,6 +548,7 @@ class cCompany:
 		for i, company in enumerate( iCompanies, start=1 ):
 			print( 'Parse ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
 			company._Parse()
+			print( '' )
 	
 	def _Parse( self ):
 		# print( 'Parse: {}'.format( self.mName ) )
@@ -575,6 +577,7 @@ class cCompany:
 		for i, company in enumerate( iCompanies, start=1 ):
 			print( 'WriteImages ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
 			company._WriteImages()
+			# print( '' )
 	
 	def _WriteImages( self ):
 		# print( 'WriteImages: {}'.format( self.mName ) )

@@ -8,6 +8,8 @@
 	,[ "FR0000120222", "CNP-ASSURANCES", 4633, "CNP", 				"fra", "xpar",	"EURONEXT:CNP",		"CNP.PA",	"CNPP.PA", 		"",		"cnp-assurances", 	"CNP_Assurances" ]
 	,[ "GB0002875804", "BRITISH-AMERICAN-TOBACCO", 4001163, "BATS",	"gbr", "xlon",	"LSE:BATS",			"BATS.L",	"BATS.L", 		"",		"", 				"BAT" ]
 	,[ "FR0000130452", "EIFFAGE", 4638, "FGR", 						"fra", "xpar",	"EURONEXT:FGR",		"FGR.PA",	"FOUG.PA", 		"",		"eiffage", 			"Eiffage" ]
+	,[ "DE0007236101", "SIEMENS", 436605, "SIE", 					"deu", "xetr",	"XETR:SIE",			"SIE.DE",	"SIEGn.DE", 	"",		"",		 			"Siemens" ]
+	,[ "DE000BAY0017", "BAYER", 436063, "BAYN", 					"deu", "xetr",	"XETR:BAYN",		"BAYN.DE",	"BAYGn.DE", 	"",		"", 				"Bayer" ]
 ]
 ,"owned-us": [
 	 [ "US7134481081", "PEPSICO", 39085159, "PEP", 					"usa", "xnas",	"NASDAQ:PEP",		"PEP",		"PEP.O", 		"PEP",	"", 				"PepsiCo" ]
@@ -24,10 +26,8 @@
 ,"to-take-eu": [	
 	 [ "FR0000120271", "TOTAL", 4717, "FP", 						"fra", "xpar",	"EURONEXT:FP",		"FP.PA",	"TOTF.PA", 		"",		"total", 			"TOTAL" ]
 	,[ "BE0003470755", "SOLVAY", 5966, "SOLB", 						"bel", "xbru",	"EURONEXT:SOLB",	"SOLB.BR",	"SOLB.BR", 		"",		"solvay", 			"Solvay" ]
-	,[ "DE0007236101", "SIEMENS", 436605, "SIE", 					"deu", "xetr",	"XETR:SIE",			"SIE.DE",	"SIEGn.DE", 	"",		"",		 			"Siemens" ]
 	,[ "GB0000566504", "BHP-BILLITON-PLC", 4001096, "BLT", 			"gbr", "xlon",	"LSE:BLT",			"BLT.L",	"BLT.L", 		"",		"", 				"BHP_Billiton" ]
 	,[ "GB00B03MLX29", "ROYAL-DUTCH-SHELL", 6273, "RDSA", 			"gbr", "xlon",	"EURONEXT:RDSA",	"RDSA.L",	"RDSa.L", 		"",		"",					"Shell" ]
-	,[ "DE000BAY0017", "BAYER", 436063, "BAYN", 					"deu", "xetr",	"XETR:BAYN",		"BAYN.DE",	"BAYGn.DE", 	"",		"", 				"Bayer" ]
 	,[ "FR0000073298", "IPSOS", 4663, "IPS", 						"fra", "xpar",	"EURONEXT:IPS",		"IPS.PA",	"ISOS.PA", 		"",		"ipsos", 			"" ]
 ]
 
