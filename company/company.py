@@ -465,7 +465,7 @@ class cCompany:
 	
 	#---
 	
-	def SourceUrlDividendCalculator( self, iYield, iGrowth, iYears ):
+	def UrlDividendCalculator( self, iYield, iGrowth, iYears ):
 		url = 'http://www.dividend-calculator.com/annually.php?yield={:.2f}&yieldgrowth={:.2f}&shares=100&price=100&years={}&do=Calculate'
 		return url.format( iYield, iGrowth, iYears )
 	

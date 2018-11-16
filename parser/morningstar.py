@@ -189,12 +189,12 @@ class cMorningstar:
 		iCompany.mMorningstar.mFinancialsDividendsYield.mGrowthAverage = s if s else '0'
 		iCompany.mMorningstar.mFinancialsDividendsYield.mCurrent = '{:.02f}'.format( float( s ) * 0.7 ) if s else '0'	# Remove 30% for PS/Impots
 		
-		iCompany.mMorningstar.mUrlDividendCalculator10Years = iCompany.SourceUrlDividendCalculator( float( iCompany.mMorningstar.mFinancialsDividendsYield.mGrowthAverage ), float( iCompany.mMorningstar.mFinancialsGrowthDividends.mGrowthAverage ), 10 )
+		iCompany.mMorningstar.mUrlDividendCalculator10Years = iCompany.UrlDividendCalculator( float( iCompany.mMorningstar.mFinancialsDividendsYield.mGrowthAverage ), float( iCompany.mMorningstar.mFinancialsGrowthDividends.mGrowthAverage ), 10 )
 		annual_average = iCompany.AskDividendCalculatorProjection( iCompany.mMorningstar.mUrlDividendCalculator10Years )
 		iCompany.mMorningstar.mFinancialsDividendsYield10Years.mGrowthAverage = annual_average
 		iCompany.mMorningstar.mFinancialsDividendsYield10Years.mCurrent = '{:.02f}'.format( float( annual_average ) * 0.7 )	# Remove 30% for PS/Impots
 		
-		iCompany.mMorningstar.mUrlDividendCalculator20Years = iCompany.SourceUrlDividendCalculator( float( iCompany.mMorningstar.mFinancialsDividendsYield.mGrowthAverage ), float( iCompany.mMorningstar.mFinancialsGrowthDividends.mGrowthAverage ), 20 )
+		iCompany.mMorningstar.mUrlDividendCalculator20Years = iCompany.UrlDividendCalculator( float( iCompany.mMorningstar.mFinancialsDividendsYield.mGrowthAverage ), float( iCompany.mMorningstar.mFinancialsGrowthDividends.mGrowthAverage ), 20 )
 		annual_average = iCompany.AskDividendCalculatorProjection( iCompany.mMorningstar.mUrlDividendCalculator20Years )
 		iCompany.mMorningstar.mFinancialsDividendsYield20Years.mGrowthAverage = annual_average
 		iCompany.mMorningstar.mFinancialsDividendsYield20Years.mCurrent = '{:.02f}'.format( float( annual_average ) * 0.7 )	# Remove 30% for PS/Impots

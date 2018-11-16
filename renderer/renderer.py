@@ -124,7 +124,11 @@ class cRenderer:
 	def Export( self, iOutputPath ):
 		print( 'Export html ...' )
 		
-		outputpathfile = os.path.join( iOutputPath, '{}-[{}].html'.format( self.mCompanies[0].mGroup, len( self.mCompanies ) ) )
+		groups = [ company.mGroup for company in self.mCompanies ] # Get all groups
+		groups = set( groups ) # Get only unique group (should be single most of the time)
+		groups = '-'.join( groups ) # Create the name
+		
+		outputpathfile = os.path.join( iOutputPath, '{}-[{}].html'.format( groups, len( self.mCompanies ) ) )
 		with open( outputpathfile, 'w' ) as output:
 			output.write( self.mHTML )
 			

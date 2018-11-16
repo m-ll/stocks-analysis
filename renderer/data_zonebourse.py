@@ -226,7 +226,7 @@ def Data( iCompany, iSoup ):
 	
 	#--- Add '10 years result' row
 	
-	url = iCompany.SourceUrlDividendCalculator( iCompany.mZoneBourse.mYieldCurrent, iCompany.mZoneBourse.mDividendsGrowthAverage * 100, 10 )
+	url = iCompany.UrlDividendCalculator( iCompany.mZoneBourse.mYieldCurrent, iCompany.mZoneBourse.mDividendsGrowthAverage * 100, 10 )
 	
 	tr_10yearsresult = copy.copy( tr_dividends )
 	itd = tr_10yearsresult.find( 'td' )
@@ -257,7 +257,7 @@ def Data( iCompany, iSoup ):
 	
 	#--- Add '20 years result' row
 	
-	url = iCompany.SourceUrlDividendCalculator( iCompany.mZoneBourse.mYieldCurrent, iCompany.mZoneBourse.mDividendsGrowthAverage * 100, 20 )
+	url = iCompany.UrlDividendCalculator( iCompany.mZoneBourse.mYieldCurrent, iCompany.mZoneBourse.mDividendsGrowthAverage * 100, 20 )
 	
 	tr_20yearsresult = copy.copy( tr_dividends )
 	itd = tr_20yearsresult.find( 'td' )
