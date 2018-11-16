@@ -427,6 +427,11 @@ class cCompany:
 		self.mImgDirRelativeToHTML = ''
 		self.mGroup = ''
 		
+		self.mInvestment = 0.0
+		self.mStartingYield = 0.0
+		self.mDividendGrowthRate = 0.0
+		self.mYearsToHold = 0
+		
 	#---
 	
 	def Group( self, iGroup ):
@@ -466,19 +471,44 @@ class cCompany:
 	#---
 	
 	def UrlDividendCalculator( self, iYield, iGrowth, iYears ):
+		self.mInvestment = 10000
+		self.mStartingYield = iYield
+		self.mDividendGrowthRate = iGrowth
+		self.mYearsToHold = iYears
+		
 		url = 'http://www.dividend-calculator.com/annually.php?yield={:.2f}&yieldgrowth={:.2f}&shares=100&price=100&years={}&do=Calculate'
 		return url.format( iYield, iGrowth, iYears )
 	
 	def AskDividendCalculatorProjection( self, iUrl ):
-		req = requests.get( iUrl, headers={ 'User-Agent' : 'Mozilla/5.0' } )
+		# req = requests.get( iUrl, headers={ 'User-Agent' : 'Mozilla/5.0' } )
 		
-		soup = BeautifulSoup( req.text, 'html5lib' )
-		results = soup.find( string='With Reinvestment' ).find_parent().find_next_sibling( 'p' ).find_all( 'b' )
-		cost_start = results[0].string
-		cost_stop = results[1].string
-		annual_average = results[4].string.replace( '%', '' )
+		# soup = BeautifulSoup( req.text, 'html5lib' )
+		# results = soup.find( string='With Reinvestment' ).find_parent().find_next_sibling( 'p' ).find_all( 'b' )
+		# cost_start = results[0].string
+		# cost_stop = results[1].string
+		# annual_average = results[4].string.replace( '%', '' )
 		
-		return annual_average
+		# return annual_average
+		
+		data = []
+		for _ in range( self.mYearsToHold ):
+			if not data:
+				data.append( self.DividendCalculator( self.mInvestment, self.mStartingYield, 0 ) )
+				continue
+			
+			previous_data = data[-1]
+			data.append( self.DividendCalculator( previous_data[3], previous_data[1], self.mDividendGrowthRate ) )
+		
+		growth = ( data[-1][3] - self.mInvestment ) / self.mInvestment
+		annual_average = growth / self.mYearsToHold
+		return '{:.2f}'.format( annual_average * 100.0 )
+	
+	def DividendCalculator( self, iInvestment, iYield, iGrowth ):
+		investment = iInvestment
+		yield_ = iYield + iYield * iGrowth/100.0
+		income = investment * yield_/100.0
+		total = investment + income
+		return ( investment, yield_, income, total )
 	
 	#---
 	
