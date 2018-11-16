@@ -74,7 +74,7 @@ for data_group_name in data_groups:
 							data[10], data[11] )
 		company.Group( data_group_name )
 		company.DataPath( data_path )
-		company.OutputPath( output_path, output_path_img )
+		company.OutputImgPathRelativeToHTMLFile( image_name )
 		
 		companies.append( company )
 		
@@ -116,7 +116,7 @@ for group in args.groups:
 
 	renderer = cRenderer( companies_sorted_by_yield )
 	renderer.Render()
-	renderer.Export()
+	renderer.Export( output_path )
 	
 	print( '' )
 	

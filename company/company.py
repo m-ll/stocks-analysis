@@ -424,8 +424,6 @@ class cCompany:
 		self.mTradingViewSymbol = iTradingViewSymbol	# NYSE:MMM		# Not use yet
 		
 		self.mDataPath = ''
-		self.mOutputPath = ''
-		self.mOutputImgPath = ''
 		self.mImgDirRelativeToHTML = ''
 		self.mGroup = ''
 		
@@ -441,38 +439,26 @@ class cCompany:
 	
 	#---
 	
-	def DataPath( self, iDirectory=None ):
-		if iDirectory is None:
+	def DataPath( self, iPath=None ):
+		if iPath is None:
 			return self.mDataPath
 		
 		previous_value = self.mDataPath
-		self.mDataPath = iDirectory
+		self.mDataPath = iPath
 		return previous_value
 	
-	def OutputPath( self, iOutputPath=None, iOutputImgPath=None ):
-		if iOutputPath is None and iOutputImgPath is None:
-			return ( self.mOutputPath, self.mOutputImgPath )
+	def OutputImgPathRelativeToHTMLFile( self, iPath=None ):
+		if iPath is None:
+			return self.mImgDirRelativeToHTML
 		
-		previous_value = ( self.mOutputPath, self.mOutputImgPath )
-		if iOutputPath is not None:
-			self.mOutputPath = iOutputPath
-		if iOutputImgPath is not None:
-			self.mOutputImgPath = iOutputImgPath
-			
-		self.mImgDirRelativeToHTML = os.path.relpath( self.mOutputImgPath, self.mOutputPath )
-		
+		previous_value = self.mImgDirRelativeToHTML
+		self.mImgDirRelativeToHTML = iPath
 		return previous_value
-		
+	
 	#---
 	
 	def DataPathFile( self, iFileName ):
 		return os.path.join( self.mDataPath, iFileName )
-	
-	def OutputPathFile( self, iFileName ):
-		return os.path.join( self.mOutputPath, iFileName )
-	
-	def OutputImgPathFile( self, iFileName ):
-		return os.path.join( self.mOutputImgPath, iFileName )
 	
 	def OutputImgPathFileRelativeToHTMLFile( self, iFileName ):
 		return '{}/{}'.format( self.mImgDirRelativeToHTML, iFileName )	# Always '/' as it's for html
@@ -496,21 +482,21 @@ class cCompany:
 	
 	#---
 	
-	def WriteImages( self ):
+	def WriteImages( self, iOutputPath ):
 		# print( 'WriteImages: {}'.format( self.mName ) )
 		
 		#TOIMPROVE: with tuple/dict/... like ichimoku (?)
 		filename = self.mZoneBourse.FileNamePricesSimple( 9999 )
-		shutil.copy( self.DataPathFile( filename ), self.OutputImgPathFile( filename ) )
+		shutil.copy( self.DataPathFile( filename ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filename ) ) )
 		filename = self.mZoneBourse.FileNamePricesSimple( 10 )
-		shutil.copy( self.DataPathFile( filename ), self.OutputImgPathFile( filename ) )
+		shutil.copy( self.DataPathFile( filename ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filename ) ) )
 		filename = self.mZoneBourse.FileNamePricesSimple( 5 )
-		shutil.copy( self.DataPathFile( filename ), self.OutputImgPathFile( filename ) )
+		shutil.copy( self.DataPathFile( filename ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filename ) ) )
 		filename = self.mZoneBourse.FileNamePricesSimple( 2 )
-		shutil.copy( self.DataPathFile( filename ), self.OutputImgPathFile( filename ) )
+		shutil.copy( self.DataPathFile( filename ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filename ) ) )
 		
 		filenames = self.mZoneBourse.FileNamesPricesIchimoku()
-		shutil.copy( self.DataPathFile( filenames[0] ), self.OutputImgPathFile( filenames[0] ) )
-		shutil.copy( self.DataPathFile( filenames[1] ), self.OutputImgPathFile( filenames[1] ) )
-		shutil.copy( self.DataPathFile( filenames[2] ), self.OutputImgPathFile( filenames[2] ) )
+		shutil.copy( self.DataPathFile( filenames[0] ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filenames[0] ) ) )
+		shutil.copy( self.DataPathFile( filenames[1] ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filenames[1] ) ) )
+		shutil.copy( self.DataPathFile( filenames[2] ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filenames[2] ) ) )
 	

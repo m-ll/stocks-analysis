@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import copy
+import os
 
 from bs4 import BeautifulSoup
 
@@ -120,13 +121,14 @@ class cRenderer:
 		
 		self.mHTML = soup.prettify()
 
-	def Export( self ):
+	def Export( self, iOutputPath ):
 		print( 'Export html ...' )
-		#TODO: find a bette way to set output path and filename ...
-		with open( self.mCompanies[0].OutputPathFile( '{}-[{}].html'.format( self.mCompanies[0].mGroup, len( self.mCompanies ) ) ), 'w' ) as output:
+		
+		outputpathfile = os.path.join( iOutputPath, '{}-[{}].html'.format( self.mCompanies[0].mGroup, len( self.mCompanies ) ) )
+		with open( outputpathfile, 'w' ) as output:
 			output.write( self.mHTML )
 			
 		for i, company in enumerate( self.mCompanies, start=1 ):
 			print( 'WriteImages ({}/{}): {} ...'.format( i, len( self.mCompanies ), company.Name() ) )
-			company.WriteImages()
+			company.WriteImages( iOutputPath )
 			
