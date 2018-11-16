@@ -7,24 +7,6 @@ from enum import Enum, auto
 
 from bs4 import BeautifulSoup
 
-from download.zonebourse import cZoneBourse as cDLZoneBourse
-from download.finviz import cFinviz as cDLFinviz
-from download.morningstar import cMorningstar as cDLMorningstar
-from download.yahoofinance import cYahooFinance as cDLYahooFinance
-from download.reuters import cReuters as cDLReuters
-from download.boerse import cBoerse as cDLBoerse
-from download.tradingsat import cTradingSat as cDLTradingSat
-from download.finances import cFinances as cDLFinances
-
-from parser.zonebourse import cZoneBourse as cParserZoneBourse
-from parser.finviz import cFinviz as cParserFinviz
-from parser.morningstar import cMorningstar as cParserMorningstar
-from parser.yahoofinance import cYahooFinance as cParserYahooFinance
-from parser.reuters import cReuters as cParserReuters
-from parser.boerse import cBoerse as cParserBoerse
-from parser.tradingsat import cTradingSat as cParserTradingSat
-from parser.finances import cFinances as cParserFinances
-
 class cDataMorningstar:
 	def __init__( self, iRow=None, iParent=None, iComputeGrowthAverage=False ):
 		self.mData = []
@@ -511,64 +493,6 @@ class cCompany:
 		annual_average = results[4].string.replace( '%', '' )
 		
 		return annual_average
-	
-	#---
-	
-	@staticmethod
-	def Download( iBrowser, iCompanies ):
-		for i, company in enumerate( iCompanies, start=1 ):
-			print( 'Download ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
-			company._Download( iBrowser )
-			print( '' )
-	
-	def _Download( self, iBrowser ):
-		# print( 'Download: {}'.format( self.mName ) )
-		
-		dl = cDLZoneBourse()
-		dl.Download( iBrowser, self )
-		dl = cDLFinviz()
-		dl.Download( iBrowser, self )
-		dl = cDLMorningstar()
-		dl.Download( iBrowser, self )
-		dl = cDLYahooFinance()
-		dl.Download( iBrowser, self )
-		dl = cDLReuters()
-		dl.Download( iBrowser, self )
-		dl = cDLBoerse()
-		dl.Download( iBrowser, self )
-		dl = cDLTradingSat()
-		dl.Download( iBrowser, self )
-		dl = cDLFinances()
-		dl.Download( iBrowser, self )
-	
-	#---
-	
-	@staticmethod
-	def Parse( iCompanies ):
-		for i, company in enumerate( iCompanies, start=1 ):
-			print( 'Parse ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
-			company._Parse()
-			print( '' )
-	
-	def _Parse( self ):
-		# print( 'Parse: {}'.format( self.mName ) )
-		
-		parser = cParserZoneBourse()
-		parser.Parse( self )
-		parser = cParserFinviz()
-		parser.Parse( self )
-		parser = cParserMorningstar()
-		parser.Parse( self )
-		parser = cParserReuters()
-		parser.Parse( self )
-		parser = cParserYahooFinance()
-		parser.Parse( self )
-		parser = cParserBoerse()
-		parser.Parse( self )
-		parser = cParserFinances()
-		parser.Parse( self )
-		parser = cParserTradingSat()
-		parser.Parse( self )
 	
 	#---
 	

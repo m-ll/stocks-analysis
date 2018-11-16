@@ -9,9 +9,11 @@ from datetime import datetime
 from colorama import init, Fore, Back, Style
 init( autoreset=True )
 
-from company.company import *
-from download.options import cOptions
-from download.browser import cBrowser
+from company.company import cCompany
+from downloader.options import cOptions
+from downloader.browser import cBrowser
+from downloader.downloader import cDownloader
+from parser.parser import cParser
 from renderer.renderer import cRenderer
 
 # https://graphseobourse.fr/classement-des-entreprises-les-plus-innovantes-du-monde/
@@ -104,9 +106,11 @@ for group in args.groups:
 	
 	if args.download in ['yes', 'force']:
 		browser.Init()
-		cCompany.Download( browser, companies_of_current_group )
+		downloader = cDownloader()
+		downloader.Download( browser, companies_of_current_group )
 		
-	cCompany.Parse( companies_of_current_group )
+	parser = cParser()
+	parser.Parse( companies_of_current_group )
 	
 	companies_sorted_by_yield = sorted( companies_of_current_group, key=lambda company: company.mZoneBourse.mYieldCurrent, reverse=True )
 
