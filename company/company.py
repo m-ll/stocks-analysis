@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import os
+import re
 import shutil
 import requests
 from enum import Enum, auto
@@ -10,13 +11,10 @@ from bs4 import BeautifulSoup
 class cDataMorningstar:
 	def __init__( self, iRow=None, iParent=None, iComputeGrowthAverage=False ):
 		self.mData = []
+		self.mDataEstimated = []
 		
 		self.mTTM = ''
 		self.mLatestQuarter = ''
-		
-		self.mCurrent = ''
-		self.m5Years = ''
-		self.mIndex = ''
 		
 		self.mComputeGrowthAverage=iComputeGrowthAverage
 		self.mGrowthAverage = ''
@@ -27,7 +25,7 @@ class cDataMorningstar:
 			self.SetRow( iRow )
 	
 	def __repr__(self):
-		return 'cDataMorningstar( [{}], "{}", "{}" )'.format( ', '.join( map( str, self.mData ) ), self.mTTM, self.mLatestQuarter )
+		return 'cDataMorningstar( [{}], [{}], "{}", "{}" )'.format( ', '.join( map( str, self.mData ) ), ', '.join( map( str, self.mDataEstimated ) ), self.mTTM, self.mLatestQuarter )
 	
 	def ComputeAverage( self, iData, iYears=8 ):
 		if not iData:
@@ -40,6 +38,7 @@ class cDataMorningstar:
 			data.append( float( value ) )
 			
 		data = sorted( data[-1*iYears:] )
+		# Remove the min/max value (if enough sample)
 		if len( data ) >= 5:
 			del( data[0] )
 			del( data[-1] )
@@ -48,7 +47,7 @@ class cDataMorningstar:
 	
 	def Update( self ):
 		if self.mComputeGrowthAverage:
-			self.mGrowthAverage = '{:.02f}'.format( self.ComputeAverage( self.mData ) )
+			self.mGrowthAverage = '{:.02f}'.format( self.ComputeAverage( self.mData + self.mDataEstimated ) )
 	
 	def SetRow( self, iRow ):
 		if self.mParent is None:
@@ -79,8 +78,8 @@ class cDataMorningstar:
 	def _FixLocale( self, iString ):
 		return iString.replace( ',', '.' ).replace( '(', '-' ).replace( ')', '' )
 			
-	def SetTR( self, iSSection, iTag, iText ):
-		td = iSSection.find( iTag, string=iText )
+	def SetTR( self, iSoupSection, iTag, iText ):
+		td = iSoupSection.find( iTag, string=iText )
 		if not td and self.mParent:		# value doesn't exist, like EBITDA for CNP
 			self.mData = [''] * len( self.mParent.mData )
 			return
@@ -93,11 +92,11 @@ class cDataMorningstar:
 				
 				td = td.find_next_sibling( 'td' )
 				
-			self.mCurrent = td.string
+			self.mDataEstimated.append( td.string )
 			td = td.find_next_sibling( 'td' )
-			self.m5Years = td.string
+			self.mDataEstimated.append( td.string )
 			td = td.find_next_sibling( 'td' )
-			self.mIndex = td.string
+			self.mDataEstimated.append( td.string )
 			
 		else:
 			td = td.find_parent( 'td' )
@@ -108,21 +107,53 @@ class cDataMorningstar:
 				
 				td = td.find_next_sibling( 'td' )
 			
-			self.mCurrent = td.find( 'span' ).string
+			self.mDataEstimated.append( td.find( 'span' ).string )
 			td = td.find_next_sibling( 'td' )
-			self.m5Years = td.find( 'span' ).string
+			self.mDataEstimated.append( td.find( 'span' ).string )
 			td = td.find_next_sibling( 'td' )
-			self.mIndex = td.find( 'span' ).string
+			self.mDataEstimated.append( td.find( 'span' ).string )
 			
 		self.mData = list( map( self._FixLocale2, self.mData ) );
-		self.mCurrent = self._FixLocale2( self.mCurrent )
-		self.m5Years = self._FixLocale2( self.m5Years )
-		self.mIndex = self._FixLocale2( self.mIndex )
+		self.mDataEstimated = list( map( self._FixLocale2, self.mDataEstimated ) );
 		
 		self.Update()
 			
 	def _FixLocale2( self, iString ):
 		return iString.replace( ',', '' ).replace( '—', '' )
+		
+	def SetTR2( self, iSoupTr ):
+		if not self.mParent:		# for years row
+			tds_past = iSoupTr.find_all( 'td', style=re.compile( '#eeeeee' ) )
+			for td in tds_past:
+				v = td.string
+				self.mData.append( v )
+				
+			tds_estimated = iSoupTr.find_all( 'td', style=re.compile( '#dedede' ) )
+			for td in tds_estimated:
+				v = td.string
+				self.mDataEstimated.append( v )
+		
+		else:
+			td = iSoupTr.find( 'td' ).find_next_sibling( 'td' )
+			while len( self.mData ) != len( self.mParent.mData ):
+				v = td.find( 'b' ).string
+				self.mData.append( v )
+				
+				td = td.find_next_sibling( 'td' )
+			
+			while len( self.mDataEstimated ) != len( self.mParent.mDataEstimated ):
+				v = td.find( 'b' ).string
+				self.mDataEstimated.append( v )
+				
+				td = td.find_next_sibling( 'td' )
+			
+		self.mData = list( map( self._FixLocale3, self.mData ) );
+		self.mDataEstimated = list( map( self._FixLocale3, self.mDataEstimated ) );
+		
+		self.Update()
+			
+	def _FixLocale3( self, iString ):
+		return iString.replace( ',', '.' ).replace( ' ', '' ).replace( '-', '' ).replace( '%', '' )
 		
 #---
 
@@ -144,12 +175,22 @@ class cZoneBourse:
 		self.mPrice = ''
 		self.mCurrency = ''
 		
-		self.mSoupData = None	#TODO: TMP: must have 1 variable per line like morningstar !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		self.mBNAGrowth = []
-		self.mBNAGrowthAverage = 0
-		self.mDividendsGrowth = []
-		self.mDividendsGrowthAverage = 0	# 0.0 < ... < 1.0
+		self.mYears = cDataMorningstar()
+		self.mRevenue = cDataMorningstar( iParent=self.mYears )
+		self.mGrowthRevenue = cDataMorningstar( iParent=self.mYears )
+		self.mNetIncome = cDataMorningstar( iParent=self.mYears )
+		self.mGrowthNetIncome = cDataMorningstar( iParent=self.mYears )
+		self.mEarnings = cDataMorningstar( iParent=self.mYears )
+		self.mGrowthEarnings = cDataMorningstar( iParent=self.mYears, iComputeGrowthAverage=True )
+		self.mDividends = cDataMorningstar( iParent=self.mYears )
+		self.mGrowthDividends = cDataMorningstar( iParent=self.mYears, iComputeGrowthAverage=True )
+		self.mYields = cDataMorningstar( iParent=self.mYears )
+		
 		self.mYieldCurrent = 0				# 0.0 < ... < 100.0
+		self.mDividendsYield10Years = cDataMorningstar( iParent=self.mYears )
+		self.mDividendsYield20Years = cDataMorningstar( iParent=self.mYears )
+		self.mUrlDividendCalculator10Years = ''
+		self.mUrlDividendCalculator20Years = ''
 		
 	def Name( self ):
 		return self.mName

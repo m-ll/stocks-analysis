@@ -3,7 +3,6 @@
 .title,
 .next-dividend-date,
 .fondamentals,
-/*.zonebourse,*/
 .boerse,
 .graphics,
 .dividend-chart
@@ -42,10 +41,29 @@
 	text-align: center;
 }
 
-.zonebourse
+.growth
 {
 	display:	inline-block;
-	vertical-align: middle;		/* don't know why juste for zonebourse -_- */
+	vertical-align: top;		/* don't know why juste for growth -_- */
+}
+.growth tr th
+{
+	width: 50px;
+	background-color: #eeeeee;
+}
+.growth tr th:first-child
+{
+	width: 200px;
+	text-align: left;
+}
+.growth tr td
+{
+	text-align: right;
+}
+.growth tr th,
+.growth tr td
+{
+	padding: 2px;
 }
 
 .dividend-chart .chart
@@ -55,28 +73,6 @@
 
 /*---*/
 
-h1 
-{ 
-	text-align: center;
-	font-size: 	25px; 
-}
-
-hr
-{
-}
-
-table.BordCollapseYear
-{ 
-	width: 700px; 
-}
-tr.imp td
-{ 
-	background-color: rgb( 200, 200, 255 ); 
-}
-tr.croissance5 td
-{ 
-	background-color: rgb( 240, 240, 255 ); 
-}
 .clear
 {
 	clear: both;
@@ -84,6 +80,11 @@ tr.croissance5 td
 .float
 {
 	float: left; 
+}
+
+.fondamentals tr.separator td
+{ 
+	border-top: solid 1px black;
 }
 
 .last10 th,

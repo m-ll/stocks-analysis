@@ -9,7 +9,6 @@ from . import info
 from . import graphics
 from . import data
 from . import data_boerse
-from . import data_zonebourse
 import company.company
 
 class cRenderer:
@@ -71,8 +70,8 @@ class cRenderer:
 			subtag_bna = graphics.BNA( company, soup )
 			
 			subtag_data = data.Data( company, soup )
+			subtag_data_growth = data.DataGrowth( company, soup )
 			subtag_data_boerse = data_boerse.Data( company, soup )
-			subtag_data_zonebourse = data_zonebourse.Data( company, soup )
 			
 			#---
 			
@@ -89,7 +88,7 @@ class cRenderer:
 			# (zb/)per/bna/max/
 			tag = soup.new_tag( 'div' )
 			tag['class'] = ['graphics']
-			tag.append( subtag_data_zonebourse )
+			tag.append( subtag_data_growth )
 			tag.append( subtag_per )
 			tag.append( subtag_bna )
 			tag.append( subtag_prices_simple[0] )

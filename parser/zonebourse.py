@@ -60,6 +60,37 @@ class cZoneBourse:
 		
 		return ( croissances, sum( croissances ) / len( croissances ) )
 
+	def _ComputeGrowth( self, iData, iDataGrowth ):
+		for i, revenue in enumerate( iData.mData ):
+			if not i:
+				iDataGrowth.mData.append( '' )
+				continue
+			if not revenue or not iData.mData[i-1]:
+				iDataGrowth.mData.append( '' )
+				continue
+			
+			previous_revenue = iData.mData[i-1]
+			ratio = ( float( revenue ) - float( previous_revenue ) ) / abs( float( previous_revenue ) )
+			iDataGrowth.mData.append( '{:.02f}'.format( ratio * 100 ) )
+			
+		data = [ iData.mData[-1] ] + iData.mDataEstimated
+		for i, revenue in enumerate( data ):
+			if not i:
+				iDataGrowth.mDataEstimated.append( '' )
+				continue
+			if not revenue or not data[i-1]:
+				iDataGrowth.mDataEstimated.append( '' )
+				continue
+			
+			previous_revenue = data[i-1]
+			ratio = ( float( revenue ) - float( previous_revenue ) ) / abs( float( previous_revenue ) )
+			iDataGrowth.mDataEstimated.append( '{:.02f}'.format( ratio * 100 ) )
+			
+		del iDataGrowth.mDataEstimated[0]
+			
+		iDataGrowth.Update()
+		
+	
 	def _ParseData( self, iCompany, iSoup ):
 		root = iSoup.find( 'table', class_='BordCollapseYear' )
 		if not root:
@@ -70,25 +101,43 @@ class cZoneBourse:
 		for tr in iCompany.mZoneBourse.mSoupData.find_all( 'tr' ):
 			tr.append( iSoup.new_tag( 'td' ) )
 		
-		tr_years = iCompany.mZoneBourse.mSoupData.find( 'tr' ).find_next_sibling()
-		tr_ca = tr_years.find_next_sibling()
-		tr_ebitda = tr_ca.find_next_sibling()
-		tr_ebitda.find_next_sibling().decompose()
-		tr_ebitda.find_next_sibling().decompose()
-		tr_net = tr_ebitda.find_next_sibling()
-		
-		tr_bna = tr_net.find_next_sibling().find_next_sibling()
-		tr_dividends = tr_bna.find_next_sibling()
-		tr_rendements = tr_dividends.find_next_sibling()
-		
 		#---
 		
-		iCompany.mZoneBourse.mDividendsGrowth, iCompany.mZoneBourse.mDividendsGrowthAverage = self._ComputeCroissanceTr( tr_dividends )
+		tr = iCompany.mZoneBourse.mSoupData.find( 'tr' ).find_next_sibling()
+		iCompany.mZoneBourse.mYears.SetTR2( tr )
 		
-		iCompany.mZoneBourse.mBNAGrowth, iCompany.mZoneBourse.mBNAGrowthAverage = self._ComputeCroissanceTr( tr_bna )
+		tr = tr.find_next_sibling()
+		iCompany.mZoneBourse.mRevenue.SetTR2( tr )
+		self._ComputeGrowth( iCompany.mZoneBourse.mRevenue, iCompany.mZoneBourse.mGrowthRevenue )
 		
-		td_rendement = tr_rendements.find( 'td' ).find_next_sibling().find_next_sibling().find_next_sibling().find_next_sibling().find( 'b' ).string
-		iCompany.mZoneBourse.mYieldCurrent = float( td_rendement.strip().replace( '%', '' ).replace( ',', '.' ) )
+		tr = tr.find_next_sibling().find_next_sibling().find_next_sibling().find_next_sibling()
+		iCompany.mZoneBourse.mNetIncome.SetTR2( tr )
+		self._ComputeGrowth( iCompany.mZoneBourse.mNetIncome, iCompany.mZoneBourse.mGrowthNetIncome )
+		
+		tr = tr.find_next_sibling().find_next_sibling()
+		iCompany.mZoneBourse.mEarnings.SetTR2( tr )
+		self._ComputeGrowth( iCompany.mZoneBourse.mEarnings, iCompany.mZoneBourse.mGrowthEarnings )
+		
+		tr = tr.find_next_sibling()
+		iCompany.mZoneBourse.mDividends.SetTR2( tr )
+		self._ComputeGrowth( iCompany.mZoneBourse.mDividends, iCompany.mZoneBourse.mGrowthDividends )
+		
+		tr = tr.find_next_sibling()
+		iCompany.mZoneBourse.mYields.SetTR2( tr )
+		
+		iCompany.mZoneBourse.mYieldCurrent = float( iCompany.mZoneBourse.mYields.mDataEstimated[0] )
+		
+		iCompany.mZoneBourse.mUrlDividendCalculator10Years = iCompany.UrlDividendCalculator( float( iCompany.mZoneBourse.mYieldCurrent ), float( iCompany.mZoneBourse.mGrowthDividends.mGrowthAverage ), 10 )
+		annual_average = iCompany.AskDividendCalculatorProjection( iCompany.mZoneBourse.mUrlDividendCalculator10Years )
+		iCompany.mZoneBourse.mDividendsYield10Years.mDataEstimated.append( annual_average )
+		iCompany.mZoneBourse.mDividendsYield10Years.mDataEstimated.append( '{:.02f}'.format( float( annual_average ) * 0.7 ) )	# Remove 30% for PS/Impots
+		iCompany.mZoneBourse.mDividendsYield10Years.mDataEstimated.append( '' )
+		
+		iCompany.mZoneBourse.mUrlDividendCalculator20Years = iCompany.UrlDividendCalculator( float( iCompany.mZoneBourse.mYieldCurrent ), float( iCompany.mZoneBourse.mGrowthDividends.mGrowthAverage ), 20 )
+		annual_average = iCompany.AskDividendCalculatorProjection( iCompany.mZoneBourse.mUrlDividendCalculator20Years )
+		iCompany.mZoneBourse.mDividendsYield20Years.mDataEstimated.append( annual_average )
+		iCompany.mZoneBourse.mDividendsYield20Years.mDataEstimated.append( '{:.02f}'.format( float( annual_average ) * 0.7 ) )	# Remove 30% for PS/Impots
+		iCompany.mZoneBourse.mDividendsYield20Years.mDataEstimated.append( '' )
 		
 	def _ParsePrice( self, iCompany, iSoup ):
 		sprice = iSoup.find( id='zbjsfv_dr' )
