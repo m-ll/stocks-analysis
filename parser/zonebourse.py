@@ -129,15 +129,11 @@ class cZoneBourse:
 		
 		iCompany.mZoneBourse.mUrlDividendCalculator10Years = iCompany.UrlDividendCalculator( float( iCompany.mZoneBourse.mYieldCurrent ), float( iCompany.mZoneBourse.mGrowthDividends.mGrowthAverage ), 10 )
 		annual_average = iCompany.AskDividendCalculatorProjection( iCompany.mZoneBourse.mUrlDividendCalculator10Years )
-		iCompany.mZoneBourse.mDividendsYield10Years.mDataEstimated.append( annual_average )
-		iCompany.mZoneBourse.mDividendsYield10Years.mDataEstimated.append( '{:.02f}'.format( float( annual_average ) * 0.7 ) )	# Remove 30% for PS/Impots
-		iCompany.mZoneBourse.mDividendsYield10Years.mDataEstimated.append( '' )
+		iCompany.mZoneBourse.mDividendsYield10Years.mGrowthAverage = annual_average
 		
 		iCompany.mZoneBourse.mUrlDividendCalculator20Years = iCompany.UrlDividendCalculator( float( iCompany.mZoneBourse.mYieldCurrent ), float( iCompany.mZoneBourse.mGrowthDividends.mGrowthAverage ), 20 )
 		annual_average = iCompany.AskDividendCalculatorProjection( iCompany.mZoneBourse.mUrlDividendCalculator20Years )
-		iCompany.mZoneBourse.mDividendsYield20Years.mDataEstimated.append( annual_average )
-		iCompany.mZoneBourse.mDividendsYield20Years.mDataEstimated.append( '{:.02f}'.format( float( annual_average ) * 0.7 ) )	# Remove 30% for PS/Impots
-		iCompany.mZoneBourse.mDividendsYield20Years.mDataEstimated.append( '' )
+		iCompany.mZoneBourse.mDividendsYield20Years.mGrowthAverage = annual_average
 		
 	def _ParsePrice( self, iCompany, iSoup ):
 		sprice = iSoup.find( id='zbjsfv_dr' )

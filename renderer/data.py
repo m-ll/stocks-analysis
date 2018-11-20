@@ -36,7 +36,7 @@ def HarmonizeData( iData, iReferences ):
 		
 	diff = max_data_estimated - len( data.mDataEstimated )
 	if diff > 0:
-		data.mDataEstimated = [''] * diff + data.mDataEstimated
+		data.mDataEstimated = data.mDataEstimated + [''] * diff
 		
 	return data
 
@@ -67,13 +67,6 @@ def AddTR( iSoup, iText, iData, iReferences, iCSSFunction=None, iCSSFunction2=No
 	#---
 	
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
-	td['class'] = GetCSS( data.mGrowthAverage, iCSSFunction )
-	td.string = f'~{data.mGrowthAverage}' if data.mGrowthAverage else ''
-	tr.append( td )
-	
-	#---
-	
-	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	if data.mTTM:
 		td['class'] = GetCSS( data.mTTM, iCSSFunction )
 		if iCSSFunction2 is not None:	#PATCH: to colorize yield without PS/Impots with another lambda
@@ -88,6 +81,24 @@ def AddTR( iSoup, iText, iData, iReferences, iCSSFunction=None, iCSSFunction2=No
 		td['class'] = GetCSS( v, iCSSFunction )
 		td.string = v
 		tr.append( td )
+	
+	#---
+	
+	td = iSoup.new_tag( 'th' if iHeader else 'td' )
+	td['class'] = GetCSS( data.mGrowthAverage, iCSSFunction )
+	td.string = f'{data.mGrowthAverage}'
+	tr.append( td )
+	
+	#---
+	
+	td = iSoup.new_tag( 'th' )
+	if not iUrl:
+		td.string = iText
+	else:
+		a = iSoup.new_tag( 'a', href=iUrl )
+		a.append( iText )
+		td.append( a )
+	tr.append( td )
 	
 	#---
 	
@@ -159,9 +170,10 @@ def Data( iCompany, iSoup ):
 	tbody.append( tr )
 	
 	tr = AddTR( iSoup, 'Book', iCompany.mMorningstar.mFinancialsBook, references )
-	tr['class'] = 'separator'
+	tr['class'] = tr.get( 'class', [] ) + ['less-important', 'separator']
 	tbody.append( tr )
 	tr = AddTR( iSoup, 'Growth Book (%)', iCompany.mMorningstar.mFinancialsGrowthBook, references, lambda v : 0 if math.isclose( v, 0.0 ) else 1 if v > 0 else -1 )
+	tr['class'] = tr.get( 'class', [] ) + ['less-important']
 	tbody.append( tr )
 	
 	tr = AddTR( iSoup, 'EPS', iCompany.mZoneBourse.mEarnings, references )
@@ -194,8 +206,10 @@ def Data( iCompany, iSoup ):
 	tr = AddTR( iSoup, 'ROE (>15)', iCompany.mMorningstar.mProfitabilityROE, references, lambda v : 1 if v >= 15.0 else 0 if v >= 8.0 else -1 )
 	tbody.append( tr )
 	tr = AddTR( iSoup, 'ROI (>15)', iCompany.mMorningstar.mProfitabilityROI, references, lambda v : 1 if v >= 15.0 else 0 if v >= 8.0 else -1 )
+	tr['class'] = tr.get( 'class', [] ) + ['less-important']
 	tbody.append( tr )
 	tr = AddTR( iSoup, 'Interest Cover (>3)', iCompany.mMorningstar.mProfitabilityIC, references, lambda v : 1 if v >= 3.0 else -1 )
+	tr['class'] = tr.get( 'class', [] ) + ['less-important']
 	tbody.append( tr )
 	tr = AddTR( iSoup, 'FCF/Sales (>5)', iCompany.mMorningstar.mCashFlowFCFOnSales, references, lambda v : 1 if v >= 5.0 else -1 )
 	tbody.append( tr )
@@ -225,10 +239,13 @@ def Data( iCompany, iSoup ):
 	tr = AddTR( iSoup, 'Price/Book (<4)', iCompany.mMorningstar.mValuationP2B, references, lambda v : 1 if v <= 4.0 else 0 if v <= 5.0 else -1 )
 	tbody.append( tr )
 	tr = AddTR( iSoup, 'Price/Sales (<2)', iCompany.mMorningstar.mValuationP2S, references, lambda v : 1 if v <= 2.0 else 0 if v <= 4.0 else -1 )
+	tr['class'] = tr.get( 'class', [] ) + ['less-important']
 	tbody.append( tr )
 	tr = AddTR( iSoup, 'Price/CashFlow (<8)', iCompany.mMorningstar.mValuationP2CF, references, lambda v : 1 if v <= 8.0 else 0 if v <= 12.0 else -1 )
+	tr['class'] = tr.get( 'class', [] ) + ['less-important']
 	tbody.append( tr )
 	tr = AddTR( iSoup, 'EV/EBITDA (<8)', iCompany.mMorningstar.mValuationEVOnEBITDA, references, lambda v : 1 if v <= 5.0 else 0 if v <= 8.0 else -1 )
+	tr['class'] = tr.get( 'class', [] ) + ['less-important']
 	tbody.append( tr )
 	
 	table = iSoup.new_tag( 'table' )
@@ -242,16 +259,25 @@ def Data( iCompany, iSoup ):
 	
 	tr = AddTR( iSoup, '', iCompany.mZoneBourse.mYears, references, iHeader=True )
 	tbody.append( tr )
-	tr = AddTR( iSoup, 'Dividend Yield', iCompany.mZoneBourse.mYields, references )
+	tr = AddTR( iSoup, 'Dividend Yield (ZB)', iCompany.mZoneBourse.mYields, references )
 	tbody.append( tr )
-	tr = AddTR( iSoup, 'Dividend Yield', iCompany.mMorningstar.mFinancialsDividendsYield, references, lambda v : 1 if v >= 4.2 else 0 if v >= 3.5 else -1, iCSSFunction2=lambda v : 1 if v >= 3.0 else 0 if v >= 2.5 else -1 )
+	tr = AddTR( iSoup, 'Dividend Yield (MS)', iCompany.mMorningstar.mFinancialsDividendsYield, references, lambda v : 1 if v >= 4.3 else 0 if v >= 3.6 else -1 )
 	tbody.append( tr )
-	data = iCompany.mMorningstar.mFinancialsDividendsYield10Years
-	data.mDataEstimated = iCompany.mZoneBourse.mDividendsYield10Years.mDataEstimated
+	
+	data = copy.copy( iCompany.mMorningstar.mFinancialsDividendsYield10Years )
+	data.mTTM = iCompany.mMorningstar.mFinancialsGrowthDividends.mGrowthAverage
+	data.mDataEstimated = [ iCompany.mZoneBourse.mGrowthDividends.mGrowthAverage ]
+	tr = AddTR( iSoup, 'Growth Dividends (%)', data, references )
+	tr['class'] = tr.get( 'class', [] ) + ['less-important']
+	tbody.append( tr )
+	
+	data = copy.copy( iCompany.mMorningstar.mFinancialsDividendsYield10Years )
+	data.mDataEstimated = [ iCompany.mZoneBourse.mDividendsYield10Years.mGrowthAverage ]
 	tr = AddTR( iSoup, 'Dividends after 10Y', data, references, iUrl=iCompany.mMorningstar.mUrlDividendCalculator10Years )
 	tbody.append( tr )
-	data = iCompany.mMorningstar.mFinancialsDividendsYield20Years
-	data.mDataEstimated = iCompany.mZoneBourse.mDividendsYield20Years.mDataEstimated
+	
+	data = copy.copy( iCompany.mMorningstar.mFinancialsDividendsYield20Years )
+	data.mDataEstimated = [ iCompany.mZoneBourse.mDividendsYield20Years.mGrowthAverage ]
 	tr = AddTR( iSoup, 'Dividends after 20Y ', data, references, iUrl=iCompany.mMorningstar.mUrlDividendCalculator20Years )
 	tbody.append( tr )
 	
