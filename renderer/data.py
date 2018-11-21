@@ -197,7 +197,6 @@ def Data( iCompany, iSoup ):
 	
 	tr = AddTR( iSoup, '', iCompany.mMorningstar.mProfitabilityYears, references, iHeader=True )
 	tbody.append( tr )
-	#TODO: see what is it ? not corresponding to zonebourse
 	tr = AddTR( iSoup, 'Payout Ratio (<60)', iCompany.mMorningstar.mFinancialsPayoutRatio, references, lambda v : 1 if v <= 60.0 else 0 if v <= 70.0 else -1 )
 	tbody.append( tr )
 	tr = AddTR( iSoup, 'ROE (>15)', iCompany.mMorningstar.mProfitabilityROE, references, lambda v : 1 if v >= 15.0 else 0 if v >= 8.0 else -1 )
@@ -293,26 +292,32 @@ def CreateRow( iSoup, iLabel, iUrl, iData, iHeader=False ):
 	a.append( iLabel )
 	th.append( a )
 	tr.append( th )
+	
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['-5'] if '-5' in iData else ''
 	td.string = td.string
 	tr.append( td )
+	
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['-3'] if '-3' in iData else ''
 	td.string = td.string
 	tr.append( td )
+	
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['-1'] if '-1' in iData else ''
 	td.string = td.string
 	tr.append( td )
+	
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['0'] if '0' in iData else ''
 	td.string = td.string
 	tr.append( td )
+	
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['+1'] if '+1' in iData else ''
 	td.string = td.string
 	tr.append( td )
+	
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['+5'] if '+5' in iData else ''
 	td.string = td.string

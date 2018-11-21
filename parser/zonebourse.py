@@ -42,24 +42,6 @@ class cZoneBourse:
 		root = soup.find( 'table', class_='tabElemNoBor' ).find( 'td', class_='std_txt' )
 		iCompany.mZoneBourse.mSoupSociety = copy.copy( root )
 		
-	def _ComputeCroissanceTr( self, iTr ):
-		bs = iTr.find_all( 'b' )
-		prices = []
-		for b in bs:
-			price_str = b.string.strip().replace( ',', '.' ).replace( ' ', '' )
-			if price_str == '-':
-				continue
-			prices.append( float( price_str ) )
-		
-		croissances = []
-		for i in range( 5 ):
-			if not i:
-				continue
-			av = ( prices[i] - prices[i-1] ) / abs( prices[i-1] )
-			croissances.append( av )
-		
-		return ( croissances, sum( croissances ) / len( croissances ) )
-
 	def _ComputeGrowth( self, iData, iDataGrowth ):
 		for i, revenue in enumerate( iData.mData ):
 			if not i:
@@ -87,10 +69,8 @@ class cZoneBourse:
 			iDataGrowth.mDataEstimated.append( '{:.02f}'.format( ratio * 100 ) )
 			
 		del iDataGrowth.mDataEstimated[0]
-			
 		iDataGrowth.Update()
 		
-	
 	def _ParseData( self, iCompany, iSoup ):
 		root = iSoup.find( 'table', class_='BordCollapseYear' )
 		if not root:

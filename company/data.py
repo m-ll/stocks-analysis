@@ -3,7 +3,7 @@
 import re
 
 class cData:
-	def __init__( self, iRow=None, iParent=None, iComputeGrowthAverage=False ):
+	def __init__( self, iParent=None, iComputeGrowthAverage=False ):
 		self.mData = []
 		self.mDataEstimated = []
 		
@@ -14,9 +14,6 @@ class cData:
 		self.mGrowthAverage = ''
 		
 		self.mParent = iParent
-		
-		if iRow is not None:
-			self.SetRow( iRow )
 	
 	def __repr__(self):
 		return 'cData( [{}], [{}], "{}", "{}" )'.format( ', '.join( map( str, self.mData ) ), ', '.join( map( str, self.mDataEstimated ) ), self.mTTM, self.mLatestQuarter )
