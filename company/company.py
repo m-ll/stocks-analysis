@@ -1,160 +1,13 @@
 #!/usr/bin/python3
 
-import os
-import re
-import shutil
-import requests
 from enum import Enum, auto
+import os
+# import requests
+import shutil
 
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 
-class cData:
-	def __init__( self, iRow=None, iParent=None, iComputeGrowthAverage=False ):
-		self.mData = []
-		self.mDataEstimated = []
-		
-		self.mTTM = ''
-		self.mLatestQuarter = ''
-		
-		self.mComputeGrowthAverage=iComputeGrowthAverage
-		self.mGrowthAverage = ''
-		
-		self.mParent = iParent
-		
-		if iRow is not None:
-			self.SetRow( iRow )
-	
-	def __repr__(self):
-		return 'cData( [{}], [{}], "{}", "{}" )'.format( ', '.join( map( str, self.mData ) ), ', '.join( map( str, self.mDataEstimated ) ), self.mTTM, self.mLatestQuarter )
-	
-	def ComputeAverage( self, iData, iYears=8 ):
-		if not iData:
-			return
-		
-		data = []
-		for value in iData:
-			if not value:
-				continue
-			data.append( float( value ) )
-			
-		data = sorted( data[-1*iYears:] )
-		# Remove the min/max value (if enough sample)
-		if len( data ) >= 5:
-			del( data[0] )
-			del( data[-1] )
-		
-		return sum( data ) / float( len( data ) )
-	
-	def Update( self ):
-		if self.mComputeGrowthAverage:
-			self.mGrowthAverage = '{:.02f}'.format( self.ComputeAverage( self.mData + self.mDataEstimated ) )
-	
-	def SetRow( self, iRow ):
-		if self.mParent is None:
-			if iRow[-1] == 'TTM':
-				self.mData = iRow[1:-1]
-				self.mTTM = iRow[-1]
-			elif iRow[-1].startswith( 'Latest' ):
-				self.mData = iRow[1:-1]
-				self.mLatestQuarter = iRow[-1]
-			else:
-				self.mData = iRow[1:]
-		else:
-			if self.mParent.mTTM:
-				self.mData = iRow[1:-1]
-				self.mTTM = iRow[-1]
-			elif self.mParent.mLatestQuarter:
-				self.mData = iRow[1:-1]
-				self.mLatestQuarter = iRow[-1]
-			else:
-				self.mData = iRow[1:]
-		
-		self.mData = list( map( self._FixLocale, self.mData ) );
-		self.mTTM = self._FixLocale( self.mTTM )
-		self.mLatestQuarter = self._FixLocale( self.mLatestQuarter )
-		
-		self.Update()
-			
-	def _FixLocale( self, iString ):
-		return iString.replace( ',', '.' ).replace( '(', '-' ).replace( ')', '' )
-			
-	def SetTR( self, iSoupSection, iTag, iText ):
-		td = iSoupSection.find( iTag, string=iText )
-		if not td and self.mParent:		# value doesn't exist, like EBITDA for CNP
-			return
-			
-		if td.name == 'td':		# for years row
-			td = td.find_next_sibling( 'td' )
-			while td and 'Current' not in td.get_text( strip=True ):
-				v = td.get_text( strip=True )
-				self.mData.append( v )
-				
-				td = td.find_next_sibling( 'td' )
-				
-			self.mDataEstimated.append( td.get_text( strip=True ) )
-			td = td.find_next_sibling( 'td' )
-			self.mDataEstimated.append( td.get_text( strip=True ) )
-			td = td.find_next_sibling( 'td' )
-			self.mDataEstimated.append( td.get_text( strip=True ) )
-			
-		else:
-			td = td.find_parent( 'td' )
-			td = td.find_next_sibling( 'td' )
-			while len( self.mData ) != len( self.mParent.mData ):
-				v = td.get_text( strip=True )
-				self.mData.append( v )
-				
-				td = td.find_next_sibling( 'td' )
-			
-			self.mDataEstimated.append( td.get_text( strip=True ) )
-			td = td.find_next_sibling( 'td' )
-			self.mDataEstimated.append( td.get_text( strip=True ) )
-			td = td.find_next_sibling( 'td' )
-			self.mDataEstimated.append( td.get_text( strip=True ) )
-			
-		self.mData = list( map( self._FixLocale2, self.mData ) );
-		self.mDataEstimated = list( map( self._FixLocale2, self.mDataEstimated ) );
-		
-		self.Update()
-			
-	def _FixLocale2( self, iString ):
-		return iString.replace( ',', '' ).replace( '—', '' )
-		
-	def SetTR2( self, iSoupTr ):
-		if not self.mParent:		# for years row
-			tds_past = iSoupTr.find_all( 'td', style=re.compile( '#eeeeee' ) )
-			for td in tds_past:
-				v = td.get_text( strip=True )
-				self.mData.append( v )
-				
-			tds_estimated = iSoupTr.find_all( 'td', style=re.compile( '#dedede' ) )
-			for td in tds_estimated:
-				v = td.get_text( strip=True )
-				self.mDataEstimated.append( v )
-		
-		else:
-			td = iSoupTr.find( 'td' ).find_next_sibling( 'td' )
-			while len( self.mData ) != len( self.mParent.mData ):
-				v = td.get_text( strip=True )
-				self.mData.append( v )
-				
-				td = td.find_next_sibling( 'td' )
-			
-			while len( self.mDataEstimated ) != len( self.mParent.mDataEstimated ):
-				v = td.get_text( strip=True )
-				self.mDataEstimated.append( v )
-				
-				td = td.find_next_sibling( 'td' )
-			
-		self.mData = list( map( self._FixLocale3, self.mData ) );
-		self.mDataEstimated = list( map( self._FixLocale3, self.mDataEstimated ) );
-		
-		self.Update()
-			
-	def _FixLocale3( self, iString ):
-		return iString.replace( ',', '.' ).replace( ' ', '' ).replace( '-', '' ).replace( '%', '' )
-		
-#---
+from .data import cData
 
 class cZoneBourse:
 	class eAppletMode( Enum ):
@@ -225,136 +78,6 @@ class cZoneBourse:
 		return ( '{}.{}.{}.{}-{}.png'.format( self.mCompany.Name(), self.mCompany.ISIN(), self.mCode, 'content', 'ichimoku' ),
 				'{}.{}.{}.{}-{}.png'.format( self.mCompany.Name(), self.mCompany.ISIN(), self.mCode, 'prices', 'ichimoku' ),
 				'{}.{}.{}.{}-{}.png'.format( self.mCompany.Name(), self.mCompany.ISIN(), self.mCode, 'times', 'ichimoku' ) )
-	
-class cFinviz:
-	def __init__( self, iCompany, iSymbol ):
-		self.mCompany = iCompany
-		self.mSymbol = iSymbol
-		
-		# string 'xx%'
-		self.mBNAGrowth = { '-5': '', '0': '', '+1': '', '+5':'' }
-		
-	def Symbol( self ):
-		return self.mSymbol
-		
-	def Url( self ):
-		return 'https://finviz.com/quote.ashx?t={}'.format( self.mSymbol )
-	def FileName( self ):
-		return '{}.{}.finviz.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
-	
-class cYahooFinance:
-	def __init__( self, iCompany, iSymbol ):
-		self.mCompany = iCompany
-		self.mSymbol = iSymbol
-		
-		# string 'xx%'
-		self.mGrowth = { '-5': '', '0': '', '+1': '', '+5':'' }
-		
-	def Symbol( self ):
-		return self.mSymbol
-		
-	def Url( self ):
-		if self.mCompany.ISIN() == 'GB0008847096':
-			return 'https://uk.finance.yahoo.com/quote/{}/analysis?p={}'.format( self.mSymbol, self.mSymbol )
-		else:
-			return 'https://finance.yahoo.com/quote/{}/analysis?p={}'.format( self.mSymbol, self.mSymbol )
-	def FileName( self ):
-		return '{}.{}.yahoofinance.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
-	
-class cReuters:
-	def __init__( self, iCompany, iSymbol ):
-		self.mCompany = iCompany
-		self.mSymbol = iSymbol
-		
-		# string 'xx'
-		self.mBNAGrowth = { '-5': '', '-3': '', '-1': '' }
-		
-	def Symbol( self ):
-		return self.mSymbol
-		
-	def Url( self ):
-		return 'https://www.reuters.com/finance/stocks/financial-highlights/{}'.format( self.mSymbol )
-	def FileName( self ):
-		return '{}.{}.reuters.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
-	
-class cBoerse:
-	def __init__( self, iCompany, iName ):
-		self.mCompany = iCompany
-		self.mName = iName
-		
-		self.mYears = []
-		self.mPER = []
-		self.mBNA = []
-		self.mBNAGrowth = []
-		self.mBNAGrowthAverage = 0
-		self.mBNAGrowthAverageLast5Y = 0
-		self.mDividend = []
-		self.mDividendGrowth = []
-		self.mDividendGrowthAverage = 0
-		self.mDividendGrowthAverageLast5Y = 0
-		self.mDividendYield = []
-		
-	def Name( self ):
-		return self.mName
-		
-	def Url( self ):
-		return 'https://www.boerse.de/fundamental-analyse/{}-Aktie/{}'.format( self.mName, self.mCompany.ISIN() )
-	def FileName( self ):
-		return '{}.{}.boerse.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
-	
-class cTradingSat:
-	class cDividend:
-		class eType( Enum ):
-			kNone = 0
-			kDividend = 1
-			kSplit = 2
-			kActionOnly = 3		# add Exceptionel (BIC) ?
-			
-		def __init__( self ):
-			self.mType = self.eType.kNone
-			self.mYear = 0
-			self.mPrice = 0
-
-	def __init__( self, iCompany, iName ):
-		self.mCompany = iCompany
-		self.mName = iName
-		
-		self.mDividends = []
-		
-	def Name( self ):
-		return self.mName
-		
-	def Url( self ):
-		return 'https://www.tradingsat.com/{}-{}/dividende.html'.format( self.mName, self.mCompany.ISIN() )
-	def FileName( self ):
-		return '{}.{}.tradingsat.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
-	
-class cFinances:
-	class cDividend:
-		class eType( Enum ):
-			kNone = 0
-			kDividend = 1
-			kSplit = 2
-			kActionOnly = 3		# add Exceptionel (BIC) ?
-			
-		def __init__( self ):
-			self.mType = self.eType.kNone
-			self.mYear = 0
-			self.mPrice = 0
-
-	def __init__( self, iCompany, iName ):
-		self.mCompany = iCompany
-		self.mName = iName
-		
-		self.mDividends = []
-		
-	def Name( self ):
-		return self.mName
-		
-	def Url( self ):
-		return 'http://www.finances.net/dividendes/{}'.format( self.mName )
-	def FileName( self ):
-		return '{}.{}.finances.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
 	
 class cMorningstar:
 	def __init__( self, iCompany, iSymbol, iRegion, iCity ):
@@ -446,6 +169,138 @@ class cMorningstar:
 	def FileNameDividends( self ):
 		return '{}.{}.{}.html'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-dividends' )
 
+class cFinviz:
+	def __init__( self, iCompany, iSymbol ):
+		self.mCompany = iCompany
+		self.mSymbol = iSymbol
+		
+		# string 'xx%'
+		self.mBNAGrowth = { '-5': '', '0': '', '+1': '', '+5':'' }
+		
+	def Symbol( self ):
+		return self.mSymbol
+		
+	def Url( self ):
+		return 'https://finviz.com/quote.ashx?t={}'.format( self.mSymbol )
+	def FileName( self ):
+		return '{}.{}.finviz.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+class cYahooFinance:
+	def __init__( self, iCompany, iSymbol ):
+		self.mCompany = iCompany
+		self.mSymbol = iSymbol
+		
+		# string 'xx%'
+		self.mGrowth = { '-5': '', '0': '', '+1': '', '+5':'' }
+		
+	def Symbol( self ):
+		return self.mSymbol
+		
+	def Url( self ):
+		if self.mCompany.ISIN() == 'GB0008847096':
+			return 'https://uk.finance.yahoo.com/quote/{}/analysis?p={}'.format( self.mSymbol, self.mSymbol )
+		else:
+			return 'https://finance.yahoo.com/quote/{}/analysis?p={}'.format( self.mSymbol, self.mSymbol )
+	def FileName( self ):
+		return '{}.{}.yahoofinance.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+class cReuters:
+	def __init__( self, iCompany, iSymbol ):
+		self.mCompany = iCompany
+		self.mSymbol = iSymbol
+		
+		# string 'xx'
+		self.mBNAGrowth = { '-5': '', '-3': '', '-1': '' }
+		
+	def Symbol( self ):
+		return self.mSymbol
+		
+	def Url( self ):
+		return 'https://www.reuters.com/finance/stocks/financial-highlights/{}'.format( self.mSymbol )
+	def FileName( self ):
+		return '{}.{}.reuters.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+class cBoerse:
+	def __init__( self, iCompany, iName ):
+		self.mCompany = iCompany
+		self.mName = iName
+		
+		self.mYears = []
+		self.mPER = []
+		self.mBNA = []
+		self.mBNAGrowth = []
+		self.mBNAGrowthAverage = 0
+		self.mBNAGrowthAverageLast5Y = 0
+		self.mDividend = []
+		self.mDividendGrowth = []
+		self.mDividendGrowthAverage = 0
+		self.mDividendGrowthAverageLast5Y = 0
+		self.mDividendYield = []
+		
+	def Name( self ):
+		return self.mName
+		
+	def Url( self ):
+		return 'https://www.boerse.de/fundamental-analyse/{}-Aktie/{}'.format( self.mName, self.mCompany.ISIN() )
+	def FileName( self ):
+		return '{}.{}.boerse.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+class cTradingSat:
+	class cDividend:			#TODO: maybe move this to data.py or its own file ?
+		class eType( Enum ):
+			kNone = 0
+			kDividend = 1
+			kSplit = 2
+			kActionOnly = 3		# add Exceptionel (BIC) ?
+			
+		def __init__( self ):
+			self.mType = self.eType.kNone
+			self.mYear = 0
+			self.mPrice = 0
+
+	def __init__( self, iCompany, iName ):
+		self.mCompany = iCompany
+		self.mName = iName
+		
+		self.mDividends = []
+		
+	def Name( self ):
+		return self.mName
+		
+	def Url( self ):
+		return 'https://www.tradingsat.com/{}-{}/dividende.html'.format( self.mName, self.mCompany.ISIN() )
+	def FileName( self ):
+		return '{}.{}.tradingsat.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+class cFinances:
+	class cDividend:
+		class eType( Enum ):
+			kNone = 0
+			kDividend = 1
+			kSplit = 2
+			kActionOnly = 3		# add Exceptionel (BIC) ?
+			
+		def __init__( self ):
+			self.mType = self.eType.kNone
+			self.mYear = 0
+			self.mPrice = 0
+
+	def __init__( self, iCompany, iName ):
+		self.mCompany = iCompany
+		self.mName = iName
+		
+		self.mDividends = []
+		
+	def Name( self ):
+		return self.mName
+		
+	def Url( self ):
+		return 'http://www.finances.net/dividendes/{}'.format( self.mName )
+	def FileName( self ):
+		return '{}.{}.finances.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+	
+#---
+
 class cCompany:
 	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName ):
 		self.mISIN = iISIN
@@ -534,17 +389,17 @@ class cCompany:
 		data = []
 		for _ in range( self.mYearsToHold ):
 			if not data:
-				data.append( self.DividendCalculator( self.mInvestment, self.mStartingYield, 0 ) )
+				data.append( self._DividendCalculator( self.mInvestment, self.mStartingYield, 0 ) )
 				continue
 			
 			previous_data = data[-1]
-			data.append( self.DividendCalculator( previous_data[3], previous_data[1], self.mDividendGrowthRate ) )
+			data.append( self._DividendCalculator( previous_data[3], previous_data[1], self.mDividendGrowthRate ) )
 		
 		growth = ( data[-1][3] - self.mInvestment ) / self.mInvestment
 		annual_average = growth / self.mYearsToHold
 		return '{:.2f}'.format( annual_average * 100.0 )
 	
-	def DividendCalculator( self, iInvestment, iYield, iGrowth ):
+	def _DividendCalculator( self, iInvestment, iYield, iGrowth ):
 		investment = iInvestment
 		yield_ = iYield + iYield * iGrowth/100.0
 		income = investment * yield_/100.0
