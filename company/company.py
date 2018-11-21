@@ -8,7 +8,7 @@ from enum import Enum, auto
 
 from bs4 import BeautifulSoup
 
-class cDataMorningstar:
+class cData:
 	def __init__( self, iRow=None, iParent=None, iComputeGrowthAverage=False ):
 		self.mData = []
 		self.mDataEstimated = []
@@ -25,7 +25,7 @@ class cDataMorningstar:
 			self.SetRow( iRow )
 	
 	def __repr__(self):
-		return 'cDataMorningstar( [{}], [{}], "{}", "{}" )'.format( ', '.join( map( str, self.mData ) ), ', '.join( map( str, self.mDataEstimated ) ), self.mTTM, self.mLatestQuarter )
+		return 'cData( [{}], [{}], "{}", "{}" )'.format( ', '.join( map( str, self.mData ) ), ', '.join( map( str, self.mDataEstimated ) ), self.mTTM, self.mLatestQuarter )
 	
 	def ComputeAverage( self, iData, iYears=8 ):
 		if not iData:
@@ -81,37 +81,36 @@ class cDataMorningstar:
 	def SetTR( self, iSoupSection, iTag, iText ):
 		td = iSoupSection.find( iTag, string=iText )
 		if not td and self.mParent:		# value doesn't exist, like EBITDA for CNP
-			self.mData = [''] * len( self.mParent.mData )
 			return
 			
 		if td.name == 'td':		# for years row
 			td = td.find_next_sibling( 'td' )
-			while td and 'Current' not in td.string:
-				v = td.string
+			while td and 'Current' not in td.get_text( strip=True ):
+				v = td.get_text( strip=True )
 				self.mData.append( v )
 				
 				td = td.find_next_sibling( 'td' )
 				
-			self.mDataEstimated.append( td.string )
+			self.mDataEstimated.append( td.get_text( strip=True ) )
 			td = td.find_next_sibling( 'td' )
-			self.mDataEstimated.append( td.string )
+			self.mDataEstimated.append( td.get_text( strip=True ) )
 			td = td.find_next_sibling( 'td' )
-			self.mDataEstimated.append( td.string )
+			self.mDataEstimated.append( td.get_text( strip=True ) )
 			
 		else:
 			td = td.find_parent( 'td' )
 			td = td.find_next_sibling( 'td' )
 			while len( self.mData ) != len( self.mParent.mData ):
-				v = td.find( 'span' ).string
+				v = td.get_text( strip=True )
 				self.mData.append( v )
 				
 				td = td.find_next_sibling( 'td' )
 			
-			self.mDataEstimated.append( td.find( 'span' ).string )
+			self.mDataEstimated.append( td.get_text( strip=True ) )
 			td = td.find_next_sibling( 'td' )
-			self.mDataEstimated.append( td.find( 'span' ).string )
+			self.mDataEstimated.append( td.get_text( strip=True ) )
 			td = td.find_next_sibling( 'td' )
-			self.mDataEstimated.append( td.find( 'span' ).string )
+			self.mDataEstimated.append( td.get_text( strip=True ) )
 			
 		self.mData = list( map( self._FixLocale2, self.mData ) );
 		self.mDataEstimated = list( map( self._FixLocale2, self.mDataEstimated ) );
@@ -125,24 +124,24 @@ class cDataMorningstar:
 		if not self.mParent:		# for years row
 			tds_past = iSoupTr.find_all( 'td', style=re.compile( '#eeeeee' ) )
 			for td in tds_past:
-				v = td.string
+				v = td.get_text( strip=True )
 				self.mData.append( v )
 				
 			tds_estimated = iSoupTr.find_all( 'td', style=re.compile( '#dedede' ) )
 			for td in tds_estimated:
-				v = td.string
+				v = td.get_text( strip=True )
 				self.mDataEstimated.append( v )
 		
 		else:
 			td = iSoupTr.find( 'td' ).find_next_sibling( 'td' )
 			while len( self.mData ) != len( self.mParent.mData ):
-				v = td.find( 'b' ).string
+				v = td.get_text( strip=True )
 				self.mData.append( v )
 				
 				td = td.find_next_sibling( 'td' )
 			
 			while len( self.mDataEstimated ) != len( self.mParent.mDataEstimated ):
-				v = td.find( 'b' ).string
+				v = td.get_text( strip=True )
 				self.mDataEstimated.append( v )
 				
 				td = td.find_next_sibling( 'td' )
@@ -175,20 +174,20 @@ class cZoneBourse:
 		self.mPrice = ''
 		self.mCurrency = ''
 		
-		self.mYears = cDataMorningstar()
-		self.mRevenue = cDataMorningstar( iParent=self.mYears )
-		self.mGrowthRevenue = cDataMorningstar( iParent=self.mYears )
-		self.mNetIncome = cDataMorningstar( iParent=self.mYears )
-		self.mGrowthNetIncome = cDataMorningstar( iParent=self.mYears )
-		self.mEarnings = cDataMorningstar( iParent=self.mYears )
-		self.mGrowthEarnings = cDataMorningstar( iParent=self.mYears, iComputeGrowthAverage=True )
-		self.mDividends = cDataMorningstar( iParent=self.mYears )
-		self.mGrowthDividends = cDataMorningstar( iParent=self.mYears, iComputeGrowthAverage=True )
-		self.mYields = cDataMorningstar( iParent=self.mYears )
+		self.mYears = cData()
+		self.mRevenue = cData( iParent=self.mYears )
+		self.mGrowthRevenue = cData( iParent=self.mYears )
+		self.mNetIncome = cData( iParent=self.mYears )
+		self.mGrowthNetIncome = cData( iParent=self.mYears )
+		self.mEarnings = cData( iParent=self.mYears )
+		self.mGrowthEarnings = cData( iParent=self.mYears, iComputeGrowthAverage=True )
+		self.mDividends = cData( iParent=self.mYears )
+		self.mGrowthDividends = cData( iParent=self.mYears, iComputeGrowthAverage=True )
+		self.mYields = cData( iParent=self.mYears )
 		
 		self.mYieldCurrent = 0				# 0.0 < ... < 100.0
-		self.mDividendsYield10Years = cDataMorningstar( iParent=self.mYears )
-		self.mDividendsYield20Years = cDataMorningstar( iParent=self.mYears )
+		self.mDividendsYield10Years = cData( iParent=self.mYears )
+		self.mDividendsYield20Years = cData( iParent=self.mYears )
 		self.mUrlDividendCalculator10Years = ''
 		self.mUrlDividendCalculator20Years = ''
 		
@@ -364,45 +363,46 @@ class cMorningstar:
 		self.mRegion = iRegion
 		self.mCity = iCity
 		
-		self.mISYears = None
-		self.mEBITDA = None
+		self.mISYears = cData()
+		self.mEBITDA = cData( iParent=self.mISYears )
 		
-		self.mBSYears = None
-		self.mLongTermDebt = None
-		self.mLTDOnEBITDA = cDataMorningstar()
+		self.mBSYears = cData()
+		self.mLongTermDebt = cData( iParent=self.mBSYears )
+		self.mLTDOnEBITDA = cData( iParent=self.mBSYears )
 		
-		self.mFinancialsYears = None
-		self.mFinancialsRevenue = None
-		self.mFinancialsNetIncome = None
-		self.mFinancialsDividends = None
-		self.mFinancialsGrowthDividends = cDataMorningstar( iComputeGrowthAverage=True )
-		self.mFinancialsPayoutRatio = None
-		self.mFinancialsEarnings = None
-		self.mFinancialsBook = None
-		self.mFinancialsGrowthBook = cDataMorningstar()
-		self.mProfitabilityYears = None
-		self.mProfitabilityROE = None
-		self.mProfitabilityROI = None
-		self.mProfitabilityIC = None
-		self.mGrowthYears = None
-		self.mGrowthRevenue = None
-		self.mGrowthNetIncome = None
-		self.mGrowthEarnings = None
-		self.mCashFlowFCFOnSales = None
-		self.mHealthYears = None
-		self.mHealthCurrentRatio = None
-		self.mHealthDebtOnEquity = None
+		self.mFinancialsYears = cData()
+		self.mFinancialsRevenue = cData( iParent=self.mFinancialsYears )
+		self.mFinancialsNetIncome = cData( iParent=self.mFinancialsYears )
+		self.mFinancialsDividends = cData( iParent=self.mFinancialsYears )
+		self.mFinancialsGrowthDividends = cData( iParent=self.mFinancialsYears, iComputeGrowthAverage=True )
+		self.mFinancialsPayoutRatio = cData( iParent=self.mFinancialsYears )
+		self.mFinancialsEarnings = cData( iParent=self.mFinancialsYears )
+		self.mFinancialsBook = cData( iParent=self.mFinancialsYears )
+		self.mFinancialsGrowthBook = cData( iParent=self.mFinancialsYears )
 		
-		self.mValuationYears = cDataMorningstar()
-		self.mValuationP2S = cDataMorningstar( iParent=self.mValuationYears )
-		self.mValuationPER = cDataMorningstar( iParent=self.mValuationYears )
-		self.mValuationP2CF = cDataMorningstar( iParent=self.mValuationYears )
-		self.mValuationP2B = cDataMorningstar( iParent=self.mValuationYears )
-		self.mValuationEVOnEBITDA = cDataMorningstar( iParent=self.mValuationYears )
+		self.mProfitabilityYears = cData()
+		self.mProfitabilityROE = cData( iParent=self.mProfitabilityYears )
+		self.mProfitabilityROI = cData( iParent=self.mProfitabilityYears )
+		self.mProfitabilityIC = cData( iParent=self.mProfitabilityYears )
+		self.mGrowthYears = cData()
+		self.mGrowthRevenue = cData( iParent=self.mGrowthYears )
+		self.mGrowthNetIncome = cData( iParent=self.mGrowthYears )
+		self.mGrowthEarnings = cData( iParent=self.mGrowthYears, iComputeGrowthAverage=True )
+		self.mCashFlowFCFOnSales = cData( iParent=self.mProfitabilityYears )
+		self.mHealthYears = cData()
+		self.mHealthCurrentRatio = cData( iParent=self.mHealthYears )
+		self.mHealthDebtOnEquity = cData( iParent=self.mHealthYears )
 		
-		self.mFinancialsDividendsYield = cDataMorningstar( iParent=self.mValuationYears )
-		self.mFinancialsDividendsYield10Years = cDataMorningstar( iParent=self.mValuationYears )
-		self.mFinancialsDividendsYield20Years = cDataMorningstar( iParent=self.mValuationYears )
+		self.mValuationYears = cData()
+		self.mValuationP2S = cData( iParent=self.mValuationYears )
+		self.mValuationPER = cData( iParent=self.mValuationYears )
+		self.mValuationP2CF = cData( iParent=self.mValuationYears )
+		self.mValuationP2B = cData( iParent=self.mValuationYears )
+		self.mValuationEVOnEBITDA = cData( iParent=self.mValuationYears )
+		
+		self.mFinancialsDividendsYield = cData( iParent=self.mValuationYears )
+		self.mFinancialsDividendsYield10Years = cData( iParent=self.mValuationYears )
+		self.mFinancialsDividendsYield20Years = cData( iParent=self.mValuationYears )
 		self.mUrlDividendCalculator10Years = ''
 		self.mUrlDividendCalculator20Years = ''
 		

@@ -106,8 +106,6 @@
 	# ,[ "BE0003604155", "LOTUS-BAKERIES", 3732293, " LOTB", 		"", "",			"",					"",			"", 			"",		"lotus-bakeries", 	"Lotus_Bakeries_NV" ]
 	# same as A [?]
 	# ,[ "GB00B03MM408", "ROYAL-DUTCH-SHELL-B", 6368, "RDSB", 		"", "",			"",					"",			"", 			"",		"", 				"Shell_B" ]
-	# table un peu vide
-	# ,[ "FR0000130403", "CHRISTIAN-DIOR-SE", 4629, "CDI", 			"", "",			"",					"CDI.PA",	"DIOR.PA", 		"",		"christian-dior", 	"Christian_Dior" ]
 	# no dividends [?]
 	# ,[ "GB0007973794", "SERCO-GROUP-PLC", 9590148, "SRP", 		"", "",			"",					"SRP.L",	"SRP.L", 		"",		"", 				"Serco_Group" ]
 	# div cut
@@ -156,8 +154,7 @@
 	,[ "DE0002457512", "VIB-VERMOEGEN-AG", 455750, "VIH", 			"deu", "xetr",	"XETR:VIH",			"VIH.DE",	"VIHG.DE", 		"",		"", 				"VIB_Vermoegen" ]
 	# apres la fusion apres westfield
 	# ,[ "FR0000124711", "UNIBAIL-RODAMCO", 54289, "UL", 			"", "",			"",					"UL.AS",	"UNBP.AS", 		"",		"unibail-rodamco", 	"Unibail-Rodamco" ]
-	# pas de rendement avant 2018, refaire les scripts ...
-	# ,[ "FR0013326246", "UNIBAIL-R-SE-WFD-UNIBAIL", 43851519, "URW","nld", "xams",	"EURONEXT:URW",		"UL.AS",	"URW.AS", 		"",		"", 				"Unibail-Rodamco" ]
+	,[ "FR0013326246", "UNIBAIL-R-SE-WFD-UNIBAIL", 43851519, "URW","nld", "xams",	"EURONEXT:URW",		"UL.AS",	"URW.AS", 		"",		"", 				"Unibail-Rodamco" ]
 	,[ "BE0974293251", "ANHEUSER-BUSCH-INBEV", 31571356, "ABI", 	"bel", "xbru",	"EURONEXT:ABI",		"ABI.BR",	"ABI.BR", 		"",		"", 				"AB_InBev" ]
 	,[ "DE0005194062", "BAYWA-AG", 435730, "BYW6", 					"", "",			"XETR:BYW6",		"BYW6.DE",	"BYWGnx.DE", 	"",		"", 				"BayWa" ]
 	,[ "CH0012032048", "ROCHE-HOLDING-LTD", 9364975, "ROG", 		"", "",			"SIX:ROG",			"RO.SW",	"RO.DE", 		"",		"", 				"Roche" ]
@@ -184,6 +181,7 @@
 	,[ "SE0000310336", "SWEDISH-MATCH", 6492173, "SWMA", 			"", "",			"OMXSTO:SWMA",		"SWMA.ST",	"SWMA.ST", 		"",		"", 				"Swedish_Match" ]
 	,[ "GB0009465807", "WEIR-GROUP", 9590176, "WEIR", 				"gbr", "xlon",	"LSE:WEIR",			"WEIR.L",	"WEIR.L", 		"",		"", 				"Weir" ]
 	,[ "GB00B1KJJ408", "WHITBREAD", 4006657, "WTB", 				"gbr", "xlon",	"LSE:WTB",			"WTB.L",	"WTB.L", 		"",		"", 				"Whitbread" ]
+	,[ "FR0000130403", "CHRISTIAN-DIOR-SE", 4629, "CDI", 			"fra", "xpar",	"EURONEXT:CDI",		"CDI.PA",	"DIOR.PA", 		"",		"christian-dior", 	"Christian_Dior" ]
 	
 	# racheté par ACS, Hochtief et Atlantia
 	# ,[ "ES0111845014", "ABERTIS-INFRAESTRUCTURAS", 69642, "ABE", 	"", "",			"",					"ABE.MC",	"ABE.MC", 		"",		"", 				"Abertis" ]
@@ -191,7 +189,7 @@
 
 ,"us": [
 	[ "US1941621039", "COLGATE-PALMOLIVE-COMPANY", 12089, "CL", 	"usa", "xnys",	"NYSE:CL",			"CL",		"CL.N", 		"CL",	"", 				"Colgate-Palmolive" ]
-# ,[ "US3546131018", "FRANKLIN-RESOURCES", 11807, "BEN", 			"usa", "xnys",	"NYSE:BEN",			"FTF",		"BEN.N", 		"BEN",	"", 				"Franklin_Resources" ]
+	,[ "US3546131018", "FRANKLIN-RESOURCES", 11807, "BEN", 			"usa", "xnys",	"NYSE:BEN",			"FTF",		"BEN.N", 		"BEN",	"", 				"Franklin_Resources" ]
 	,[ "US14149Y1082", "CARDINAL-HEALTH", 11969, "CAH", 			"usa", "xnys",	"NYSE:CAH",			"CAH",		"CAH.N", 		"CAH",	"", 				"Cardinal_Health" ]
 	,[ "US9314271084", "WALGREENS-BOOTS-ALLIANCE", 19356230, "WBA", "usa", "xnas",	"NASDAQ:WBA",		"WBA",		"WBA.O", 		"WBA",	"", 				"Walgreens_Boots_Alliance" ]
 	,[ "US1667641005", "CHEVRON-CORPORATION", 12064, "CVX", 		"usa", "xnys",	"NYSE:CVX",			"CVX",		"CVX.N", 		"CVX",	"", 				"Chevron" ]
@@ -221,17 +219,16 @@
 	,[ "CH0044328745", "CHUBB-LTD", 3860961, "CB", 					"usa", "xnys",	"NYSE:CB",			"CB",		"CB.N", 		"CB",	"", 				"Chubb_3" ]
 	,[ "US7766961061", "ROPER-TECHNOLOGIES", 14279, "ROP", 			"usa", "xnys",	"NYSE:ROP",			"ROP",		"ROP.N", 		"ROP",	"", 				"Roper_Industries" ]
 	,[ "US3695501086", "GENERAL-DYNAMICS", 12723, "GD", 			"usa", "xnys",	"NYSE:GD",			"GD",		"GD.N", 		"GD",	"", 				"General_Dynamics" ]
-# PX is now another company ?!
-# ,[ "US74005P1049", "PRAXAIR", 14158, "PX", 						"usa", "xnys",	"NYSE:PX",			"PX",		"PX.N", 		"PX",	"", 				"Praxair" ]
+	# PX is now another company ?!
+	# ,[ "US74005P1049", "PRAXAIR", 14158, "PX", 						"usa", "xnys",	"NYSE:PX",			"PX",		"PX.N", 		"PX",	"", 				"Praxair" ]
 		
-	#TODO: only 2 column for estimated 2018/2019 ... -_-	
-	# ,[ "US8585861003", "STEPAN-COMPANY", 14335, "SCL", 			"usa", "xnys",	"NYSE:SCL",			"SCL",		"SCL.N", 		"SCL",	"", 				"Stepan" ]
-	# ,[ "US5138471033", "LANCASTER-COLONY-CORP", 9843, "LANC", 	"usa", "xnas",	"NASDAQ:LANC",		"LANC",		"LANC.O", 		"LANC",	"", 				"Lancaster_Colony" ]		# no estimated div
+	,[ "US8585861003", "STEPAN-COMPANY", 14335, "SCL", 			"usa", "xnys",	"NYSE:SCL",			"SCL",		"SCL.N", 		"SCL",	"", 				"Stepan" ]
+	,[ "US5138471033", "LANCASTER-COLONY-CORP", 9843, "LANC", 	"usa", "xnas",	"NASDAQ:LANC",		"LANC",		"LANC.O", 		"LANC",	"", 				"Lancaster_Colony" ]
 	,[ "US0009571003", "ABM-INDUSTRIES-INC", 11500, "ABM", 			"usa", "xnys",	"NYSE:ABM",			"ABM",		"ABM.N", 		"ABM",	"", 				"ABM_Industries" ]
 	,[ "US6556631025", "NORDSON-CORPORATION", 10175, "NDSN", 		"usa", "xnas",	"NASDAQ:NDSN",		"NDSN",		"NDSN.O", 		"NDSN",	"", 				"Nordson" ]
 	,[ "US7010941042", "PARKER-HANNIFIN", 40295173, "PH", 			"usa", "xnys",	"NYSE:PH",			"PH",		"PH.N", 		"PH",	"", 				"Parker_Hannifin" ]
 	,[ "US0298991011", "AMERICAN-STATES-WATER-CO", 11734, "AWR", 	"usa", "xnys",	"NYSE:AWK",			"AWR",		"AWR.N", 		"AWR",	"", 				"American_States_Water" ]
 	,[ "US1307881029", "CALIFORNIA-WATER-SERVICE", 12235, "CWT", 	"usa", "xnys",	"NYSE:CWT",			"CWT",		"CWT.N", 		"CWT",	"", 				"California_Water_Service_Group" ]
-# ,[ "US92240G1013", "VECTREN-CORP", 14838, "VVC", 				"usa", "xnys",	"NYSE:VVC",			"VVC",		"VVC.N", 		"VVC",	"", 				"Vectren" ]
+	,[ "US92240G1013", "VECTREN-CORP", 14838, "VVC", 				"usa", "xnys",	"NYSE:VVC",			"VVC",		"VVC.N", 		"VVC",	"", 				"Vectren" ]
 ]
 }

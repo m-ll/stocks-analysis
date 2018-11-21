@@ -7,8 +7,6 @@ from datetime import date, datetime
 from bs4 import BeautifulSoup
 from colorama import init, Fore, Back, Style
 
-import company.company
-
 class cMorningstar:
 	def __init__( self ):
 		pass
@@ -39,13 +37,9 @@ class cMorningstar:
 					continue
 				
 				if row[0].startswith( 'Fiscal year ends' ):
-					iCompany.mMorningstar.mISYears = company.company.cDataMorningstar( row )
+					iCompany.mMorningstar.mISYears.SetRow( row )
 				elif row[0].startswith( 'EBITDA' ):
-					iCompany.mMorningstar.mEBITDA = company.company.cDataMorningstar( row, iCompany.mMorningstar.mISYears )
-		
-		if iCompany.mMorningstar.mEBITDA is None:
-			iCompany.mMorningstar.mEBITDA = company.company.cDataMorningstar()
-			iCompany.mMorningstar.mEBITDA.mData = [''] * len( iCompany.mMorningstar.mISYears.mData )
+					iCompany.mMorningstar.mEBITDA.SetRow( row )
 		
 	def _ParseBalanceSheet( self, iCompany ):
 		print( '		- Balance Sheet ...' )
@@ -58,13 +52,16 @@ class cMorningstar:
 					continue
 				
 				if row[0].startswith( 'Fiscal year ends' ):
-					iCompany.mMorningstar.mBSYears = company.company.cDataMorningstar( row )
+					iCompany.mMorningstar.mBSYears.SetRow( row )
 				elif row[0].startswith( 'Total non-current liabilities' ):
-					iCompany.mMorningstar.mLongTermDebt = company.company.cDataMorningstar( row, iCompany.mMorningstar.mBSYears )
-				elif row[0].startswith( 'Total liabilities' ) and iCompany.mMorningstar.mLongTermDebt is None:	# CNP
-					iCompany.mMorningstar.mLongTermDebt = company.company.cDataMorningstar( row, iCompany.mMorningstar.mBSYears )
+					iCompany.mMorningstar.mLongTermDebt.SetRow( row )
+				elif row[0].startswith( 'Total liabilities' ) and not iCompany.mMorningstar.mLongTermDebt.mData:	# CNP
+					iCompany.mMorningstar.mLongTermDebt.SetRow( row )
 		
 		for i, ltd in enumerate( iCompany.mMorningstar.mLongTermDebt.mData ):
+			if not iCompany.mMorningstar.mEBITDA.mData:
+				break
+			
 			ebitda = iCompany.mMorningstar.mEBITDA.mData[i]
 			if not ltd or not ebitda:
 				iCompany.mMorningstar.mLTDOnEBITDA.mData.append( '' )
@@ -84,52 +81,52 @@ class cMorningstar:
 				if not row:
 					continue
 				
-				if not row[0] and iCompany.mMorningstar.mFinancialsYears is None:		# 2 lines have the same format, and the first one is the wanted one
-					iCompany.mMorningstar.mFinancialsYears = company.company.cDataMorningstar( row )
+				if not row[0] and not iCompany.mMorningstar.mFinancialsYears.mData:		# 2 lines have the same format, and the first one is the wanted one
+					iCompany.mMorningstar.mFinancialsYears.SetRow( row )
 				elif row[0].startswith( 'Revenue' ) and row[0].endswith( 'Mil' ):
-					iCompany.mMorningstar.mFinancialsRevenue = company.company.cDataMorningstar( row, iCompany.mMorningstar.mFinancialsYears )
+					iCompany.mMorningstar.mFinancialsRevenue.SetRow( row )
 				elif row[0].startswith( 'Net Income' ) and row[0].endswith( 'Mil' ):
-					iCompany.mMorningstar.mFinancialsNetIncome = company.company.cDataMorningstar( row, iCompany.mMorningstar.mFinancialsYears )
+					iCompany.mMorningstar.mFinancialsNetIncome.SetRow( row )
 				elif row[0].startswith( 'Dividends' ):
-					iCompany.mMorningstar.mFinancialsDividends = company.company.cDataMorningstar( row, iCompany.mMorningstar.mFinancialsYears )
+					iCompany.mMorningstar.mFinancialsDividends.SetRow( row )
 				elif row[0].startswith( 'Payout Ratio' ):
-					iCompany.mMorningstar.mFinancialsPayoutRatio = company.company.cDataMorningstar( row, iCompany.mMorningstar.mFinancialsYears )
+					iCompany.mMorningstar.mFinancialsPayoutRatio.SetRow( row )
 				elif row[0].startswith( 'Earnings' ):
-					iCompany.mMorningstar.mFinancialsEarnings = company.company.cDataMorningstar( row, iCompany.mMorningstar.mFinancialsYears )
+					iCompany.mMorningstar.mFinancialsEarnings.SetRow( row )
 				elif row[0].startswith( 'Book Value Per Share' ):
-					iCompany.mMorningstar.mFinancialsBook = company.company.cDataMorningstar( row, iCompany.mMorningstar.mFinancialsYears )
+					iCompany.mMorningstar.mFinancialsBook.SetRow( row )
 					
 				elif row[0].startswith( 'Profitability' ):
-					iCompany.mMorningstar.mProfitabilityYears = company.company.cDataMorningstar( row )
+					iCompany.mMorningstar.mProfitabilityYears.SetRow( row )
 				elif row[0].startswith( 'Return on Equity' ):
-					iCompany.mMorningstar.mProfitabilityROE = company.company.cDataMorningstar( row, iCompany.mMorningstar.mProfitabilityYears )
+					iCompany.mMorningstar.mProfitabilityROE.SetRow( row )
 				elif row[0].startswith( 'Return on Invested Capital' ):
-					iCompany.mMorningstar.mProfitabilityROI = company.company.cDataMorningstar( row, iCompany.mMorningstar.mProfitabilityYears )
+					iCompany.mMorningstar.mProfitabilityROI.SetRow( row )
 				elif row[0].startswith( 'Interest Coverage' ):
-					iCompany.mMorningstar.mProfitabilityIC = company.company.cDataMorningstar( row, iCompany.mMorningstar.mProfitabilityYears )
+					iCompany.mMorningstar.mProfitabilityIC.SetRow( row )
 					
 				elif row[0].startswith( 'Key Ratios -> Growth' ):
 					row = next( reader )
-					iCompany.mMorningstar.mGrowthYears = company.company.cDataMorningstar( row )
+					iCompany.mMorningstar.mGrowthYears.SetRow( row )
 				elif row[0].startswith( 'Revenue %' ):
 					row = next( reader )
-					iCompany.mMorningstar.mGrowthRevenue = company.company.cDataMorningstar( row, iCompany.mMorningstar.mGrowthYears )	# YoY
+					iCompany.mMorningstar.mGrowthRevenue.SetRow( row )	# YoY
 				elif row[0].startswith( 'Net Income %' ):
 					row = next( reader )
-					iCompany.mMorningstar.mGrowthNetIncome = company.company.cDataMorningstar( row, iCompany.mMorningstar.mGrowthYears )	# YoY
+					iCompany.mMorningstar.mGrowthNetIncome.SetRow( row )	# YoY
 				elif row[0].startswith( 'EPS %' ):
 					row = next( reader )
-					iCompany.mMorningstar.mGrowthEarnings = company.company.cDataMorningstar( row, iCompany.mMorningstar.mGrowthYears, iComputeGrowthAverage=True )	# YoY
+					iCompany.mMorningstar.mGrowthEarnings.SetRow( row )	# YoY
 					
 				elif row[0].startswith( 'Free Cash Flow/Sales' ):
-					iCompany.mMorningstar.mCashFlowFCFOnSales = company.company.cDataMorningstar( row, iCompany.mMorningstar.mProfitabilityYears )
+					iCompany.mMorningstar.mCashFlowFCFOnSales.SetRow( row )
 			
 				elif row[0].startswith( 'Liquidity/Financial Health' ):
-					iCompany.mMorningstar.mHealthYears = company.company.cDataMorningstar( row )
+					iCompany.mMorningstar.mHealthYears.SetRow( row )
 				elif row[0].startswith( 'Current Ratio' ):
-					iCompany.mMorningstar.mHealthCurrentRatio = company.company.cDataMorningstar( row, iCompany.mMorningstar.mHealthYears )
+					iCompany.mMorningstar.mHealthCurrentRatio.SetRow( row )
 				elif row[0].startswith( 'Debt/Equity' ):
-					iCompany.mMorningstar.mHealthDebtOnEquity = company.company.cDataMorningstar( row, iCompany.mMorningstar.mHealthYears )
+					iCompany.mMorningstar.mHealthDebtOnEquity.SetRow( row )
 				
 		for i, dividend in enumerate( iCompany.mMorningstar.mFinancialsDividends.mData ):
 			if not i:

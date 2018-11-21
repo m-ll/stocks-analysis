@@ -125,15 +125,16 @@ class cZoneBourse:
 		tr = tr.find_next_sibling()
 		iCompany.mZoneBourse.mYields.SetTR2( tr )
 		
-		iCompany.mZoneBourse.mYieldCurrent = float( iCompany.mZoneBourse.mYields.mDataEstimated[0] )
-		
-		iCompany.mZoneBourse.mUrlDividendCalculator10Years = iCompany.UrlDividendCalculator( float( iCompany.mZoneBourse.mYieldCurrent ), float( iCompany.mZoneBourse.mGrowthDividends.mGrowthAverage ), 10 )
-		annual_average = iCompany.AskDividendCalculatorProjection( iCompany.mZoneBourse.mUrlDividendCalculator10Years )
-		iCompany.mZoneBourse.mDividendsYield10Years.mGrowthAverage = annual_average
-		
-		iCompany.mZoneBourse.mUrlDividendCalculator20Years = iCompany.UrlDividendCalculator( float( iCompany.mZoneBourse.mYieldCurrent ), float( iCompany.mZoneBourse.mGrowthDividends.mGrowthAverage ), 20 )
-		annual_average = iCompany.AskDividendCalculatorProjection( iCompany.mZoneBourse.mUrlDividendCalculator20Years )
-		iCompany.mZoneBourse.mDividendsYield20Years.mGrowthAverage = annual_average
+		if iCompany.mZoneBourse.mYields.mDataEstimated[0]:
+			iCompany.mZoneBourse.mYieldCurrent = float( iCompany.mZoneBourse.mYields.mDataEstimated[0] )
+			
+			iCompany.mZoneBourse.mUrlDividendCalculator10Years = iCompany.UrlDividendCalculator( float( iCompany.mZoneBourse.mYieldCurrent ), float( iCompany.mZoneBourse.mGrowthDividends.mGrowthAverage ), 10 )
+			annual_average = iCompany.AskDividendCalculatorProjection( iCompany.mZoneBourse.mUrlDividendCalculator10Years )
+			iCompany.mZoneBourse.mDividendsYield10Years.mGrowthAverage = annual_average
+			
+			iCompany.mZoneBourse.mUrlDividendCalculator20Years = iCompany.UrlDividendCalculator( float( iCompany.mZoneBourse.mYieldCurrent ), float( iCompany.mZoneBourse.mGrowthDividends.mGrowthAverage ), 20 )
+			annual_average = iCompany.AskDividendCalculatorProjection( iCompany.mZoneBourse.mUrlDividendCalculator20Years )
+			iCompany.mZoneBourse.mDividendsYield20Years.mGrowthAverage = annual_average
 		
 	def _ParsePrice( self, iCompany, iSoup ):
 		sprice = iSoup.find( id='zbjsfv_dr' )

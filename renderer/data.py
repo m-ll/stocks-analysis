@@ -108,9 +108,6 @@ def Data( iCompany, iSoup ):
 	root = iSoup.new_tag( 'div' )
 	root['class'] = 'fondamentals'
 	
-	if not iCompany.mMorningstar.Region():				#TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		return root
-		
 	references = [ iCompany.mMorningstar.mISYears, 
 					iCompany.mMorningstar.mFinancialsYears, 
 					iCompany.mMorningstar.mGrowthYears,
@@ -298,27 +295,27 @@ def CreateRow( iSoup, iLabel, iUrl, iData, iHeader=False ):
 	tr.append( th )
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['-5'] if '-5' in iData else ''
-	td.string = td.string.replace( '%', '' ) + '%' if td.string else ''
+	td.string = td.string
 	tr.append( td )
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['-3'] if '-3' in iData else ''
-	td.string = td.string.replace( '%', '' ) + '%' if td.string else ''
+	td.string = td.string
 	tr.append( td )
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['-1'] if '-1' in iData else ''
-	td.string = td.string.replace( '%', '' ) + '%' if td.string else ''
+	td.string = td.string
 	tr.append( td )
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['0'] if '0' in iData else ''
-	td.string = td.string.replace( '%', '' ) + '%' if td.string else ''
+	td.string = td.string
 	tr.append( td )
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['+1'] if '+1' in iData else ''
-	td.string = td.string.replace( '%', '' ) + '%' if td.string else ''
+	td.string = td.string
 	tr.append( td )
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	td.string = iData['+5'] if '+5' in iData else ''
-	td.string = td.string.replace( '%', '' ) + '%' if td.string else ''
+	td.string = td.string
 	tr.append( td )
 	
 	return tr
