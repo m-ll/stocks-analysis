@@ -64,7 +64,7 @@ class cZoneBourse:
 	def UrlGraphic( self, iAppletMode ):
 		applet_mode = 'statique'
 		if iAppletMode is self.eAppletMode.kDynamic:
-			applet_mode = 'dynamic2'
+			applet_mode = 'dynamique2'
 		return 'https://www.zonebourse.com/{}-{}/{}/&applet_mode={}'.format( self.mName, self.mCode, 'graphiques', applet_mode )
 		
 	def UrlPricesSimple( self, iDuration, iWidth, iHeight ):
