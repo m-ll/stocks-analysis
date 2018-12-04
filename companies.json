@@ -26,7 +26,8 @@
 ,"to-take-eu": [	
 	 [ "FR0000120271", "TOTAL", 4717, "FP", 						"fra", "xpar",	"EURONEXT:FP",		"FP.PA",	"TOTF.PA", 		"",		"total", 			"TOTAL" ]
 	,[ "BE0003470755", "SOLVAY", 5966, "SOLB", 						"bel", "xbru",	"EURONEXT:SOLB",	"SOLB.BR",	"SOLB.BR", 		"",		"solvay", 			"Solvay" ]
-	,[ "GB0000566504", "BHP-BILLITON-PLC", 4001096, "BLT", 			"gbr", "xlon",	"LSE:BLT",			"BLT.L",	"BLT.L", 		"",		"", 				"BHP_Billiton" ]
+	# ,[ "GB0000566504", "BHP-BILLITON-PLC", 4001096, "BLT", 			"gbr", "xlon",	"LSE:BLT",			"BLT.L",	"BLT.L", 		"",		"", 				"BHP_Billiton" ]
+	,[ "GB00BH0P3Z91", "BHP-BILLITON-PLC", 47281658, "BHP", 		"gbr", "xlon",	"",					"BLT.L",	"BHPB.L", 		"",		"", 				"BHP_Billiton" ]
 	,[ "GB00B03MLX29", "ROYAL-DUTCH-SHELL", 6273, "RDSA", 			"gbr", "xlon",	"EURONEXT:RDSA",	"RDSA.L",	"RDSa.L", 		"",		"",					"Shell" ]
 	,[ "FR0000073298", "IPSOS", 4663, "IPS", 						"fra", "xpar",	"EURONEXT:IPS",		"IPS.PA",	"ISOS.PA", 		"",		"ipsos", 			"" ]
 ]
@@ -79,7 +80,6 @@
 
 ,"ratio-versement-dividende-too-high-us": [	
 	 [ "US40414L1098", "HCP", 12889, "HCP", 						"usa", "xnys",	"NYSE:HCP",			"HCP",		"HCP.N", 		"HCP",	"", 				"HCP" ]
-	,[ "US3137472060", "FEDERAL-REALTY-INVESTMENT", 12673, "FRT", 	"usa", "xnys",	"NYSE:FRT",			"FRT",		"FRT.N", 		"FRT",	"", 				"Federal_Realty_Investment_Trust" ]
 	,[ "US6676551046", "NORTHWEST-NATURAL-GAS-CO", 13845, "NWN", 	"usa", "xnys",	"NYSE:NWN",			"NWN",		"NWN.N", 		"NWN",	"", 				"Northwest_Natural_Gas" ]
 ]
 
@@ -188,7 +188,13 @@
 ]
 
 ,"us": [
-	[ "US1941621039", "COLGATE-PALMOLIVE-COMPANY", 12089, "CL", 	"usa", "xnys",	"NYSE:CL",			"CL",		"CL.N", 		"CL",	"", 				"Colgate-Palmolive" ]
+	[ "US3137472060", "FEDERAL-REALTY-INVESTMENT", 12673, "FRT", 	"usa", "xnys",	"NYSE:FRT",			"FRT",		"FRT.N", 		"FRT",	"", 				"Federal_Realty_Investment_Trust" ]
+	,[ "US8621211007", "STORE-CAPITAL-CORP", 18539778, "STOR", 		"usa", "xnys",	"",					"STOR",		"STOR.N", 		"STOR",	"", 				"STORE_Capital" ]
+	,[ "US92936U1097", "WP-CAREY-INC", 11613132, "WPC", 			"usa", "xnys",	"",					"WPC",		"WPC.N", 		"WPC",	"", 				"WP_Carey" ]
+	,[ "US1941621039", "COLGATE-PALMOLIVE-COMPANY", 12089, "CL", 	"usa", "xnys",	"NYSE:CL",			"CL",		"CL.N", 		"CL",	"", 				"Colgate-Palmolive" ]
+	,[ "US3137472060", "FEDERAL-REALTY-INVESTMENT", 12673, "FRT", 	"usa", "xnys",	"NYSE:FRT",			"FRT",		"FRT.N", 		"FRT",	"", 				"Federal_Realty_Investment_Trust" ]
+	,[ "US8621211007", "STORE-CAPITAL-CORP", 18539778, "STOR", 		"usa", "xnys",	"",					"STOR",		"STOR.N", 		"STOR",	"", 				"STORE_Capital" ]
+	,[ "US92936U1097", "WP-CAREY-INC", 11613132, "WPC", 			"usa", "xnys",	"",					"WPC",		"WPC.N", 		"WPC",	"", 				"WP_Carey" ]
 	,[ "US3546131018", "FRANKLIN-RESOURCES", 11807, "BEN", 			"usa", "xnys",	"NYSE:BEN",			"FTF",		"BEN.N", 		"BEN",	"", 				"Franklin_Resources" ]
 	,[ "US14149Y1082", "CARDINAL-HEALTH", 11969, "CAH", 			"usa", "xnys",	"NYSE:CAH",			"CAH",		"CAH.N", 		"CAH",	"", 				"Cardinal_Health" ]
 	,[ "US9314271084", "WALGREENS-BOOTS-ALLIANCE", 19356230, "WBA", "usa", "xnas",	"NASDAQ:WBA",		"WBA",		"WBA.O", 		"WBA",	"", 				"Walgreens_Boots_Alliance" ]
