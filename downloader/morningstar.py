@@ -56,7 +56,10 @@ class cMorningstar:
 		# with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameIncomeStatement() ) + '.html', 'w' ) as output:
 		#	output.write( iBrowser.Driver().page_source )
 
-		export = iBrowser.WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
+		export = iBrowser.WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]', 5 )
+		if export is None:
+			iBrowser.Driver().get( iCompany.mMorningstar.UrlIncomeStatement() );	# Not refresh, because sometimes the url is something like '...coming-soon.php'
+			export = iBrowser.WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
 		export.click()
 		csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
@@ -73,7 +76,10 @@ class cMorningstar:
 		iBrowser.Driver().get( iCompany.mMorningstar.UrlBalanceSheet() )
 		time.sleep( 1 )
 		
-		export = iBrowser.WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
+		export = iBrowser.WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]', 5 )
+		if export is None:
+			iBrowser.Driver().get( iCompany.mMorningstar.UrlBalanceSheet() );
+			export = iBrowser.WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
 		export.click()
 		csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
@@ -90,7 +96,10 @@ class cMorningstar:
 		iBrowser.Driver().get( iCompany.mMorningstar.UrlRatios() )
 		time.sleep( 1 )
 		
-		export = iBrowser.WaitElement( '//a[contains(@href,"exportKeyStat2CSV")]' )
+		export = iBrowser.WaitElement( '//a[contains(@href,"exportKeyStat2CSV")]', 5 )
+		if export is None:
+			iBrowser.Driver().get( iCompany.mMorningstar.UrlRatios() );
+			export = iBrowser.WaitElement( '//a[contains(@href,"exportKeyStat2CSV")]' )
 		export.click()
 		csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
@@ -109,9 +118,16 @@ class cMorningstar:
 		
 		valuation = iBrowser.WaitElement( '//li[@data-link="#sal-components-valuation"]//button' )
 		valuation.click()
-		iBrowser.WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-valuation' )
-		iBrowser.WaitNoElement( '//a[@data-anchor="valuation"]/..//sal-components-report-table' )
-
+		time.sleep( 1 )
+		element = iBrowser.WaitElement( '//a[@data-anchor="valuation"]/..//div[@id="sal-components-valuation"]', 5 )
+		while element is None:
+			iBrowser.Driver().refresh()
+			valuation = iBrowser.WaitElement( '//li[@data-link="#sal-components-valuation"]//button' )
+			valuation.click()
+			time.sleep( 1 )
+			element = iBrowser.WaitElement( '//a[@data-anchor="valuation"]/..//div[@id="sal-components-valuation"]', 5 )
+		iBrowser.WaitElement( '//a[@data-anchor="valuation"]/..//div[@id="sal-components-valuation"]//table[contains(@class,"report-table")]' )
+		
 		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameValuation() ), 'w' ) as output:
 			output.write( iBrowser.Driver().page_source )
 			
@@ -127,8 +143,15 @@ class cMorningstar:
 		
 		dividends = iBrowser.WaitElement( '//li[@data-link="#sal-components-dividends"]//button' )
 		dividends.click()
-		iBrowser.WaitNoElement( '//a[@data-anchor="dividends"]/..//sal-components-dividends' )
-		iBrowser.WaitNoElement( '//a[@data-anchor="dividends"]/..//sal-components-report-table' )		# It's maybe needed to make 2 requests for the same page (valuation/dividends) to be sure to have not this element from valuation
+		time.sleep( 1 )
+		element = iBrowser.WaitElement( '//a[@data-anchor="dividends"]/..//div[@id="sal-components-dividends"]', 5 )
+		while element is None:
+			iBrowser.Driver().refresh()
+			dividends = iBrowser.WaitElement( '//li[@data-link="#sal-components-dividends"]//button' )
+			dividends.click()
+			time.sleep( 1 )
+			element = iBrowser.WaitElement( '//a[@data-anchor="dividends"]/..//div[@id="sal-components-dividends"]', 5 )
+		iBrowser.WaitElement( '//a[@data-anchor="dividends"]/..//div[@id="sal-components-dividends"]//table[contains(@class,"report-table")]' )
 
 		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameDividends() ), 'w' ) as output:
 			output.write( iBrowser.Driver().page_source )

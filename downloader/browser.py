@@ -63,9 +63,24 @@ class cBrowser:
 		
 	#---
 		
-	def WaitElement( self, iXPath ):
+	def WaitElement( self, iXPath, iRange=0 ):
+		for i in range(iRange):
+			element = self.mDriver.find_elements_by_xpath( iXPath )
+			if element and element[0].is_displayed():
+				return element[0]
+				
+			print( Fore.YELLOW + 'sleep ({}) wait element: {}'.format( i, iXPath ) )
+			time.sleep( 1 )
+		
+		if iRange:
+			return None
+		
 		element = self.mDriver.find_elements_by_xpath( iXPath )
-		while not element:
+		while not element or not element[0].is_displayed():
+			# print( self.mDriver.current_url )
+			# self.mDriver.get( self.mDriver.current_url );
+			# self.mDriver.refresh()
+			
 			print( Fore.YELLOW + 'sleep wait element: {}'.format( iXPath ) )
 			time.sleep( 1 )
 			element = self.mDriver.find_elements_by_xpath( iXPath )
@@ -74,30 +89,7 @@ class cBrowser:
 
 		return element[0]
 		
-	def WaitNoElement( self, iXPath ):
-		element = self.mDriver.find_elements_by_xpath( iXPath )
-		while element:
-			print( Fore.YELLOW + 'sleep wait no element: {}'.format( iXPath ) )
-			time.sleep( 1 )
-			element = self.mDriver.find_elements_by_xpath( iXPath )
-		
-		time.sleep( 1 )
-		
 	def WaitFileInside( self, iDirectory ):
-		# Try during 5s max, then refresh the page and test again the file
-		# for i in range(5):
-			# files = os.listdir( iDirectory )
-			# if files:
-				# return files[0]
-				
-			# print( Fore.YELLOW + 'sleep file ({}): {}'.format( i, iDirectory ) )
-			# time.sleep( 1 )
-				
-		# self.mDriver.refresh()	# Doesn't work -_-
-		# print( self.mDriver.current_url )
-		# self.mDriver.get( self.mDriver.current_url );	# Doesn't work -_-
-		# time.sleep( 1 )
-
 		files = os.listdir( iDirectory )
 		while not files:
 			print( Fore.YELLOW + 'sleep file refresh: {}'.format( iDirectory ) )
