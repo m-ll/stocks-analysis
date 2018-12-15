@@ -1,0 +1,13 @@
+# https://fr.atlassian.com/git/tutorials/saving-changes/gitignore
+
+# directories in root which begin by _
+/_*/
+# files in root which begin by _
+/_*
+# directories in root which begin by .
+/.*/
+# directories everywhere with this name
+__pycache__/
+# files in root which end by exe/log
+/*.exe
+/*.log
