@@ -116,13 +116,13 @@ class cMorningstar:
 		iBrowser.Driver().get( iCompany.mMorningstar.UrlValuation() )
 		time.sleep( 1 )
 		
-		valuation = iBrowser.WaitElement( '//li[@data-link="#sal-components-valuation"]//button' )
+		valuation = iBrowser.WaitElement( '//li[@data-link="equity-valuation"]//button' )
 		valuation.click()
 		time.sleep( 1 )
 		element = iBrowser.WaitElement( '//a[@data-anchor="valuation"]/..//div[@id="sal-components-valuation"]', 5 )
 		while element is None:
 			iBrowser.Driver().refresh()
-			valuation = iBrowser.WaitElement( '//li[@data-link="#sal-components-valuation"]//button' )
+			valuation = iBrowser.WaitElement( '//li[@data-link="equity-valuation"]//button' )
 			valuation.click()
 			time.sleep( 1 )
 			element = iBrowser.WaitElement( '//a[@data-anchor="valuation"]/..//div[@id="sal-components-valuation"]', 5 )
@@ -141,13 +141,13 @@ class cMorningstar:
 		iBrowser.Driver().get( iCompany.mMorningstar.UrlDividends() )
 		time.sleep( 1 )
 		
-		dividends = iBrowser.WaitElement( '//li[@data-link="#sal-components-dividends"]//button' )
+		dividends = iBrowser.WaitElement( '//li[@data-link="equity-dividends"]//button' )
 		dividends.click()
 		time.sleep( 1 )
 		element = iBrowser.WaitElement( '//a[@data-anchor="dividends"]/..//div[@id="sal-components-dividends"]', 5 )
 		while element is None:
 			iBrowser.Driver().refresh()
-			dividends = iBrowser.WaitElement( '//li[@data-link="#sal-components-dividends"]//button' )
+			dividends = iBrowser.WaitElement( '//li[@data-link="equity-dividends"]//button' )
 			dividends.click()
 			time.sleep( 1 )
 			element = iBrowser.WaitElement( '//a[@data-anchor="dividends"]/..//div[@id="sal-components-dividends"]', 5 )

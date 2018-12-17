@@ -10,6 +10,7 @@
 #
 
 import os
+import re
 import sys
 import tempfile
 
@@ -35,9 +36,13 @@ class cOptions:
 		if not iTempDirectory:
 			if sys.platform.startswith( 'cygwin' ):
 				current_path = os.path.abspath( '.' )
-				current_path = current_path.replace( '/cygdrive/c', 'C:' )
-				current_path = current_path.replace( '/cygdrive/d', 'D:' )
-				current_path = current_path.replace( '/cygdrive/e', 'E:' )
+				# r'...' = raw string
+				# >>> "\1"
+				# '\x01'
+				# >>> r"\1"
+				# '\\1'
+				# >>>
+				current_path = re.sub( r'/cygdrive/([a-z])', r'\1:', current_path ).upper() # '/cygdrive/c' -> 'C:'
 				current_path = current_path.replace( '/', '\\' )
 				self.mTempDirectory = current_path + '\\tmp'
 			elif sys.platform.startswith( 'linux' ):
