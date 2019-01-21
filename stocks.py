@@ -121,7 +121,7 @@ for group in args.groups:
 	parser = cParser()
 	parser.Parse( companies_of_current_group )
 	
-	companies_sorted_by_yield = sorted( companies_of_current_group, key=lambda company: company.mZoneBourse.mYieldCurrent, reverse=True )
+	companies_sorted_by_yield = sorted( companies_of_current_group, key=lambda company: company.mMorningstar.mYieldCurrent, reverse=True )
 
 	renderer = cRenderer( companies_sorted_by_yield )
 	renderer.Render()

@@ -133,6 +133,7 @@ class cMorningstar:
 		self.mValuationEVOnEBITDA = cData( iParent=self.mValuationYears )
 		
 		self.mFinancialsDividendsYield = cData( iParent=self.mValuationYears )
+		self.mYieldCurrent = 0				# 0.0 < ... < 100.0
 		self.mFinancialsDividendsYield10Years = cData( iParent=self.mValuationYears )
 		self.mFinancialsDividendsYield20Years = cData( iParent=self.mValuationYears )
 		self.mUrlDividendCalculator10Years = ''

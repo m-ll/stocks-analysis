@@ -193,6 +193,7 @@ class cMorningstar:
 		div = soup.find( id='sal-components-dividends' ).find( class_='dividend-yield' ).find_all( 'div' )[-1]
 		s = div.string.replace( ',', '.' ).replace( '%', '' ).replace( '-', '' ).replace( '—', '' )
 		iCompany.mMorningstar.mFinancialsDividendsYield.mTTM = s if s else '0'
+		iCompany.mMorningstar.mYieldCurrent = float( iCompany.mMorningstar.mFinancialsDividendsYield.mTTM )
 		
 		iCompany.mMorningstar.mUrlDividendCalculator10Years = iCompany.UrlDividendCalculator( float( iCompany.mMorningstar.mFinancialsDividendsYield.mTTM ), float( iCompany.mMorningstar.mFinancialsGrowthDividends.mGrowthAverage ), 10 )
 		annual_average = iCompany.AskDividendCalculatorProjection( iCompany.mMorningstar.mUrlDividendCalculator10Years )

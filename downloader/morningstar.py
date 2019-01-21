@@ -62,6 +62,14 @@ class cMorningstar:
 			export = iBrowser.WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
 		export.click()
 		csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
+		# Sometimes (now...), the file has 0 octet
+		# Try to re-download it by clicking on the button
+		# (Try this first, without refreshing the page)
+		while not os.stat( os.path.join( iBrowser.Options().TempDirectory(), csv ) ).st_size:
+			print( Fore.YELLOW + 'empty csv file: {}'.format( os.path.join( iBrowser.Options().TempDirectory(), csv ) ) )
+			iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
+			export.click()
+			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
 		shutil.move( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameIncomeStatement() ) )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
@@ -78,10 +86,15 @@ class cMorningstar:
 		
 		export = iBrowser.WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]', 5 )
 		if export is None:
-			iBrowser.Driver().get( iCompany.mMorningstar.UrlBalanceSheet() );
+			iBrowser.Driver().get( iCompany.mMorningstar.UrlBalanceSheet() )
 			export = iBrowser.WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
 		export.click()
 		csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
+		while not os.stat( os.path.join( iBrowser.Options().TempDirectory(), csv ) ).st_size:
+			print( Fore.YELLOW + 'empty csv file: {}'.format( os.path.join( iBrowser.Options().TempDirectory(), csv ) ) )
+			iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
+			export.click()
+			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
 		shutil.move( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameBalanceSheet() ) )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
@@ -98,10 +111,15 @@ class cMorningstar:
 		
 		export = iBrowser.WaitElement( '//a[contains(@href,"exportKeyStat2CSV")]', 5 )
 		if export is None:
-			iBrowser.Driver().get( iCompany.mMorningstar.UrlRatios() );
+			iBrowser.Driver().get( iCompany.mMorningstar.UrlRatios() )
 			export = iBrowser.WaitElement( '//a[contains(@href,"exportKeyStat2CSV")]' )
 		export.click()
 		csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
+		while not os.stat( os.path.join( iBrowser.Options().TempDirectory(), csv ) ).st_size:
+			print( Fore.YELLOW + 'empty csv file: {}'.format( os.path.join( iBrowser.Options().TempDirectory(), csv ) ) )
+			iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
+			export.click()
+			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
 		shutil.move( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameRatios() ) )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
