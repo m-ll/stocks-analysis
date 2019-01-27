@@ -124,6 +124,9 @@ class cMorningstar:
 		self.mHealthYears = cData()
 		self.mHealthCurrentRatio = cData( iParent=self.mHealthYears )
 		self.mHealthDebtOnEquity = cData( iParent=self.mHealthYears )
+
+		self.mQuoteSector = ''
+		self.mQuoteIndustry = ''
 		
 		self.mValuationYears = cData()
 		self.mValuationP2S = cData( iParent=self.mValuationYears )
@@ -168,6 +171,11 @@ class cMorningstar:
 		return 'http://financials.morningstar.com/ratios/r.html?t={}&region={}&culture=en-US'.format( self.mSymbol, self.mRegion )
 	def FileNameRatios( self ):
 		return '{}.{}.{}.csv'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-ratios' )
+		
+	def UrlQuote( self ):
+		return 'https://www.morningstar.com/stocks/{}/{}/quote.html'.format( self.mCity, self.mSymbol.lower() )
+	def FileNameQuote( self ):
+		return '{}.{}.{}.html'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-quote' )
 		
 	def UrlValuation( self ):
 		return 'https://www.morningstar.com/stocks/{}/{}/quote.html'.format( self.mCity, self.mSymbol.lower() )
@@ -321,7 +329,7 @@ class cCompany:
 		self.mMorningstar = cMorningstar( self, iZBSymbol, iMorningstarRegion, iMorningstarX )	# ( ..., fra/gbr/usa/..., xpar/xlon/... )
 		self.mYahooFinance = cYahooFinance( self, iYFSymbol )
 		self.mReuters = cReuters( self, iRSymbol )
-		self.mBoerse = cBoerse( self, iZBName )	# use the same name as ZoneBourse, may use anything in fact
+		self.mBoerse = cBoerse( self, iZBName )	# use the same name as ZoneBourse, may use anything actually
 		self.mTradingSat = cTradingSat( self, iTSName )
 		self.mFinances = cFinances( self, iFCName )
 		

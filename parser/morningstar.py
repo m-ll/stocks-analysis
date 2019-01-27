@@ -30,6 +30,7 @@ class cMorningstar:
 		self._ParseIncomStatement( iCompany )
 		self._ParseBalanceSheet( iCompany )
 		self._ParseRatios( iCompany )
+		self._ParseQuote( iCompany )
 		self._ParseValuation( iCompany )
 		self._ParseDividends( iCompany )
 			
@@ -162,6 +163,19 @@ class cMorningstar:
 			ratio = ( float( book ) - float( previous_book ) ) / abs( float( previous_book ) )
 			iCompany.mMorningstar.mFinancialsGrowthBook.mData.append( '{:.02f}'.format( ratio * 100 ) )
 			iCompany.mMorningstar.mFinancialsGrowthBook.Update()
+		
+	def _ParseQuote( self, iCompany ):
+		print( '		- Quote ...' )
+
+		html_content = ''
+		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameQuote() ), 'r', encoding='utf-8' ) as fd:
+			html_content = fd.read()
+			
+		soup = BeautifulSoup( html_content, 'html5lib' )
+		section = soup.find( id='sal-components-company-profile' )
+		
+		iCompany.mMorningstar.mQuoteSector = section.find( string='Sector' ).parent.find_next_sibling().string
+		iCompany.mMorningstar.mQuoteIndustry = section.find( string='Industry' ).parent.find_next_sibling().string
 		
 	def _ParseValuation( self, iCompany ):
 		print( '		- Valuation ...' )

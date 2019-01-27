@@ -14,10 +14,11 @@ import os
 
 from bs4 import BeautifulSoup
 
-from . import info
-from . import graphics
 from . import data
 from . import data_boerse
+from . import graphics
+from . import info
+from . import menu
 import company.company
 
 class cRenderer:
@@ -54,6 +55,12 @@ class cRenderer:
 </html>''', 'html5lib' )
 
 		body = soup.find( 'body' )
+		
+		subtag_menu = menu.Sectors( self.mCompanies, soup )
+		
+		root = soup.new_tag( 'nav' )
+		root.append( subtag_menu )
+		body.append( root )
 		
 		for i, company in enumerate( self.mCompanies, start=1 ):
 			print( 'Render ({}/{}): {} ...'.format( i, len( self.mCompanies ), company.mName ) )

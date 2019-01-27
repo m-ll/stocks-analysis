@@ -36,6 +36,7 @@ class cMorningstar:
 		self._DownloadIncomeStatement( iBrowser, iCompany )
 		self._DownloadBalanceSheet( iBrowser, iCompany )
 		self._DownloadRatios( iBrowser, iCompany )
+		self._DownloadQuote( iBrowser, iCompany )
 		self._DownloadValuation( iBrowser, iCompany )
 		self._DownloadDividends( iBrowser, iCompany )
 		
@@ -124,6 +125,31 @@ class cMorningstar:
 		shutil.move( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameRatios() ) )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 		
+	def _DownloadQuote( self, iBrowser, iCompany ):
+		print( '		- Quote' )
+		
+		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mMorningstar.FileNameQuote() ) ):
+			print( Fore.CYAN + '		skipping ... (existing file)' )
+			return
+		
+		iBrowser.Driver().get( iCompany.mMorningstar.UrlQuote() )
+		time.sleep( 1 )
+		
+		quote = iBrowser.WaitElement( '//li[@data-link="equity-quote"]//button' )
+		quote.click()
+		time.sleep( 1 )
+		element = iBrowser.WaitElement( '//a[@data-anchor="company-profile"]/..//div[@id="sal-components-company-profile"]', 5 )
+		while element is None:
+			iBrowser.Driver().refresh()
+			quote = iBrowser.WaitElement( '//li[@data-link="equity-quote"]//button' )
+			quote.click()
+			time.sleep( 1 )
+			element = iBrowser.WaitElement( '//a[@data-anchor="company-profile"]/..//div[@id="sal-components-company-profile"]', 5 )
+		iBrowser.WaitElement( '//a[@data-anchor="company-profile"]/..//div[@id="sal-components-company-profile"]' )
+		
+		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameQuote() ), 'w' ) as output:
+			output.write( iBrowser.Driver().page_source )
+			
 	def _DownloadValuation( self, iBrowser, iCompany ):
 		print( '		- Valuation' )
 		
