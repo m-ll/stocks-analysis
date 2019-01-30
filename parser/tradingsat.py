@@ -21,6 +21,8 @@ class cTradingSat:
 		pass
 	
 	def Parse( self, iCompany ):
+		return
+			
 		print( '	TradingSat ...' )
 
 		if not iCompany.mTradingSat.Name():

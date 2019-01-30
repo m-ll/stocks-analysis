@@ -69,7 +69,7 @@ def NextDividendDate( iCompany, iSoup ):
 		
 		date_next = iSoup.new_tag( 'span' )
 		diff = next_date - date.today()
-		date_next['class'] = 'far' if diff.days > 7 else 'close'
+		date_next['class'] = 'far-date' if diff.days > 7 else 'close-date'
 		date_next.append( next_date.strftime( '%d/%m/%Y' ) )
 		
 		entry.append( 'Next Dividend Date: ' )

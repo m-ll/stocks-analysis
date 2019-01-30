@@ -19,12 +19,14 @@ class cFinances:
 		pass
 	
 	def Parse( self, iCompany ):
+		return
+
 		print( '	Finances ...' )
 
 		if not iCompany.mFinances.Name():
 			print( Fore.CYAN + '	skipping ... (no id)' )
 			return
-			
+		
 		#---
 		
 		html_content = ''

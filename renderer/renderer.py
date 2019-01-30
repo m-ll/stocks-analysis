@@ -44,8 +44,7 @@ class cRenderer:
 <head>
 <meta charset="UTF-8">
 <title>Title of the document</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 <style type="text/css">
 ''' + css + '''
 </style>
@@ -62,20 +61,22 @@ class cRenderer:
 		root.append( subtag_menu )
 		body.append( root )
 		
+		main = soup.new_tag( 'main' )
+		
 		for i, company in enumerate( self.mCompanies, start=1 ):
 			print( 'Render ({}/{}): {} ...'.format( i, len( self.mCompanies ), company.mName ) )
 			
 			#---
 			
 			sep = soup.new_tag( 'hr' )
-			body.append( sep )
+			main.append( sep )
 			
 			subtag_society = info.Society( company, soup )
 			subtag_title = info.Title( company, soup )
 			subtag_next_dividend_date = info.NextDividendDate( company, soup )
 			
-			subtag_dividends_finances = info.Dividends( company, soup, 'finances' )
-			subtag_dividends_tradingsat = info.Dividends( company, soup, 'tradingsat' )
+			# subtag_dividends_finances = info.Dividends( company, soup, 'finances' )
+			# subtag_dividends_tradingsat = info.Dividends( company, soup, 'tradingsat' )
 			
 			subtag_prices_simple = [ graphics.PricesSimple( company, soup, 9999 ),
 										graphics.PricesSimple( company, soup, 10 ),
@@ -91,16 +92,18 @@ class cRenderer:
 			
 			#---
 			
-			root = soup.new_tag( 'header' )
-			root.append( subtag_society )
-			# root.append( subtag_data_boerse )
-			root.append( subtag_title )
-			root.append( subtag_next_dividend_date )
-			body.append( root )
+			root = soup.new_tag( 'article', id=company.Name() )
 			
-			root = soup.new_tag( 'article' )
+			subroot = soup.new_tag( 'header' )
+			subroot.append( subtag_society )
+			# subroot.append( subtag_data_boerse )
+			subroot.append( subtag_title )
+			subroot.append( subtag_next_dividend_date )
+			root.append( subroot )
+			
+			subroot = soup.new_tag( 'article' )
 			# data
-			root.append( subtag_data )
+			subroot.append( subtag_data )
 			# (zb/)per/bna/max/
 			tag = soup.new_tag( 'div' )
 			tag['class'] = ['graphics']
@@ -108,30 +111,46 @@ class cRenderer:
 			tag.append( subtag_per )
 			tag.append( subtag_bna )
 			tag.append( subtag_prices_simple[0] )
-			root.append( tag )
+			subroot.append( tag )
 			# title again
-			root.append( copy.copy( subtag_title ) )
+			subroot.append( copy.copy( subtag_title ) )
 			# years 10/5/2
 			tag = soup.new_tag( 'div' )
 			tag['class'] = ['graphics', 'simple']
 			tag.append( subtag_prices_simple[1] )
 			tag.append( subtag_prices_simple[2] )
 			tag.append( subtag_prices_simple[3] )
-			root.append( tag )
-			root.append( subtag_prices_ichimoku )
-			body.append( root )
+			subroot.append( tag )
+			subroot.append( subtag_prices_ichimoku )
+			root.append( subroot )
 			
-			root = soup.new_tag( 'footer' )
-			root.append( subtag_dividends_finances )
-			root.append( subtag_dividends_tradingsat )
-			body.append( root )
+			subroot = soup.new_tag( 'footer' )
+			# subroot.append( subtag_dividends_finances )
+			# subroot.append( subtag_dividends_tradingsat )
+			root.append( subroot )
+
+			main.append( root )
+			
+		body.append( main )
 			
 		#---
+		
+		soup_script = soup.new_tag( 'script', src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" )
+		body.append( soup_script )
+		
+		soup_script = soup.new_tag( 'script', src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" )
+		body.append( soup_script )
+		
+		soup_script = soup.new_tag( 'script', src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" )
+		body.append( soup_script )
+		
+		soup_script = soup.new_tag( 'script', src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js" )
+		body.append( soup_script )
 		
 		soup_script = soup.new_tag( 'script' )
 		soup_script.string = js
 		body.append( soup_script )
-			
+		
 		#---
 		
 		self.mHTML = soup.prettify()

@@ -174,8 +174,8 @@ class cMorningstar:
 		soup = BeautifulSoup( html_content, 'html5lib' )
 		section = soup.find( id='sal-components-company-profile' )
 		
-		iCompany.mMorningstar.mQuoteSector = section.find( string='Sector' ).parent.find_next_sibling().string
-		iCompany.mMorningstar.mQuoteIndustry = section.find( string='Industry' ).parent.find_next_sibling().string
+		iCompany.mMorningstar.mQuoteSector = section.find( string='Sector' ).parent.find_next_sibling().string.strip()
+		iCompany.mMorningstar.mQuoteIndustry = section.find( string='Industry' ).parent.find_next_sibling().string.strip()
 		
 	def _ParseValuation( self, iCompany ):
 		print( '		- Valuation ...' )

@@ -47,3 +47,21 @@ $('.dividend-chart .title a.toggle').click( function(e)
 	
 	return false;
 });
+
+//---
+
+$('[data-toggle="tooltip"]').click( function(e)
+{
+	let companies = $( this ).attr( 'data-companies' );
+	companies = JSON.parse( companies );
+	
+	$( 'article[id]' ).hide();
+	companies.forEach( company => $( '#' + company ).show() );
+	
+	return true;
+});
+
+$(function ()
+{
+	$('[data-toggle="tooltip"]').tooltip()
+})

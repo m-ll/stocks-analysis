@@ -1,5 +1,5 @@
-{ 
-"owned-eu": [
+{
+"owned": [
 	# ISIN				ZoneBourse									Morningstar		TradingView			YahooFin	Reuters			Finviz	TradingSat			Finances
 	 [ "FR0000120578", "SANOFI", 4698, "SAN", 						"fra", "xpar",	"EURONEXT:SAN",		"SAN.PA",	"SASY.PA", 		"",		"sanofi", 			"Sanofi" ]
 	,[ "FR0000120644", "DANONE", 4634, "BN", 						"fra", "xpar",	"EURONEXT:BN",		"BN.PA",	"DANO.PA", 		"",		"danone", 			"Danone" ]
@@ -10,9 +10,8 @@
 	,[ "FR0000130452", "EIFFAGE", 4638, "FGR", 						"fra", "xpar",	"EURONEXT:FGR",		"FGR.PA",	"FOUG.PA", 		"",		"eiffage", 			"Eiffage" ]
 	,[ "DE0007236101", "SIEMENS", 436605, "SIE", 					"deu", "xetr",	"XETR:SIE",			"SIE.DE",	"SIEGn.DE", 	"",		"",		 			"Siemens" ]
 	,[ "DE000BAY0017", "BAYER", 436063, "BAYN", 					"deu", "xetr",	"XETR:BAYN",		"BAYN.DE",	"BAYGn.DE", 	"",		"", 				"Bayer" ]
-]
-,"owned-us": [
-	 [ "US7134481081", "PEPSICO", 39085159, "PEP", 					"usa", "xnas",	"NASDAQ:PEP",		"PEP",		"PEP.O", 		"PEP",	"", 				"PepsiCo" ]
+	,[ "FR0000120271", "TOTAL", 4717, "FP", 						"fra", "xpar",	"EURONEXT:FP",		"FP.PA",	"TOTF.PA", 		"",		"total", 			"TOTAL" ]
+	,[ "US7134481081", "PEPSICO", 39085159, "PEP", 					"usa", "xnas",	"NASDAQ:PEP",		"PEP",		"PEP.O", 		"PEP",	"", 				"PepsiCo" ]
 	,[ "US4523081093", "ILLINOIS-TOOL-WORKS", 13125, "ITW", 		"usa", "xnys",	"NYSE:ITW",			"ITW",		"ITW.N", 		"ITW",	"", 				"Illinois_Tool_Works" ]
 	,[ "US00287Y1091", "ABBVIE", 12136589, "ABBV", 					"usa", "xnys",	"NYSE:ABBV",		"ABBV",		"ABBV.N", 		"ABBV",	"", 				"AbbVie" ]
 	,[ "US1912161007", "COCA-COLA-COMPANY-THE", 4819, "KO", 		"usa", "xnys",	"NYSE:KO",			"KO",		"KO.N", 		"KO",	"", 				"Coca-Cola" ]
@@ -23,30 +22,23 @@
 	,[ "US88579Y1010", "3M-COMPANY", 4836, "MMM", 					"usa", "xnys",	"NYSE:MMM",			"MMM",		"MMM.N", 		"MMM",	"", 				"3M" ]
 ]
 
-,"to-take-eu": [	
-	 [ "FR0000120271", "TOTAL", 4717, "FP", 						"fra", "xpar",	"EURONEXT:FP",		"FP.PA",	"TOTF.PA", 		"",		"total", 			"TOTAL" ]
-	,[ "BE0003470755", "SOLVAY", 5966, "SOLB", 						"bel", "xbru",	"EURONEXT:SOLB",	"SOLB.BR",	"SOLB.BR", 		"",		"solvay", 			"Solvay" ]
+,"to-take": [	
+	 [ "BE0003470755", "SOLVAY", 5966, "SOLB", 						"bel", "xbru",	"EURONEXT:SOLB",	"SOLB.BR",	"SOLB.BR", 		"",		"solvay", 			"Solvay" ]
 	# ,[ "GB0000566504", "BHP-BILLITON-PLC", 4001096, "BLT", 			"gbr", "xlon",	"LSE:BLT",			"BLT.L",	"BLT.L", 		"",		"", 				"BHP_Billiton" ]
 	,[ "GB00BH0P3Z91", "BHP-BILLITON-PLC", 47281658, "BHP", 		"gbr", "xlon",	"",					"BLT.L",	"BHPB.L", 		"",		"", 				"BHP_Billiton" ]
 	,[ "GB00B03MLX29", "ROYAL-DUTCH-SHELL", 6273, "RDSA", 			"gbr", "xlon",	"EURONEXT:RDSA",	"RDSA.L",	"RDSa.L", 		"",		"",					"Shell" ]
 	,[ "FR0000073298", "IPSOS", 4663, "IPS", 						"fra", "xpar",	"EURONEXT:IPS",		"IPS.PA",	"ISOS.PA", 		"",		"ipsos", 			"" ]
 ]
 
-,"to-think-eu": [	
+,"to-think": [	
 	 [ "FR0000121014", "LVMH-MOET-HENNESSY-VUITTO", 4669, "MC", 	"fra", "xpar",	"EURONEXT:MC",		"MC.PA",	"LVMH.PA", 		"",		"lvmh", 			"LVMH" ]
 	,[ "FR0000120321", "L-OREAL", 4666, "OR", 						"fra", "xpar",	"EURONEXT:OR",		"OR.PA",	"OREP.PA", 		"",		"loreal", 			"LOréal" ]
 	,[ "FR0000120503", "BOUYGUES", 4620, "EN", 						"fra", "xpar",	"EURONEXT:EN",		"EN.PA",	"BOUY.PA", 		"",		"bouygues", 		"Bouygues" ]
 	,[ "NL0000009355", "UNILEVER-NL", 6290, "UNA", 					"nld", "xams",	"EURONEXT:UNA",		"UNA.AS",	"UNc.AS", 		"",		"",					"Unilever" ]
 	,[ "GB0002374006", "DIAGEO", 4000514, "DGE", 					"gbr", "xlon",	"LSE:DGE",			"DGE.L",	"DGE.L", 		"",		"diageo", 			"Diageo" ]
 	,[ "FR0000120073", "AIR-LIQUIDE", 4605, "AI", 					"fra", "xpar",	"EURONEXT:AI",		"AI.PA",	"AIRP.PA", 		"",		"air-liquide", 		"Air_Liquide" ]
-]
-
-,"to-take-us": [	
-	 [ "US00206R1023", "AT-T", 14324, "T", 							"usa", "xnys",	"NYSE:T",			"T",		"T.N", 			"T",	"", 				"AT_T" ]
-]
-
-,"to-think-us": [	
-	 [ "US6703461052", "NUCOR", 13823, "NUE", 						"usa", "xnys",	"NYSE:NUE",			"NUE",		"NUE.N", 		"NUE",	"", 				"Nucor" ]
+	,[ "US00206R1023", "AT-T", 14324, "T", 							"usa", "xnys",	"NYSE:T",			"T",		"T.N", 			"T",	"", 				"AT_T" ]
+	,[ "US6703461052", "NUCOR", 13823, "NUE", 						"usa", "xnys",	"NYSE:NUE",			"NUE",		"NUE.N", 		"NUE",	"", 				"Nucor" ]
 	,[ "US5486611073", "LOWE-S-COMPANIES", 13416, "LOW", 			"usa", "xnys",	"NYSE:LOW",			"LOW",		"LOW.N", 		"LOW",	"", 				"Lowes_Companies" ]
 	,[ "US30231G1022", "EXXON-MOBIL-CORPORATION", 4822, "XOM", 		"usa", "xnys",	"NYSE:XOM",			"XOM",		"XOM.N", 		"XOM",	"", 				"ExxonMobil" ]
 	,[ "US4781601046", "JOHNSON-JOHNSON", 4832, "JNJ", 				"usa", "xnys",	"NYSE:JNJ",			"JNJ",		"JNJ.N", 		"JNJ",	"", 				"JohnsonJohnson" ]
@@ -63,7 +55,7 @@
 
 
 
-,"ratio-versement-dividende-too-high-eu": [	
+,"ratio-versement-dividende-too-high": [	
 	 [ "ES0130960018", "ENAGAS", 409361, "ENG", 					"", "",			"BME:ENG",			"ENG.MC",	"ENAG.MC", 		"",		"", 				"Enagas" ]
 	,[ "LU0088087324", "SES", 4989, "SESG", 						"fra", "xpar",	"EURONEXT:SESG",	"SESG.PA",	"SESFd.PA", 	"",		"ses", 				"SES_Global" ]
 	,[ "DE0005772206", "FIELMANN-AG", 436069, "FIE", 				"deu", "xetr",	"XETR:FIE",			"FIE.DE",	"FIEG.DE", 		"",		"", 				"fielmann" ]
@@ -76,14 +68,11 @@
 	,[ "ES0173093024", "RED-ELECTRICA-DE-ESPA-A", 29688106, "REE", 	"", "",			"BME:REE",			"0RI5.IL",	"REE.MC", 		"",		"", 				"Red_Electrica" ]
 	,[ "FR0000130213", "LAGARDERE", 4668, "MMB", 					"fra", "xpar",	"EURONEXT:MMB",		"MMB.PA",	"LAGA.PA", 		"",		"lagardere-sca", 	"Lagardere_SCA" ]
 	,[ "GB0009252882", "GLAXOSMITHKLINE", 9590199, "GSK", 			"gbr", "xlon",	"LSE:GSK",			"GSK.L",	"GSK.L", 		"",		"", 				"GlaxoSmithKline" ]
-]
-
-,"ratio-versement-dividende-too-high-us": [	
-	 [ "US40414L1098", "HCP", 12889, "HCP", 						"usa", "xnys",	"NYSE:HCP",			"HCP",		"HCP.N", 		"HCP",	"", 				"HCP" ]
+	,[ "US40414L1098", "HCP", 12889, "HCP", 						"usa", "xnys",	"NYSE:HCP",			"HCP",		"HCP.N", 		"HCP",	"", 				"HCP" ]
 	,[ "US6676551046", "NORTHWEST-NATURAL-GAS-CO", 13845, "NWN", 	"usa", "xnys",	"NYSE:NWN",			"NWN",		"NWN.N", 		"NWN",	"", 				"Northwest_Natural_Gas" ]
 ]
 
-,"baisse-action-eu": [	
+,"baisse-action": [	
 	 [ "FR0000120966", "BIC", 4617, "BB", 							"fra", "xpar",	"EURONEXT:BB",		"BB.PA",	"BICP.PA", 		"",		"bic", 				"BIC" ]
 	,[ "GB00B033F229", "CENTRICA", 9590112, "CNA", 					"gbr", "xlon",	"LSE:CNA",			"CNA.L",	"CNA.L", 		"",		"", 				"Centrica" ]
 	,[ "GB00BK1PTB77", "AGGREKO-PLC", 16570411, "AGK", 				"gbr", "xlon",	"LSE:AGK",			"AGK.L",	"AGGK.L", 		"",		"", 				"Aggreko_2" ]

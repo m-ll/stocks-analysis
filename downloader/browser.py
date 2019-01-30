@@ -44,10 +44,10 @@ class cBrowser:
 		
 		opts.set_preference( 'browser.privatebrowsing.autostart', True )
 
-		opts.set_preference( 'browser.download.folderList', 2 );
-		opts.set_preference( 'browser.download.manager.showWhenStarting', False );
-		opts.set_preference( 'browser.download.dir', self.mOptions.TempDirectory() );
-		opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,application/octet-stream,text/html' );
+		opts.set_preference( 'browser.download.folderList', 2 )
+		opts.set_preference( 'browser.download.manager.showWhenStarting', False )
+		opts.set_preference( 'browser.download.dir', self.mOptions.TempDirectory() )
+		opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,application/octet-stream,text/html' )
 
 		self.mDriver = webdriver.Firefox( firefox_options=opts, executable_path=os.path.join( os.getcwd(), 'geckodriver' ) )
 		self.mDriver.implicitly_wait( 2 ) # seconds

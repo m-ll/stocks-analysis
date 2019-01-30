@@ -1,5 +1,6 @@
 
-.society
+.sectors,
+.society,
 .title,
 .next-dividend-date,
 .fondamentals,
@@ -8,6 +9,36 @@
 .dividend-chart
 {
 	clear: 		both;
+}
+
+/*---*/
+
+nav
+{
+  position: sticky;
+  top: 0;
+  z-index: 500;
+
+  background-color: rgb(220, 220, 220);
+}
+.sectors .sector
+{
+	display: 	inline-block;
+	margin-right: 10px;
+	padding: 2px 10px;
+
+	background-color: rgb(200, 200, 200);
+}
+.sectors .count-us,
+.sectors .count-eu,
+.sectors .count-all
+{
+	display: 	inline-block;
+	width: 		30px;
+}
+.sectors .name
+{
+	margin-right: 10px;
 }
 
 /*---*/
@@ -41,11 +72,12 @@
 	text-align: center;
 }
 
-.growth
+.graphics > *
 {
-	display:	inline-block;
-	vertical-align: top;		/* don't know why juste for growth -_- */
+	display: inline-block;
+	vertical-align: middle;
 }
+
 .growth tr th
 {
 	width: 50px;
@@ -72,15 +104,6 @@
 }
 
 /*---*/
-
-.clear
-{
-	clear: both;
-}
-.float
-{
-	float: left; 
-}
 
 .fondamentals tr.separator td
 { 
@@ -120,14 +143,8 @@
 {
 	color: #AAAAAA;
 }
-.left-space
-{
-	border-left-width: 50px;
-	border-left-style: solid;
-	border-left-color: rgba( 255, 255, 255 );
-}
 .minus,
-.close
+.close-date
 {
 	background-color: rgba( 255, 0, 0, 0.25 );
 }
@@ -136,7 +153,7 @@
 	background-color: rgba( 255, 197, 92, 0.25 );
 }
 .plus,
-.far
+.far-date
 {
 	background-color: rgba( 0, 255, 0, 0.25 );
 }

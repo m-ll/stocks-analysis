@@ -20,6 +20,8 @@ class cFinances:
 		pass
 	
 	def Download( self, iBrowser, iCompany ):
+		return
+			
 		print( '	Finances ...' )
 
 		if not iCompany.mFinances.Name():

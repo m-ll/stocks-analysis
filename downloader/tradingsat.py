@@ -20,6 +20,8 @@ class cTradingSat:
 		pass
 	
 	def Download( self, iBrowser, iCompany ):
+		return
+
 		print( '	TradingSat ...' )
 
 		if not iCompany.mTradingSat.Name():
