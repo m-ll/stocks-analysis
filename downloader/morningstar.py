@@ -138,12 +138,14 @@ class cMorningstar:
 		quote = iBrowser.WaitElement( '//li[@data-link="equity-quote"]//button' )
 		quote.click()
 		time.sleep( 1 )
+		iBrowser.Driver().execute_script( 'window.scrollTo(0, document.body.scrollHeight);' )
 		element = iBrowser.WaitElement( '//a[@data-anchor="company-profile"]/..//div[@id="sal-components-company-profile"]', 5 )
 		while element is None:
 			iBrowser.Driver().refresh()
 			quote = iBrowser.WaitElement( '//li[@data-link="equity-quote"]//button' )
 			quote.click()
 			time.sleep( 1 )
+			iBrowser.Driver().execute_script( 'window.scrollTo(0, document.body.scrollHeight);' )
 			element = iBrowser.WaitElement( '//a[@data-anchor="company-profile"]/..//div[@id="sal-components-company-profile"]', 5 )
 		iBrowser.WaitElement( '//a[@data-anchor="company-profile"]/..//div[@id="sal-components-company-profile"]' )
 		

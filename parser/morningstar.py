@@ -218,15 +218,28 @@ class cMorningstar:
 		iCompany.mMorningstar.mFinancialsDividendsYield20Years.mTTM = annual_average
 		
 		#---
-		
-		tr = soup.find( id='sal-components-dividends' ).find( 'table', class_='dividends-recent-table' ).find( 'tr', attrs={'ng-show': re.compile( 'upcomingDate.length' ) } )
-		trs = tr.find_next_siblings( 'tr' )
-		next_dates = []
-		for tr in trs:
-			next_date = tr.find( 'td' ).get_text( strip=True ).replace( '*', '' )	# https://www.crummy.com/software/BeautifulSoup/bs4/doc/#get-text
-			next_date = datetime.strptime( next_date, '%b %d, %Y' ).date()
-			if next_date > date.today():
-				iCompany.mMorningstar.mDividendNextDates.append( next_date )
-		
-		iCompany.mMorningstar.mDividendNextDates.reverse()
-		
+
+		tbody0 = soup.find( id='sal-components-dividends' ).find( 'table', class_='dividends-recent-table' ).find( 'tbody' )
+		tbodys = tbody0.find_next_siblings( 'tbody' )
+		for tbody in tbodys:
+			tr0 = tbody.find( 'tr' )
+			if tr0.find( 'td', class_='upcoming' ):
+				dates = []
+				trs = tr0.find_next_siblings( 'tr' )
+				for tr in trs:
+					next_date = tr.find( 'td' ).get_text( strip=True ).replace( '*', '' )	# https://www.crummy.com/software/BeautifulSoup/bs4/doc/#get-text
+					next_date = datetime.strptime( next_date, '%b %d, %Y' ).date()
+					dates.append( next_date )
+				dates.reverse()
+				iCompany.mMorningstar.mFinancialsDividendsYears.mTTM = dates
+			else:
+				dates = []
+				trs = tr0.find_next_siblings( 'tr' )
+				for tr in trs:
+					next_date = tr.find( 'td' ).get_text( strip=True ).replace( '*', '' )	# https://www.crummy.com/software/BeautifulSoup/bs4/doc/#get-text
+					next_date = datetime.strptime( next_date, '%b %d, %Y' ).date()
+					dates.append( next_date )
+				dates.reverse()
+				iCompany.mMorningstar.mFinancialsDividendsYears.mData.append( dates )
+
+		iCompany.mMorningstar.mFinancialsDividendsYears.mData.reverse()

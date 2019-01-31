@@ -59,26 +59,6 @@ def Title( iCompany, iSoup ):
 		
 	return root
 
-def NextDividendDate( iCompany, iSoup ):
-	root = iSoup.new_tag( 'span' )
-	root['class'] = 'next-dividend-date'
-	
-	for next_date in iCompany.mMorningstar.mDividendNextDates:
-		entry = iSoup.new_tag( 'span' )
-		entry['class'] = 'entry'
-		
-		date_next = iSoup.new_tag( 'span' )
-		diff = next_date - date.today()
-		date_next['class'] = 'far-date' if diff.days > 7 else 'close-date'
-		date_next.append( next_date.strftime( '%d/%m/%Y' ) )
-		
-		entry.append( 'Next Dividend Date: ' )
-		entry.append( date_next )
-		
-		root.append( entry )
-	
-	return root
-
 def Society( iCompany, iSoup ):
 	root = iSoup.new_tag( 'div' )
 	root['class'] = 'society'

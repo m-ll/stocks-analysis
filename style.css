@@ -34,7 +34,7 @@ nav
 .sectors .count-all
 {
 	display: 	inline-block;
-	width: 		30px;
+	width: 		40px;
 }
 .sectors .name
 {
@@ -132,7 +132,7 @@ nav
 .last10 th,
 .fondamentals th
 {
-	width: 80px;
+	width: 90px;
 }
 .last10 td,
 .fondamentals td
@@ -142,6 +142,10 @@ nav
 .less-important
 {
 	color: #AAAAAA;
+}
+.past-date
+{
+	color: rgb(128, 128, 128);
 }
 .minus,
 .close-date

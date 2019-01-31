@@ -77,10 +77,10 @@ companies = []
 for data_group_name in data_groups:
 	for data in data_groups[data_group_name]:
 		company = cCompany( data[0], data[1], data[2], data[3], 
-							data[4], data[5], 
-							data[6], 
-							data[7], data[8], data[9], 
-							data[10], data[11] )
+							data[4], 
+							data[5], data[6], 
+							data[7], data[8], data[9], data[10], 
+							data[11], data[12] )
 		company.Group( data_group_name )
 		company.DataPath( data_path )
 		company.OutputImgPathRelativeToHTMLFile( image_name )

@@ -10,6 +10,7 @@
 #
 
 import copy
+from datetime import date, datetime
 import math
 
 #---
@@ -61,7 +62,7 @@ def AddTR( iSoup, iText, iData, iReferences, iCSSFunction=None, iCSSFunction2=No
 		td.string = iText
 	else:
 		a = iSoup.new_tag( 'a', href=iUrl )
-		a.append( iText )
+		a.string = iText
 		td.append( a )
 	tr.append( td )
 	
@@ -69,18 +70,44 @@ def AddTR( iSoup, iText, iData, iReferences, iCSSFunction=None, iCSSFunction2=No
 	
 	for v in data.mData:
 		td = iSoup.new_tag( 'th' if iHeader else 'td' )
-		td['class'] = GetCSS( v, iCSSFunction )
-		td.string = v
+		if type( v ) is str:
+			td['class'] = GetCSS( v, iCSSFunction )
+			td.string = v
+		else:
+			for d in v:
+				div = iSoup.new_tag( 'div' )
+				diff = d - date.today()
+				if diff.days > 7:
+					div['class'] = 'far-date' 
+				elif diff.days > 0:
+					div['class'] = 'close-date'
+				else:
+					div['class'] = 'past-date'
+				div.string = d.strftime( '%d/%m/%Y' )
+				td.append( div )
 		tr.append( td )
 	
 	#---
 	
 	td = iSoup.new_tag( 'th' if iHeader else 'td' )
 	if data.mTTM:
-		td['class'] = GetCSS( data.mTTM, iCSSFunction )
-		if iCSSFunction2 is not None:	#PATCH: to colorize yield without PS/Impots with another lambda
-			td['class'] = GetCSS( data.mTTM, iCSSFunction2 )
-		td.string = f'{data.mTTM}'
+		if type( data.mTTM ) is str:
+			td['class'] = GetCSS( data.mTTM, iCSSFunction )
+			if iCSSFunction2 is not None:	#PATCH: to colorize yield without PS/Impots with another lambda
+				td['class'] = GetCSS( data.mTTM, iCSSFunction2 )
+			td.string = f'{data.mTTM}'
+		else:
+			for d in data.mTTM:
+				div = iSoup.new_tag( 'div' )
+				diff = d - date.today()
+				if diff.days > 7:
+					div['class'] = 'far-date' 
+				elif diff.days > 0:
+					div['class'] = 'close-date'
+				else:
+					div['class'] = 'past-date'
+				div.string = d.strftime( '%d/%m/%Y' )
+				td.append( div )
 	tr.append( td )
 	
 	#---
@@ -105,7 +132,7 @@ def AddTR( iSoup, iText, iData, iReferences, iCSSFunction=None, iCSSFunction2=No
 		td.string = iText
 	else:
 		a = iSoup.new_tag( 'a', href=iUrl )
-		a.append( iText )
+		a.string = iText
 		td.append( a )
 	tr.append( td )
 	
@@ -284,6 +311,10 @@ def Data( iCompany, iSoup ):
 	data = copy.copy( iCompany.mMorningstar.mFinancialsDividendsYield20Years )
 	data.mDataEstimated = [ iCompany.mZoneBourse.mDividendsYield20Years.mGrowthAverage ]
 	tr = AddTR( iSoup, 'Dividends after 20Y ', data, references, iUrl=iCompany.mMorningstar.mUrlDividendCalculator20Years )
+	tbody.append( tr )
+	
+	data = copy.copy( iCompany.mMorningstar.mFinancialsDividendsYears )
+	tr = AddTR( iSoup, 'Dividends Years ', data, references )
 	tbody.append( tr )
 	
 	table = iSoup.new_tag( 'table' )

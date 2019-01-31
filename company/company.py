@@ -141,8 +141,7 @@ class cMorningstar:
 		self.mFinancialsDividendsYield20Years = cData( iParent=self.mValuationYears )
 		self.mUrlDividendCalculator10Years = ''
 		self.mUrlDividendCalculator20Years = ''
-		
-		self.mDividendNextDates = []
+		self.mFinancialsDividendsYears = cData( iParent=self.mValuationYears )
 		
 	def Symbol( self ):
 		return self.mSymbol
@@ -320,9 +319,10 @@ class cFinances:
 #---
 
 class cCompany:
-	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName ):
+	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iZone, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName ):
 		self.mISIN = iISIN
 		self.mName = iZBName
+		self.mZone = iZone # eu/us
 		
 		self.mZoneBourse = cZoneBourse( self, iZBName, iZBCode, iZBSymbol )
 		self.mFinviz = cFinviz( self, iFVSymbol )
@@ -355,6 +355,8 @@ class cCompany:
 		return self.mISIN
 	def Name( self ):
 		return self.mName
+	def Zone( self ):
+		return self.mZone
 	
 	#---
 	

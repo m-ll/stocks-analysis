@@ -73,7 +73,6 @@ class cRenderer:
 			
 			subtag_society = info.Society( company, soup )
 			subtag_title = info.Title( company, soup )
-			subtag_next_dividend_date = info.NextDividendDate( company, soup )
 			
 			# subtag_dividends_finances = info.Dividends( company, soup, 'finances' )
 			# subtag_dividends_tradingsat = info.Dividends( company, soup, 'tradingsat' )
@@ -98,7 +97,6 @@ class cRenderer:
 			subroot.append( subtag_society )
 			# subroot.append( subtag_data_boerse )
 			subroot.append( subtag_title )
-			subroot.append( subtag_next_dividend_date )
 			root.append( subroot )
 			
 			subroot = soup.new_tag( 'article' )

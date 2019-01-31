@@ -25,7 +25,7 @@ def Sectors( iCompanies, iSoup ):
 		sectors[sector]['all'].append( company.Name() )
 		sectors['All']['all'].append( company.Name() )
 
-		if company.mMorningstar.Region() == 'usa':
+		if company.Zone() == 'us':
 			sectors[sector]['us'].append( company.Name() )
 			sectors['All']['us'].append( company.Name() )
 		else:
