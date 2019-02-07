@@ -62,9 +62,13 @@ def Title( iCompany, iSoup ):
 def Society( iCompany, iSoup ):
 	root = iSoup.new_tag( 'div' )
 	root['class'] = 'society'
+
+	sector = iSoup.new_tag( 'div' )
+	sector.string = '{}-{}'.format( iCompany.mMorningstar.mQuoteSector, iCompany.mMorningstar.mQuoteIndustry )
+	root.append( sector )	
 	
 	root.append( copy.copy( iCompany.mZoneBourse.mSoupSociety ) )
-	
+
 	return root
 
 #---

@@ -18,7 +18,8 @@ def Sectors( iCompanies, iSoup ):
 	sectors = {}
 	sectors['All'] = { 'eu': [], 'us': [], 'all': [] }
 	for company in iCompanies:
-		sector = '{}-{}'.format( company.mMorningstar.mQuoteSector, company.mMorningstar.mQuoteIndustry )
+		sector = company.mMorningstar.mQuoteSector
+		# sector = '{}-{}'.format( company.mMorningstar.mQuoteSector, company.mMorningstar.mQuoteIndustry )
 		if sector not in sectors.keys():
 			sectors[sector] = { 'eu': [], 'us': [], 'all': [] }
 
