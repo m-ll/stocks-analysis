@@ -134,8 +134,10 @@ class cZoneBourse:
 
 		driver.get( iCompany.mZoneBourse.UrlPricesIchimoku() )
 		
-		# Resize the iframe container
-		driver.execute_script( 'document.getElementById("tv_chart_container").style.width = "1800px"' )
+		# Remove rgpd popup
+		element = driver.find_elements_by_xpath( '//div[@id="qcCmpButtons"]/button[contains(@class, "qc-cmp-button")]' )
+		if element:
+			element[0].click()
 		
 		# Remove account creation
 		element = driver.find_elements_by_xpath( '//div[@id="PopupCertif" and not(contains(@style, "display:none"))]//img[@alt="fermer"]' )
@@ -149,6 +151,17 @@ class cZoneBourse:
 		element = driver.find_elements_by_xpath( '//a[@id="cookieChoiceDismiss"]' )
 		if element:
 			element[0].click()
+		
+		driver.execute_script( 'document.getElementById("mydiv").style.width = "1800px"' )
+		driver.execute_script( 'document.getElementById("mydiv").firstElementChild.style.width = "1800px"' )
+		driver.execute_script( 'document.getElementById("mydiv").firstElementChild.lastElementChild.style.width = "1800px"' )
+		
+		# Find the first iframe and switch to it
+		iframe = iBrowser.WaitElement( '//iframe[contains(@src, "inc_dyna_graph")]' )
+		driver.switch_to.frame( iframe )
+		
+		# Resize the iframe container
+		driver.execute_script( 'document.getElementById("tv_chart_container").style.width = "1800px"' )
 		
 		# Find the iframe and switch to it
 		iframe = iBrowser.WaitElement( '//iframe[contains(@id, "tradingview_") and contains(@name, "tradingview_")]' )

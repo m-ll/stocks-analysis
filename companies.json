@@ -12,6 +12,7 @@
 	,[ "DE000BAY0017", "BAYER", 436063, "BAYN", 					"eu",	"deu", "xetr",	"XETR:BAYN",		"BAYN.DE",	"BAYGn.DE", 	"",		"", 				"Bayer" ]
 	,[ "FR0000120271", "TOTAL", 4717, "FP", 						"eu",	"fra", "xpar",	"EURONEXT:FP",		"FP.PA",	"TOTF.PA", 		"",		"total", 			"TOTAL" ]
 	,[ "FR0000073298", "IPSOS", 4663, "IPS", 						"eu",	"fra", "xpar",	"EURONEXT:IPS",		"IPS.PA",	"ISOS.PA", 		"",		"ipsos", 			"" ]
+	,[ "GB00B03MLX29", "ROYAL-DUTCH-SHELL", 6273, "RDSA", 			"eu",	"gbr", "xlon",	"EURONEXT:RDSA",	"RDSA.L",	"RDSa.L", 		"",		"",					"Shell" ]
 	,[ "US7134481081", "PEPSICO", 39085159, "PEP", 					"us",	"usa", "xnas",	"NASDAQ:PEP",		"PEP",		"PEP.O", 		"PEP",	"", 				"PepsiCo" ]
 	,[ "US4523081093", "ILLINOIS-TOOL-WORKS", 13125, "ITW", 		"us",	"usa", "xnys",	"NYSE:ITW",			"ITW",		"ITW.N", 		"ITW",	"", 				"Illinois_Tool_Works" ]
 	,[ "US00287Y1091", "ABBVIE", 12136589, "ABBV", 					"us",	"usa", "xnys",	"NYSE:ABBV",		"ABBV",		"ABBV.N", 		"ABBV",	"", 				"AbbVie" ]
@@ -26,7 +27,6 @@
 ,"to-take": [	
 	 [ "BE0003470755", "SOLVAY", 5966, "SOLB", 						"eu",	"bel", "xbru",	"EURONEXT:SOLB",	"SOLB.BR",	"SOLB.BR", 		"",		"solvay", 			"Solvay" ]
 	,[ "GB00BH0P3Z91", "BHP-BILLITON-PLC", 47281658, "BHP", 		"eu",	"gbr", "xlon",	"",					"BLT.L",	"BHPB.L", 		"",		"", 				"BHP_Billiton" ]
-	,[ "GB00B03MLX29", "ROYAL-DUTCH-SHELL", 6273, "RDSA", 			"eu",	"gbr", "xlon",	"EURONEXT:RDSA",	"RDSA.L",	"RDSa.L", 		"",		"",					"Shell" ]
 ]
 
 ,"to-think": [	
