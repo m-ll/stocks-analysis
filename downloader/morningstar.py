@@ -14,6 +14,8 @@ import requests
 import shutil
 import time
 
+from selenium.webdriver.common.keys import Keys
+
 from colorama import init, Fore, Back, Style
 
 class cMorningstar:
@@ -134,6 +136,8 @@ class cMorningstar:
 		
 		iBrowser.Driver().get( iCompany.mMorningstar.UrlQuote() )
 		time.sleep( 1 )
+
+		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
 		
 		quote = iBrowser.WaitElement( '//li[@data-link="equity-quote"]//button' )
 		quote.click()
@@ -162,6 +166,8 @@ class cMorningstar:
 		iBrowser.Driver().get( iCompany.mMorningstar.UrlValuation() )
 		time.sleep( 1 )
 		
+		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
+		
 		valuation = iBrowser.WaitElement( '//li[@data-link="equity-valuation"]//button' )
 		valuation.click()
 		time.sleep( 1 )
@@ -186,6 +192,8 @@ class cMorningstar:
 		
 		iBrowser.Driver().get( iCompany.mMorningstar.UrlDividends() )
 		time.sleep( 1 )
+		
+		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
 		
 		dividends = iBrowser.WaitElement( '//li[@data-link="equity-dividends"]//button' )
 		dividends.click()

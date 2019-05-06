@@ -13,7 +13,7 @@ import os
 import time
 
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+# from selenium.webdriver.firefox.options import Options
 
 from colorama import init, Fore, Back, Style
 
@@ -39,17 +39,27 @@ class cBrowser:
 		if self.mDriver is not None:
 			return
 
-		opts = Options()
+		copts = webdriver.ChromeOptions()
+		# opts = Options()
 		# opts.add_argument( '--headless' )
 		
-		opts.set_preference( 'browser.privatebrowsing.autostart', True )
+		# opts.set_preference( 'browser.privatebrowsing.autostart', True )
+		copts.add_argument( "--incognito" )
 
-		opts.set_preference( 'browser.download.folderList', 2 )
-		opts.set_preference( 'browser.download.manager.showWhenStarting', False )
-		opts.set_preference( 'browser.download.dir', self.mOptions.TempDirectory() )
-		opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,application/octet-stream,text/html' )
+		# opts.set_preference( 'browser.download.folderList', 2 )
+		# opts.set_preference( 'browser.download.manager.showWhenStarting', False )
+		# opts.set_preference( 'browser.download.dir', self.mOptions.TempDirectory() )
+		# opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,application/octet-stream,text/html' )
 
-		self.mDriver = webdriver.Firefox( firefox_options=opts, executable_path=os.path.join( os.getcwd(), 'geckodriver' ) )
+		copts.add_experimental_option("prefs", {
+			"download.default_directory": self.mOptions.TempDirectory(),
+			"download.prompt_for_download": False,
+			"download.directory_upgrade": True,
+			"safebrowsing.enabled": True
+		})
+
+		self.mDriver = webdriver.Chrome( chrome_options=copts, executable_path=os.path.join( os.getcwd(), 'chromedriver74' ) )
+		# self.mDriver = webdriver.Firefox( firefox_options=opts, executable_path=os.path.join( os.getcwd(), 'geckodriver' ) )
 		self.mDriver.implicitly_wait( 2 ) # seconds
 		
 		self.mDriver.set_window_size( 1920, 1500 )

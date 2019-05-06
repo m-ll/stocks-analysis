@@ -183,12 +183,13 @@ class cZoneBourse:
 		rows = iBrowser.WaitElement( '//div[contains(@class, "insert-study-dialog")]//div[contains(@class, "insert-study-pages") and contains(@class, "insert-study-row")]' )
 		# t = driver.execute_script( 'var t = arguments[0].scrollTop; arguments[0].scrollTop = 400; return t;', rows )
 		# print( t )
-		rows.send_keys(Keys.PAGE_DOWN);
+		# rows.send_keys(Keys.PAGE_DOWN)
 		
 		# Activate the ichimoku indicator
 		indicators = iBrowser.WaitElement( '//div[contains(@class, "insert-study-dialog")]//span[contains(@title, "Ichimoku")]/..' )
 		# actions = ActionChains( driver )
 		# actions.move_to_element( indicators ).perform()
+		indicators.location_once_scrolled_into_view
 		indicators.click()
 		
 		# Close the indicator list
