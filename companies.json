@@ -8,7 +8,7 @@
 	,[ "FR0000120222", "CNP-ASSURANCES", 4633, "CNP", 				"eu",	"fra", "xpar",	"EURONEXT:CNP",		"CNP.PA",	"CNPP.PA", 		"",		"cnp-assurances", 	"CNP_Assurances" ]
 	,[ "GB0002875804", "BRITISH-AMERICAN-TOBACCO", 4001163, "BATS",	"eu",	"gbr", "xlon",	"LSE:BATS",			"BATS.L",	"BATS.L", 		"",		"", 				"BAT" ]
 	,[ "FR0000130452", "EIFFAGE", 4638, "FGR", 						"eu",	"fra", "xpar",	"EURONEXT:FGR",		"FGR.PA",	"FOUG.PA", 		"",		"eiffage", 			"Eiffage" ]
-	,[ "DE0007236101", "SIEMENS", 436605, "SIE", 					"eu",	"deu", "xetr",	"XETR:SIE",			"SIE.DE",	"SIEGn.DE", 	"",		"",		 			"Siemens" ]
+	#,[ "DE0007236101", "SIEMENS", 436605, "SIE", 					"eu",	"deu", "xetr",	"XETR:SIE",			"SIE.DE",	"SIEGn.DE", 	"",		"",		 			"Siemens" ]
 	,[ "DE000BAY0017", "BAYER", 436063, "BAYN", 					"eu",	"deu", "xetr",	"XETR:BAYN",		"BAYN.DE",	"BAYGn.DE", 	"",		"", 				"Bayer" ]
 	,[ "FR0000120271", "TOTAL", 4717, "FP", 						"eu",	"fra", "xpar",	"EURONEXT:FP",		"FP.PA",	"TOTF.PA", 		"",		"total", 			"TOTAL" ]
 	,[ "FR0000073298", "IPSOS", 4663, "IPS", 						"eu",	"fra", "xpar",	"EURONEXT:IPS",		"IPS.PA",	"ISOS.PA", 		"",		"ipsos", 			"" ]
@@ -23,11 +23,11 @@
 	,[ "US7427181091", "PROCTER-GAMBLE-COMPANY", 4838, "PG", 		"us",	"usa", "xnys",	"NYSE:PG",			"PG",		"PG.N", 		"PG",	"", 				"Procter_Gamble" ]
 	,[ "US5797802064", "MCCORMICK-COMPANY", 13556, "MKC", 			"us",	"usa", "xnys",	"NYSE:MKC",			"MKC",		"MKC.N", 		"MKC",	"", 				"McCormick" ]
 	,[ "US88579Y1010", "3M-COMPANY", 4836, "MMM", 					"us",	"usa", "xnys",	"NYSE:MMM",			"MMM",		"MMM.N", 		"MMM",	"", 				"3M" ]
+	,[ "BE0003470755", "SOLVAY", 5966, "SOLB", 						"eu",	"bel", "xbru",	"EURONEXT:SOLB",	"SOLB.BR",	"SOLB.BR", 		"",		"solvay", 			"Solvay" ]
 ]
 
 ,"to-take": [	
-	 [ "BE0003470755", "SOLVAY", 5966, "SOLB", 						"eu",	"bel", "xbru",	"EURONEXT:SOLB",	"SOLB.BR",	"SOLB.BR", 		"",		"solvay", 			"Solvay" ]
-	,[ "US4781601046", "JOHNSON-JOHNSON", 4832, "JNJ", 				"us",	"usa", "xnys",	"NYSE:JNJ",			"JNJ",		"JNJ.N", 		"JNJ",	"", 				"JohnsonJohnson" ]
+	 [ "US4781601046", "JOHNSON-JOHNSON", 4832, "JNJ", 				"us",	"usa", "xnys",	"NYSE:JNJ",			"JNJ",		"JNJ.N", 		"JNJ",	"", 				"JohnsonJohnson" ]
 	,[ "NL0000009355", "UNILEVER-NL", 6290, "UNA", 					"eu",	"nld", "xams",	"EURONEXT:UNA",		"UNA.AS",	"UNc.AS", 		"",		"",					"Unilever" ]
 	,[ "FR0000121014", "LVMH-MOET-HENNESSY-VUITTO", 4669, "MC", 	"eu",	"fra", "xpar",	"EURONEXT:MC",		"MC.PA",	"LVMH.PA", 		"",		"lvmh", 			"LVMH" ]
 	,[ "FR0000120073", "AIR-LIQUIDE", 4605, "AI", 					"eu",	"fra", "xpar",	"EURONEXT:AI",		"AI.PA",	"AIRP.PA", 		"",		"air-liquide", 		"Air_Liquide" ]
