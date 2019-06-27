@@ -134,6 +134,8 @@ class cZoneBourse:
 
 		driver.get( iCompany.mZoneBourse.UrlPricesIchimoku() )
 		
+		#---
+		
 		# Remove rgpd popup
 		element = driver.find_elements_by_xpath( '//div[@id="qcCmpButtons"]/button[contains(@class, "qc-cmp-button")]' )
 		if element:
@@ -151,6 +153,18 @@ class cZoneBourse:
 		element = driver.find_elements_by_xpath( '//a[@id="cookieChoiceDismiss"]' )
 		if element:
 			element[0].click()
+			
+		# Find the offer iframe and switch to it
+		iframe = driver.find_elements_by_xpath( '//iframe[@id="offerIframe"]' )
+		if iframe:
+			driver.switch_to.frame( iframe[0] )
+			element = driver.find_elements_by_xpath( '//img[@alt="fermer"]' )
+			if element:
+				element[0].click()
+
+			driver.switch_to.default_content()
+		
+		#---
 		
 		driver.execute_script( 'document.getElementById("mydiv").style.width = "1800px"' )
 		driver.execute_script( 'document.getElementById("mydiv").firstElementChild.style.width = "1800px"' )
