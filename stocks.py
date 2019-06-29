@@ -47,6 +47,7 @@ parser = argparse.ArgumentParser( description='Process group(s).' )
 parser.add_argument( 'groups', metavar='Group', nargs='*', help='One (or multiple) group(s) name (may also be company name)')
 parser.add_argument( '--download', choices=['no', 'yes', 'force'], default='yes', help='Download source' )
 parser.add_argument( '--suffix', help='Set suffix of output folder', required=True )
+parser.add_argument( '--tmp', default='', help='Set the tmp folder' ) # MUST NOT be None for cOptions
 args = parser.parse_args()
 
 if not os.path.exists( 'geckodriver' ):
@@ -68,6 +69,19 @@ os.makedirs( output_path, exist_ok=True )
 image_name = 'img'
 output_path_img = os.path.join( output_path, image_name )
 os.makedirs( output_path_img, exist_ok=True )
+
+#---
+
+options = cOptions()
+options.ForceDownload( args.download == 'force' )
+previous = options.TempDirectory( args.tmp )
+if isinstance( previous, tuple ):
+	error, message = previous
+	print( Back.RED + 'tmp folder: {}'.format( args.tmp ) )
+	print( Back.RED + 'error: {} - {}'.format( error, message ) )
+	sys.exit()
+
+browser = cBrowser( options )
 
 #---
 
@@ -93,14 +107,6 @@ for data_group_name in data_groups:
 if not args.groups:
 	for data_group_name in data_groups:
 		args.groups.append( data_group_name )
-
-#---
-
-options = cOptions()
-options.ForceDownload( args.download == 'force' )
-options.TempDirectory( '' )
-
-browser = cBrowser( options )
 
 #---
 

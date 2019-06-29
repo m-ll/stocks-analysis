@@ -35,19 +35,29 @@ class cOptions:
 		
 		if not iTempDirectory:
 			if sys.platform.startswith( 'cygwin' ):
-				current_path = os.path.abspath( '.' )
+				# current_path = os.path.abspath( '.' )
 				# r'...' = raw string
 				# >>> "\1"
 				# '\x01'
 				# >>> r"\1"
 				# '\\1'
 				# >>>
-				current_path = re.sub( r'/cygdrive/([a-z])', r'\1:', current_path ).upper() # '/cygdrive/c' -> 'C:'
-				current_path = current_path.replace( '/', '\\' )
-				self.mTempDirectory = current_path + '\\tmp'
+				# current_path = re.sub( r'/cygdrive/([a-z])', r'\1:', current_path ).upper() # '/cygdrive/c' -> 'C:'
+				# current_path = current_path.replace( '/', '\\' )
+				# self.mTempDirectory = current_path + '\\tmp'
+				return 110, 'custom tmp folder must be set for cygwin' # Not a good idea to create/remove/create/remove/... many files on a USB key
 			elif sys.platform.startswith( 'linux' ):
 				self.mTempDirectory = tempfile.gettempdir() + '/tmp-stocks'
+			else:
+				return 100, 'platform is not managed'
 		else:
+			if os.path.exists( os.path.normpath( iTempDirectory ) ):
+				return 200, 'custom tmp folder already exists'
+			
+			parent_dir = os.path.dirname( os.path.normpath( iTempDirectory ) )
+			if not os.path.exists( parent_dir ):
+				return 210, 'parent of custom tmp folder doesn\'t exist'
+
 			self.mTempDirectory = iTempDirectory
 		
 		return previous_value
