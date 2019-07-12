@@ -28,7 +28,7 @@
 
 ,"to-take": [	
 	 [ "US4781601046", "JOHNSON-JOHNSON", 4832, "JNJ", 				"us",	"usa", "xnys",	"NYSE:JNJ",			"JNJ",		"JNJ.N", 		"JNJ",	"", 				"JohnsonJohnson" ]
-	,[ "NL0000009355", "UNILEVER-NL", 6290, "UNA", 					"eu",	"nld", "xams",	"EURONEXT:UNA",		"UNA.AS",	"UNc.AS", 		"",		"",					"Unilever" ]
+	,[ "NL0000388619", "UNILEVER-N-V", 61006158, "UNA", 			"eu",	"nld", "xams",	"EURONEXT:UNA",		"UNA.AS",	"UNA.AS", 		"",		"",					"Unilever" ]
 	,[ "FR0000121014", "LVMH-MOET-HENNESSY-VUITTO", 4669, "MC", 	"eu",	"fra", "xpar",	"EURONEXT:MC",		"MC.PA",	"LVMH.PA", 		"",		"lvmh", 			"LVMH" ]
 	,[ "FR0000120073", "AIR-LIQUIDE", 4605, "AI", 					"eu",	"fra", "xpar",	"EURONEXT:AI",		"AI.PA",	"AIRP.PA", 		"",		"air-liquide", 		"Air_Liquide" ]
 	,[ "FR0000120321", "L-OREAL", 4666, "OR", 						"eu",	"fra", "xpar",	"EURONEXT:OR",		"OR.PA",	"OREP.PA", 		"",		"loreal", 			"LOréal" ]

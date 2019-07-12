@@ -130,12 +130,12 @@ class cData:
 		
 	def SetTR2( self, iSoupTr ):
 		if not self.mParent:		# for years row
-			tds_past = iSoupTr.find_all( 'td', style=re.compile( '#eeeeee' ) )
+			tds_past = iSoupTr.find_all( 'td', style=re.compile( '#eeeeee', re.IGNORECASE ) )
 			for td in tds_past:
 				v = td.get_text( strip=True )
 				self.mData.append( v )
 				
-			tds_estimated = iSoupTr.find_all( 'td', style=re.compile( '#dedede' ) )
+			tds_estimated = iSoupTr.find_all( 'td', style=re.compile( '#defefe', re.IGNORECASE ) )
 			for td in tds_estimated:
 				v = td.get_text( strip=True )
 				self.mDataEstimated.append( v )

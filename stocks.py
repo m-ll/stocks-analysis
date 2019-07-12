@@ -13,6 +13,7 @@ import os
 import sys
 import json
 import argparse
+import glob
 from datetime import datetime
 
 from colorama import init, Fore, Back, Style
@@ -50,9 +51,11 @@ parser.add_argument( '--suffix', help='Set suffix of output folder', required=Tr
 parser.add_argument( '--tmp', default='', help='Set the tmp folder' ) # MUST NOT be None for cOptions
 args = parser.parse_args()
 
-if not os.path.exists( 'geckodriver' ):
-	print( Back.RED + 'You need to download "geckodriver" file and move it next to this file' )
+if not glob.glob( 'geckodriver*.exe' ) and not glob.glob( 'chromedriver*.exe' ):
+	print( Back.RED + 'You need to download "geckodriver/chromedriver" file and move it next to this file' )
 	sys.exit()
+
+sys.exit()
 
 #---
 

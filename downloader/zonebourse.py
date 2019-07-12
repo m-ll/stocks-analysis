@@ -127,7 +127,7 @@ class cZoneBourse:
 			os.path.exists( iCompany.DataPathFile( filenames[0] ) ) and 
 			os.path.exists( iCompany.DataPathFile( filenames[1] ) ) and 
 			os.path.exists( iCompany.DataPathFile( filenames[2] ) ) ):
-			print( '		skipping (ichimoku) ...' )
+			print( Fore.CYAN + '		skipping (ichimoku) ...' )
 			return
 			
 		driver = iBrowser.Driver()
@@ -165,6 +165,9 @@ class cZoneBourse:
 			driver.switch_to.default_content()
 		
 		#---
+
+		js = "var h=document.getElementById('myHeader');h.parentNode.removeChild(h)"
+		driver.execute_script( js )
 		
 		driver.execute_script( 'document.getElementById("mydiv").style.width = "1800px"' )
 		driver.execute_script( 'document.getElementById("mydiv").firstElementChild.style.width = "1800px"' )
@@ -200,10 +203,11 @@ class cZoneBourse:
 		# rows.send_keys(Keys.PAGE_DOWN)
 		
 		# Activate the ichimoku indicator
-		indicators = iBrowser.WaitElement( '//div[contains(@class, "insert-study-dialog")]//span[contains(@title, "Ichimoku")]/..' )
-		# actions = ActionChains( driver )
-		# actions.move_to_element( indicators ).perform()
+		# first scroll to an entry above ichimoku, because when calling 'scroll', the entry selected will at the top of the page and below the header (so not clickable)
+		# indicators = iBrowser.WaitElement( '//div[contains(@class, "insert-study-dialog")]//span[contains(@title, "Ichimoku")]/..' )
+		indicators = iBrowser.WaitElement( '//div[contains(@class, "insert-study-dialog")]//span[contains(@title, "Directional Movement Index")]/..' )
 		indicators.location_once_scrolled_into_view
+		indicators = iBrowser.WaitElement( '//div[contains(@class, "insert-study-dialog")]//span[contains(@title, "Ichimoku")]/..' )
 		indicators.click()
 		
 		# Close the indicator list

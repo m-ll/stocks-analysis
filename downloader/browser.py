@@ -51,15 +51,15 @@ class cBrowser:
 		# opts.set_preference( 'browser.download.dir', self.mOptions.TempDirectory() )
 		# opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,application/octet-stream,text/html' )
 
-		copts.add_experimental_option("prefs", {
+		copts.add_experimental_option( 'prefs', {
 			"download.default_directory": self.mOptions.TempDirectory(),
 			"download.prompt_for_download": False,
 			"download.directory_upgrade": True,
 			"safebrowsing.enabled": True
-		})
+		} )
 
-		self.mDriver = webdriver.Chrome( chrome_options=copts, executable_path=os.path.join( os.getcwd(), 'chromedriver74' ) )
-		# self.mDriver = webdriver.Firefox( firefox_options=opts, executable_path=os.path.join( os.getcwd(), 'geckodriver' ) )
+		self.mDriver = webdriver.Chrome( chrome_options=copts, executable_path=os.path.join( os.getcwd(), 'chromedriver75' ) )
+		# self.mDriver = webdriver.Firefox( firefox_options=opts, executable_path=os.path.join( os.getcwd(), 'geckodriver0.24' ) )
 		self.mDriver.implicitly_wait( 2 ) # seconds
 		
 		self.mDriver.set_window_size( 1920, 1500 )

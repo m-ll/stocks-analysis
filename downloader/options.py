@@ -32,7 +32,7 @@ class cOptions:
 			return self.mTempDirectory
 		
 		previous_value = self.mTempDirectory
-		
+
 		if not iTempDirectory:
 			if sys.platform.startswith( 'cygwin' ):
 				# current_path = os.path.abspath( '.' )
@@ -51,12 +51,16 @@ class cOptions:
 			else:
 				return 100, 'platform is not managed'
 		else:
-			if os.path.exists( os.path.normpath( iTempDirectory ) ):
-				return 200, 'custom tmp folder already exists'
+			if os.path.exists( os.path.normpath( iTempDirectory ) ) and os.listdir( iTempDirectory ):
+				return 200, 'custom tmp folder already exists and not emtpy'
 			
 			parent_dir = os.path.dirname( os.path.normpath( iTempDirectory ) )
 			if not os.path.exists( parent_dir ):
 				return 210, 'parent of custom tmp folder doesn\'t exist'
+
+			if sys.platform.startswith( 'cygwin' ):
+				iTempDirectory = re.sub( r'/cygdrive/([a-z])', r'\1:', iTempDirectory ) # '/cygdrive/c' -> 'c:'
+				iTempDirectory = iTempDirectory.replace( '/', '\\' )
 
 			self.mTempDirectory = iTempDirectory
 		
