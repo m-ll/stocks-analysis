@@ -55,8 +55,6 @@ if not glob.glob( 'geckodriver*.exe' ) and not glob.glob( 'chromedriver*.exe' ):
 	print( Back.RED + 'You need to download "geckodriver/chromedriver" file and move it next to this file' )
 	sys.exit()
 
-sys.exit()
-
 #---
 
 root_path = os.path.abspath( '.' )
