@@ -116,4 +116,4 @@ class cBrowser:
 			if os.path.isfile( path_file ):
 				os.unlink( path_file )
 				
-		time.sleep( 1 )
+		time.sleep( 3 )

@@ -74,7 +74,7 @@ class cMorningstar:
 			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
 		shutil.copy( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameIncomeStatement() ) )
-		time.sleep( 1 )
+		time.sleep( 3 )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 
 	def _DownloadBalanceSheet( self, iBrowser, iCompany ):
@@ -100,7 +100,7 @@ class cMorningstar:
 			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
 		shutil.copy( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameBalanceSheet() ) )
-		time.sleep( 1 )
+		time.sleep( 3 )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 
 	def _DownloadRatios( self, iBrowser, iCompany ):
@@ -126,7 +126,7 @@ class cMorningstar:
 			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
 		shutil.copy( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameRatios() ) )
-		time.sleep( 1 )
+		time.sleep( 3 )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 		
 	def _DownloadQuote( self, iBrowser, iCompany ):
