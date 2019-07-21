@@ -10,7 +10,6 @@
 #
 
 import os
-import requests
 import shutil
 import time
 
@@ -142,22 +141,23 @@ class cMorningstar:
 
 		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
 		
-		quote = iBrowser.WaitElement( '//li[@data-link="equity-quote"]//button' )
+		quote = iBrowser.WaitElement( '//li[@id="stock__tab-quote"]//a' )
 		quote.click()
 		time.sleep( 1 )
 		iBrowser.Driver().execute_script( 'window.scrollTo(0, document.body.scrollHeight);' )
-		element = iBrowser.WaitElement( '//a[@data-anchor="company-profile"]/..//div[@id="sal-components-company-profile"]', 5 )
+		
+		element = iBrowser.WaitElement( '//sal-components-company-profile//div[contains(@class,"sal-row") and not(contains(@class, "sal-blueprint"))]//div[contains(@class,"sal-component-company-profile-body")]', 5 )
 		while element is None:
 			iBrowser.Driver().refresh()
-			quote = iBrowser.WaitElement( '//li[@data-link="equity-quote"]//button' )
+			quote = iBrowser.WaitElement( '//li[@id="stock__tab-quote"]//a' )
 			quote.click()
 			time.sleep( 1 )
 			iBrowser.Driver().execute_script( 'window.scrollTo(0, document.body.scrollHeight);' )
-			element = iBrowser.WaitElement( '//a[@data-anchor="company-profile"]/..//div[@id="sal-components-company-profile"]', 5 )
-		iBrowser.WaitElement( '//a[@data-anchor="company-profile"]/..//div[@id="sal-components-company-profile"]' )
+			element = iBrowser.WaitElement( '//sal-components-company-profile//div[contains(@class,"sal-row") and not(contains(@class, "sal-blueprint"))]//div[contains(@class,"sal-component-company-profile-body")]', 5 )
+		iBrowser.WaitElement( '//sal-components-company-profile//div[contains(@class,"sal-row") and not(contains(@class, "sal-blueprint"))]//div[contains(@class,"sal-component-company-profile-body")]' )
 		
 		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameQuote() ), 'w' ) as output:
-			output.write( iBrowser.Driver().page_source )
+			output.write( iBrowser.Driver().page_source.replace( '<!---->', '<!-- -->' ) )
 			
 	def _DownloadValuation( self, iBrowser, iCompany ):
 		print( '		- Valuation' )
@@ -171,20 +171,20 @@ class cMorningstar:
 		
 		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
 		
-		valuation = iBrowser.WaitElement( '//li[@data-link="equity-valuation"]//button' )
+		valuation = iBrowser.WaitElement( '//li[@id="stock__tab-valuation"]//a' )
 		valuation.click()
 		time.sleep( 1 )
-		element = iBrowser.WaitElement( '//a[@data-anchor="valuation"]/..//div[@id="sal-components-valuation"]', 5 )
+		element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsValuation"]', 5 )
 		while element is None:
 			iBrowser.Driver().refresh()
-			valuation = iBrowser.WaitElement( '//li[@data-link="equity-valuation"]//button' )
+			valuation = iBrowser.WaitElement( '//li[@id="stock__tab-valuation"]//a' )
 			valuation.click()
 			time.sleep( 1 )
-			element = iBrowser.WaitElement( '//a[@data-anchor="valuation"]/..//div[@id="sal-components-valuation"]', 5 )
-		iBrowser.WaitElement( '//a[@data-anchor="valuation"]/..//div[@id="sal-components-valuation"]//table[contains(@class,"report-table")]' )
+			element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsValuation"]', 5 )
+		iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsValuation"]//table[contains(@class,"report-table")]' )
 		
 		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameValuation() ), 'w' ) as output:
-			output.write( iBrowser.Driver().page_source )
+			output.write( iBrowser.Driver().page_source.replace( '<!---->', '<!-- -->' ) )
 			
 	def _DownloadDividends( self, iBrowser, iCompany ):
 		print( '		- Dividends' )
@@ -198,18 +198,18 @@ class cMorningstar:
 		
 		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
 		
-		dividends = iBrowser.WaitElement( '//li[@data-link="equity-dividends"]//button' )
+		dividends = iBrowser.WaitElement( '//li[@id="stock__tab-dividends"]//a' )
 		dividends.click()
 		time.sleep( 1 )
-		element = iBrowser.WaitElement( '//a[@data-anchor="dividends"]/..//div[@id="sal-components-dividends"]', 5 )
+		element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsDividends"]', 5 )
 		while element is None:
 			iBrowser.Driver().refresh()
-			dividends = iBrowser.WaitElement( '//li[@data-link="equity-dividends"]//button' )
+			dividends = iBrowser.WaitElement( '//li[@id="stock__tab-dividends"]//a' )
 			dividends.click()
 			time.sleep( 1 )
-			element = iBrowser.WaitElement( '//a[@data-anchor="dividends"]/..//div[@id="sal-components-dividends"]', 5 )
-		iBrowser.WaitElement( '//a[@data-anchor="dividends"]/..//div[@id="sal-components-dividends"]//table[contains(@class,"report-table")]' )
+			element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsDividends"]', 5 )
+		iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsDividends"]//table[contains(@class,"report-table")]' )
 
 		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameDividends() ), 'w' ) as output:
-			output.write( iBrowser.Driver().page_source )
+			output.write( iBrowser.Driver().page_source.replace( '<!---->', '<!-- -->' ) )
 			

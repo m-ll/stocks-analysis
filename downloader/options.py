@@ -18,6 +18,8 @@ class cOptions:
 	def __init__( self ):
 		self.mForceDownload = False
 		self.mTempDirectory = ''
+		self.mUserAgent = ''
+		self.UserAgent( '' )
 
 	def ForceDownload( self, iForceDownload=None ):
 		if iForceDownload is None:
@@ -25,6 +27,16 @@ class cOptions:
 		
 		previous_value = self.mForceDownload
 		self.mForceDownload = iForceDownload
+		return previous_value
+	
+	def UserAgent( self, iUserAgent=None ):
+		if iUserAgent is None:
+			return self.mUserAgent
+		
+		previous_value = self.mUserAgent
+		self.mUserAgent = iUserAgent
+		if not self.mUserAgent:
+			self.mUserAgent = 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
 		return previous_value
 	
 	def TempDirectory( self, iTempDirectory=None ):
@@ -51,8 +63,8 @@ class cOptions:
 			else:
 				return 100, 'platform is not managed'
 		else:
-			if os.path.exists( os.path.normpath( iTempDirectory ) ) and os.listdir( iTempDirectory ):
-				return 200, 'custom tmp folder already exists and not emtpy'
+			# if os.path.exists( os.path.normpath( iTempDirectory ) ) and os.listdir( iTempDirectory ):
+			# 	return 200, 'custom tmp folder already exists and not empty'
 			
 			parent_dir = os.path.dirname( os.path.normpath( iTempDirectory ) )
 			if not os.path.exists( parent_dir ):

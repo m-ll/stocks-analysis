@@ -76,6 +76,8 @@ class cBrowser:
 	def WaitElement( self, iXPath, iRange=0 ):
 		for i in range(iRange):
 			element = self.mDriver.find_elements_by_xpath( iXPath )
+			if len( element ) > 1:
+				print( Fore.RED + 'Error: multiple results when waiting 1 element' )
 			if element and element[0].is_displayed():
 				return element[0]
 				

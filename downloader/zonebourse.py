@@ -57,7 +57,7 @@ class cZoneBourse:
 			print( Fore.CYAN + '		skipping ... (existing file)' )
 			return
 
-		r = requests.get( iCompany.mZoneBourse.UrlSociety() )
+		r = requests.get( iCompany.mZoneBourse.UrlSociety(), headers={ 'User-Agent' : iBrowser.Options().UserAgent() } )
 		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNameSociety() ), 'w' ) as output:
 			output.write( r.text )
 			
@@ -78,7 +78,7 @@ class cZoneBourse:
 			print( Fore.CYAN + '		skipping (max) ... (existing file)' )
 			return
 			
-		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 9999, 320, 260 ) )
+		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 9999, 320, 260 ), headers={ 'User-Agent' : iBrowser.Options().UserAgent() } )
 		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 9999 ) ), 'wb' ) as output:
 			output.write( r.content )
 			
@@ -89,7 +89,7 @@ class cZoneBourse:
 			print( Fore.CYAN + '		skipping (10y) ... (existing file)' )
 			return
 			
-		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 120, 570, 430 ) )
+		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 120, 570, 430 ), headers={ 'User-Agent' : iBrowser.Options().UserAgent() } )
 		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 10 ) ), 'wb' ) as output:
 			output.write( r.content )
 			
@@ -100,7 +100,7 @@ class cZoneBourse:
 			print( Fore.CYAN + '		skipping (5y) ... (existing file)' )
 			return
 			
-		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 60, 570, 430 ) )
+		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 60, 570, 430 ), headers={ 'User-Agent' : iBrowser.Options().UserAgent() } )
 		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 5 ) ), 'wb' ) as output:
 			output.write( r.content )
 			
@@ -111,7 +111,7 @@ class cZoneBourse:
 			print( Fore.CYAN + '		skipping (2y) ... (existing file)' )
 			return
 			
-		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 24, 570, 430 ) )
+		r = requests.get( iCompany.mZoneBourse.UrlPricesSimple( 24, 570, 430 ), headers={ 'User-Agent' : iBrowser.Options().UserAgent() } )
 		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNamePricesSimple( 2 ) ), 'wb' ) as output:
 			output.write( r.content )
 			

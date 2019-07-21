@@ -30,7 +30,7 @@ class cBoerse:
 			print( Fore.CYAN + '	skipping ... (existing file)' )
 			return
 
-		r = requests.get( iCompany.mBoerse.Url() )
+		r = requests.get( iCompany.mBoerse.Url(), headers={ 'User-Agent' : iBrowser.Options().UserAgent() } )
 		with open( iCompany.DataPathFile( iCompany.mBoerse.FileName() ), 'w' ) as output:
 			output.write( r.text )
 			

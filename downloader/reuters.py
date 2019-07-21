@@ -30,7 +30,7 @@ class cReuters:
 			print( Fore.CYAN + '	skipping ... (existing file)' )
 			return
 
-		r = requests.get( iCompany.mReuters.Url() )
+		r = requests.get( iCompany.mReuters.Url(), headers={ 'User-Agent' : iBrowser.Options().UserAgent() } )
 		with open( iCompany.DataPathFile( iCompany.mReuters.FileName() ), 'w' ) as output:
 			output.write( r.text )
 			

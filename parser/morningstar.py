@@ -172,10 +172,15 @@ class cMorningstar:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )
-		section = soup.find( id='sal-components-company-profile' )
+		sections = soup.find_all( class_='sal-component-company-profile-body' )
 		
-		iCompany.mMorningstar.mQuoteSector = section.find( string='Sector' ).parent.find_next_sibling().string.strip()
-		iCompany.mMorningstar.mQuoteIndustry = section.find( string='Industry' ).parent.find_next_sibling().string.strip()
+		for section in sections:
+			sector = section.find( string='Sector' )
+			if sector:
+				iCompany.mMorningstar.mQuoteSector = sector.parent.find_next_sibling().string.strip()
+			industry = section.find( string='Industry' )
+			if industry:
+				iCompany.mMorningstar.mQuoteIndustry = industry.parent.find_next_sibling().string.strip()
 		
 	def _ParseValuation( self, iCompany ):
 		print( '		- Valuation ...' )
@@ -185,7 +190,7 @@ class cMorningstar:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )
-		section = soup.find( 'a', attrs={'data-anchor': 'valuation'} ).parent		# https://www.crummy.com/software/BeautifulSoup/bs4/doc/#the-keyword-arguments
+		section = soup.find( attrs={'mwc-id': 'salComponentsValuation'} ).find( 'table', class_='report-table' )		# https://www.crummy.com/software/BeautifulSoup/bs4/doc/#the-keyword-arguments
 		
 		iCompany.mMorningstar.mValuationYears.SetTR( section, 'td', 'Calendar' )
 			
@@ -204,7 +209,7 @@ class cMorningstar:
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )
 		
-		div = soup.find( id='sal-components-dividends' ).find( class_='dividend-yield' ).find_all( 'div' )[-1]
+		div = soup.find( attrs={'mwc-id': 'salComponentsDividends'} ).find( class_='dividend-yield' ).find_all( 'div' )[-1]
 		s = div.string.replace( ',', '.' ).replace( '%', '' ).replace( '-', '' ).replace( '—', '' )
 		iCompany.mMorningstar.mFinancialsDividendsYield.mTTM = s if s else '0'
 		iCompany.mMorningstar.mYieldCurrent = float( iCompany.mMorningstar.mFinancialsDividendsYield.mTTM )
@@ -219,7 +224,7 @@ class cMorningstar:
 		
 		#---
 
-		tbody0 = soup.find( id='sal-components-dividends' ).find( 'table', class_='dividends-recent-table' ).find( 'tbody' )
+		tbody0 = soup.find( attrs={'mwc-id': 'salComponentsDividends'} ).find( 'table', class_='dividends-recent-table' ).find( 'tbody' )
 		tbodys = tbody0.find_next_siblings( 'tbody' )
 		for tbody in tbodys:
 			tr0 = tbody.find( 'tr' )

@@ -32,7 +32,7 @@ class cTradingSat:
 			print( Fore.CYAN + '	skipping ... (existing file)' )
 			return
 
-		r = requests.get( iCompany.mTradingSat.Url() )
+		r = requests.get( iCompany.mTradingSat.Url(), headers={ 'User-Agent' : iBrowser.Options().UserAgent() } )
 		with open( iCompany.DataPathFile( iCompany.mTradingSat.FileName() ), 'w' ) as output:
 			output.write( r.text )
 			

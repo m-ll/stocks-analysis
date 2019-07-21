@@ -53,7 +53,7 @@ args = parser.parse_args()
 
 if not glob.glob( 'geckodriver*.exe' ) and not glob.glob( 'chromedriver*.exe' ):
 	print( Back.RED + 'You need to download "geckodriver/chromedriver" file and move it next to this file' )
-	sys.exit()
+	sys.exit( 5 )
 
 #---
 
@@ -80,7 +80,7 @@ if isinstance( previous, tuple ):
 	error, message = previous
 	print( Back.RED + 'tmp folder: {}'.format( args.tmp ) )
 	print( Back.RED + 'error: {} - {}'.format( error, message ) )
-	sys.exit()
+	sys.exit( 10 )
 
 browser = cBrowser( options )
 

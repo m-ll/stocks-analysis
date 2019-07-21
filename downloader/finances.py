@@ -32,7 +32,7 @@ class cFinances:
 			print( Fore.CYAN + '	skipping ... (existing file)' )
 			return
 
-		r = requests.get( iCompany.mFinances.Url() )
+		r = requests.get( iCompany.mFinances.Url(), headers={ 'User-Agent' : iBrowser.Options().UserAgent() } )
 		with open( iCompany.DataPathFile( iCompany.mFinances.FileName() ), 'w' ) as output:
 			output.write( r.text )
 			

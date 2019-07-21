@@ -30,7 +30,7 @@ class cFinviz:
 			print( Fore.CYAN + '	skipping ... (existing file)' )
 			return
 
-		r = requests.get( iCompany.mFinviz.Url() )
+		r = requests.get( iCompany.mFinviz.Url(), headers={ 'User-Agent' : iBrowser.Options().UserAgent() } )
 		with open( iCompany.DataPathFile( iCompany.mFinviz.FileName() ), 'w' ) as output:
 			output.write( r.text )
 			
