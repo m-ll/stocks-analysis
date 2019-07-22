@@ -67,14 +67,13 @@ class cMorningstar:
 		# Sometimes (now...), the file has 0 octet
 		# Try to re-download it by clicking on the button
 		# (Try this first, without refreshing the page)
-		while not os.stat( os.path.join( iBrowser.Options().TempDirectory(), csv ) ).st_size:
-			print( Fore.YELLOW + 'empty csv file: {}'.format( os.path.join( iBrowser.Options().TempDirectory(), csv ) ) )
+		while not os.stat( csv ).st_size:
+			print( Fore.YELLOW + 'empty csv file: {}'.format( csv ) )
 			iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 			export.click()
 			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
-		shutil.copy( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameIncomeStatement() ) )
-		time.sleep( 3 )
+		shutil.copy( csv, iCompany.DataPathFile( iCompany.mMorningstar.FileNameIncomeStatement() ) )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 
 	def _DownloadBalanceSheet( self, iBrowser, iCompany ):
@@ -93,14 +92,13 @@ class cMorningstar:
 			export = iBrowser.WaitElement( '//a[contains(@href,"SRT_stocFund.Export")]' )
 		export.click()
 		csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
-		while not os.stat( os.path.join( iBrowser.Options().TempDirectory(), csv ) ).st_size:
-			print( Fore.YELLOW + 'empty csv file: {}'.format( os.path.join( iBrowser.Options().TempDirectory(), csv ) ) )
+		while not os.stat( csv ).st_size:
+			print( Fore.YELLOW + 'empty csv file: {}'.format( csv ) )
 			iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 			export.click()
 			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
-		shutil.copy( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameBalanceSheet() ) )
-		time.sleep( 3 )
+		shutil.copy( csv, iCompany.DataPathFile( iCompany.mMorningstar.FileNameBalanceSheet() ) )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 
 	def _DownloadRatios( self, iBrowser, iCompany ):
@@ -119,14 +117,13 @@ class cMorningstar:
 			export = iBrowser.WaitElement( '//a[contains(@href,"exportKeyStat2CSV")]' )
 		export.click()
 		csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
-		while not os.stat( os.path.join( iBrowser.Options().TempDirectory(), csv ) ).st_size:
-			print( Fore.YELLOW + 'empty csv file: {}'.format( os.path.join( iBrowser.Options().TempDirectory(), csv ) ) )
+		while not os.stat( csv ).st_size:
+			print( Fore.YELLOW + 'empty csv file: {}'.format( csv ) )
 			iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 			export.click()
 			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
-		shutil.copy( os.path.join( iBrowser.Options().TempDirectory(), csv ), iCompany.DataPathFile( iCompany.mMorningstar.FileNameRatios() ) )
-		time.sleep( 3 )
+		shutil.copy( csv, iCompany.DataPathFile( iCompany.mMorningstar.FileNameRatios() ) )
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 		
 	def _DownloadQuote( self, iBrowser, iCompany ):

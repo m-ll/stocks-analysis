@@ -9,6 +9,7 @@
 # 29c355784a3921aa290371da87bce9c1617b8584ca6ac6fb17fb37ba4a07d191
 #
 
+import glob
 import os
 import time
 
@@ -102,18 +103,26 @@ class cBrowser:
 		return element[0]
 		
 	def WaitFileInside( self, iDirectory ):
-		files = os.listdir( iDirectory )
-		while not files:
+		time.sleep( 1 )
+		
+		pathfiles = glob.glob( os.path.join( iDirectory, '*.csv' ) )
+		print( pathfiles )
+		while not pathfiles:
 			print( Fore.YELLOW + 'sleep file refresh: {}'.format( iDirectory ) )
 			time.sleep( 1 )
-			files = os.listdir( iDirectory )
+			pathfiles = glob.glob( os.path.join( iDirectory, '*.csv' ) )
+			print( pathfiles )
+			
+		time.sleep( 1 )
 
-		return files[0]
+		return pathfiles[0]
 		
 	def RemoveFiles( self, iDirectory ):
+		time.sleep( 3 )
+		
 		for file in os.listdir( iDirectory ):
 			path_file = os.path.join( iDirectory, file )
 			if os.path.isfile( path_file ):
 				os.unlink( path_file )
 				
-		time.sleep( 3 )
+		time.sleep( 1 )
