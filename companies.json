@@ -8,7 +8,7 @@
 	,[ "FR0000120222", "CNP-ASSURANCES", 4633, "CNP", 				"eu",	"fra", "xpar",	"EURONEXT:CNP",		"CNP.PA",	"CNPP.PA", 		"",		"cnp-assurances", 	"CNP_Assurances" ]
 	,[ "GB0002875804", "BRITISH-AMERICAN-TOBACCO", 4001163, "BATS",	"eu",	"gbr", "xlon",	"LSE:BATS",			"BATS.L",	"BATS.L", 		"",		"", 				"BAT" ]
 	,[ "FR0000130452", "EIFFAGE", 4638, "FGR", 						"eu",	"fra", "xpar",	"EURONEXT:FGR",		"FGR.PA",	"FOUG.PA", 		"",		"eiffage", 			"Eiffage" ]
-	#,[ "DE0007236101", "SIEMENS", 436605, "SIE", 					"eu",	"deu", "xetr",	"XETR:SIE",			"SIE.DE",	"SIEGn.DE", 	"",		"",		 			"Siemens" ]
+	,[ "DE0007236101", "SIEMENS", 56358595, "SIE", 					"eu",	"deu", "xetr",	"XETR:SIE",			"SIE.DE",	"SIEGn.DE", 	"",		"",		 			"Siemens" ]
 	,[ "DE000BAY0017", "BAYER", 436063, "BAYN", 					"eu",	"deu", "xetr",	"XETR:BAYN",		"BAYN.DE",	"BAYGn.DE", 	"",		"", 				"Bayer" ]
 	,[ "FR0000120271", "TOTAL", 4717, "FP", 						"eu",	"fra", "xpar",	"EURONEXT:FP",		"FP.PA",	"TOTF.PA", 		"",		"total", 			"TOTAL" ]
 	,[ "FR0000073298", "IPSOS", 4663, "IPS", 						"eu",	"fra", "xpar",	"EURONEXT:IPS",		"IPS.PA",	"ISOS.PA", 		"",		"ipsos", 			"" ]
@@ -18,7 +18,7 @@
 	,[ "US4523081093", "ILLINOIS-TOOL-WORKS", 13125, "ITW", 		"us",	"usa", "xnys",	"NYSE:ITW",			"ITW",		"ITW.N", 		"ITW",	"", 				"Illinois_Tool_Works" ]
 	,[ "US00287Y1091", "ABBVIE", 12136589, "ABBV", 					"us",	"usa", "xnys",	"NYSE:ABBV",		"ABBV",		"ABBV.N", 		"ABBV",	"", 				"AbbVie" ]
 	,[ "US1912161007", "COCA-COLA-COMPANY-THE", 4819, "KO", 		"us",	"usa", "xnys",	"NYSE:KO",			"KO",		"KO.N", 		"KO",	"", 				"Coca-Cola" ]
-	,[ "US5246601075", "LEGGETT-PLATT", 13369, "LEG", 				"us",	"usa", "xnys",	"NYSE:LEG",			"LEG",		"LEG.N", 		"LEG",	"", 				"LeggettPlatt" ]
+	#,[ "US5246601075", "LEGGETT-PLATT", 13369, "LEG", 				"us",	"usa", "xnys",	"NYSE:LEG",			"LEG",		"LEG.N", 		"LEG",	"", 				"LeggettPlatt" ]
 	,[ "US3724601055", "GENUINE-PARTS-COMPANY", 40311101, "GPC", 	"us",	"usa", "xnys",	"NYSE:GPC",			"GPC",		"GPC.N", 		"GPC",	"", 				"Genuine_Parts" ]
 	,[ "US7427181091", "PROCTER-GAMBLE-COMPANY", 4838, "PG", 		"us",	"usa", "xnys",	"NYSE:PG",			"PG",		"PG.N", 		"PG",	"", 				"Procter_Gamble" ]
 	,[ "US5797802064", "MCCORMICK-COMPANY", 13556, "MKC", 			"us",	"usa", "xnys",	"NYSE:MKC",			"MKC",		"MKC.N", 		"MKC",	"", 				"McCormick" ]
@@ -36,8 +36,7 @@
 ]
 
 ,"to-think": [	
-	 [ "FR0000120503", "BOUYGUES", 4620, "EN", 						"eu",	"fra", "xpar",	"EURONEXT:EN",		"EN.PA",	"BOUY.PA", 		"",		"bouygues", 		"Bouygues" ]
-	,[ "US00206R1023", "AT-T", 14324, "T", 							"us",	"usa", "xnys",	"NYSE:T",			"T",		"T.N", 			"T",	"", 				"AT_T" ]
+	 [ "US00206R1023", "AT-T", 14324, "T", 							"us",	"usa", "xnys",	"NYSE:T",			"T",		"T.N", 			"T",	"", 				"AT_T" ]
 	,[ "US5486611073", "LOWE-S-COMPANIES", 13416, "LOW", 			"us",	"usa", "xnys",	"NYSE:LOW",			"LOW",		"LOW.N", 		"LOW",	"", 				"Lowes_Companies" ]
 	,[ "US30231G1022", "EXXON-MOBIL-CORPORATION", 4822, "XOM", 		"us",	"usa", "xnys",	"NYSE:XOM",			"XOM",		"XOM.N", 		"XOM",	"", 				"ExxonMobil" ]
 	,[ "US0091581068", "AIR-PRODUCTS-CHEMICALS", 11666, "APD", 		"us",	"usa", "xnys",	"NYSE:APD",			"APD",		"APD.N", 		"APD",	"", 				"Air_Products_and_Chemicals" ]
@@ -156,7 +155,8 @@
 ,"eu": [	
 	 [ "DE0006083405", "HORNBACH-HOLDING-AG-CO", 24446172, "HBH", 	"eu",	"deu", "xetr",	"XETR:HBH",			"HBH.DE",	"HBH.DE", 		"",		"", 				"Hornbach" ]
 	,[ "DE0006084403", "HORNBACH-BAUMARKT-AG", 449570, "HBM", 		"eu",	"deu", "xetr",	"XETR:HBM",			"HBM.DE",	"HBMG.DE", 		"",		"", 				"HORNBACH_Baumarkt" ]
-	,[ "CH0038863350", "NESTLE", 9365334, "NESN", 					"eu",	"", "",		"SIX:NESN",			"NESN.VX",	"NESN.S", 		"",		"", 				"Nestle" ]
+	,[ "FR0000120503", "BOUYGUES", 4620, "EN", 						"eu",	"fra", "xpar",	"EURONEXT:EN",		"EN.PA",	"BOUY.PA", 		"",		"bouygues", 		"Bouygues" ]
+	,[ "CH0038863350", "NESTLE", 9365334, "NESN", 					"eu",	"", "",		"SIX:NESN",			"NESN.VX",	"NESN.S", 		"",		"", 					"Nestle" ]
 	,[ "FR0000039299", "BOLLORE", 5155, "BOL", 						"eu",	"fra", "xpar",	"EURONEXT:BOL",		"BOL.PA",	"BOLL.PA", 		"",		"bollore", 			"Bollore" ]
 	,[ "FR0000052292", "HERMES-INTERNATIONAL", 4657, "RMS", 		"eu",	"fra", "xpar",	"EURONEXT:RMS",		"RMS.PA",	"HRMS.PA", 		"",		"hermes-intl", 		"Hermès" ]
 	,[ "FR0000184798", "ORPEA", 4799, "ORP", 						"eu",	"fra", "xpar",	"EURONEXT:ORP",		"ORP.PA",	"ORP.PA", 		"",		"orpea", 			"OrpeaAct" ]

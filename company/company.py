@@ -340,6 +340,8 @@ class cCompany:
 		self.mDataPath = ''
 		self.mImgDirRelativeToHTML = ''
 		self.mGroup = ''
+		self.mInvestedCTO = 0
+		self.mInvestedPEA = 0
 		
 		self.mInvestment = 0.0
 		self.mStartingYield = 0.0
@@ -359,6 +361,15 @@ class cCompany:
 		return self.mZone
 	
 	#---
+	
+	def Invested( self, iInvested=None ):
+		if iInvested is None:
+			return self.mInvestedCTO, self.mInvestedPEA
+		
+		previous_value = self.mInvestedCTO, self.mInvestedPEA
+		self.mInvestedCTO = iInvested[0]
+		self.mInvestedPEA = iInvested[1]
+		return previous_value
 	
 	def DataPath( self, iPath=None ):
 		if iPath is None:

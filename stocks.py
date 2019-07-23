@@ -41,7 +41,16 @@ with open( 'companies.json' ) as file:
 #PATCH
 			
 data_groups = json.loads( data )
-	
+
+data = ''
+with open( '_companies-invest.json' ) as file:
+	for line in file:
+		if '#' not in line:
+			data += line
+#PATCH
+			
+data_owned_invests = json.loads( data )['owned']
+
 #---
 		
 parser = argparse.ArgumentParser( description='Process group(s).' )
@@ -99,7 +108,11 @@ for data_group_name in data_groups:
 		company.Group( data_group_name )
 		company.DataPath( data_path )
 		company.OutputImgPathRelativeToHTMLFile( image_name )
-		
+
+		data_invest = next( ( c for c in data_owned_invests if c[0] == data[0] and c[1] == data[1] ), None )
+		if data_invest:
+			company.Invested( ( data_invest[2], data_invest[3] ) )
+
 		companies.append( company )
 		
 #---

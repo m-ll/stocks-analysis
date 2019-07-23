@@ -19,6 +19,24 @@ import company.company
 #---
 
 def Title( iCompany, iSoup ):
+	price_value = iSoup.new_tag( 'span' )
+	price_value['class'] = 'value'
+	price_value.append( iCompany.mZoneBourse.mPrice )
+	
+	price = iSoup.new_tag( 'span' )
+	price['class'] = 'price'
+	price.append( '[' )
+	price.append( price_value )
+	price.append( ' {} ] '.format( iCompany.mZoneBourse.mCurrency ) )
+	
+	#---
+	
+	name = iSoup.new_tag( 'span' )
+	name['class'] = 'name'
+	name.append( '{}: {}'.format( iCompany.Name(), iCompany.ISIN() ) )
+	
+	#---
+	
 	link_graph = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlGraphic( company.company.cZoneBourse.eAppletMode.kStatic ) )
 	link_graph.append( ' [Prices]' )
 	
@@ -31,19 +49,13 @@ def Title( iCompany, iSoup ):
 	link_societe = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlSociety() )
 	link_societe.append( ' [Societe]' )
 	
-	price_value = iSoup.new_tag( 'span' )
-	price_value['class'] = 'value'
-	price_value.append( iCompany.mZoneBourse.mPrice )
+	#---
 	
-	price = iSoup.new_tag( 'span' )
-	price['class'] = 'price'
-	price.append( '[' )
-	price.append( price_value )
-	price.append( ' {} ] '.format( iCompany.mZoneBourse.mCurrency ) )
-	
-	name = iSoup.new_tag( 'span' )
-	name['class'] = 'name'
-	name.append( '{}: {}'.format( iCompany.Name(), iCompany.ISIN() ) )
+	invest = iSoup.new_tag( 'span' )
+	invest['class'] = 'invested'
+	total_invest = sum( iCompany.Invested() )
+	if total_invest:
+		invest.append( ' ({})'.format( total_invest ) )
 	
 	#---
 	
@@ -56,6 +68,7 @@ def Title( iCompany, iSoup ):
 	root.append( link_graph2 )
 	root.append( link_fond )
 	root.append( link_societe )
+	root.append( invest )
 		
 	return root
 

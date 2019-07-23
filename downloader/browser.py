@@ -106,12 +106,10 @@ class cBrowser:
 		time.sleep( 1 )
 		
 		pathfiles = glob.glob( os.path.join( iDirectory, '*.csv' ) )
-		print( pathfiles )
 		while not pathfiles:
 			print( Fore.YELLOW + 'sleep file refresh: {}'.format( iDirectory ) )
 			time.sleep( 1 )
 			pathfiles = glob.glob( os.path.join( iDirectory, '*.csv' ) )
-			print( pathfiles )
 			
 		time.sleep( 1 )
 

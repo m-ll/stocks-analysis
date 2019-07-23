@@ -43,10 +43,6 @@ nav
 
 /*---*/
 
-.society
-{
-}
-
 .title
 {
 	display: 	block;
@@ -58,6 +54,10 @@ nav
 .title .price .value
 {
 	color:		rgb( 100, 100, 255 ); 
+}
+.title .invested
+{
+	color:		rgb(128, 128, 128); 
 }
 
 .next-dividend-date
