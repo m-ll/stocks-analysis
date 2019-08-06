@@ -24,9 +24,11 @@ class cFinviz:
 			return
 			
 		#---
+
+		input = iCompany.DataPathFile( iCompany.mFinviz.FileName() )
 		
 		html_content = ''
-		with open( iCompany.DataPathFile( iCompany.mFinviz.FileName() ), 'r', encoding='utf-8' ) as fd:
+		with input.open( 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )

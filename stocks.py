@@ -9,12 +9,12 @@
 # 29c355784a3921aa290371da87bce9c1617b8584ca6ac6fb17fb37ba4a07d191
 #
 
-import os
-import sys
-import json
 import argparse
-import glob
 from datetime import datetime
+import glob
+import json
+from pathlib import Path
+import sys
 
 from colorama import init, Fore, Back, Style
 init( autoreset=True )
@@ -66,28 +66,29 @@ if not glob.glob( 'geckodriver*.exe' ) and not glob.glob( 'chromedriver*.exe' ):
 
 #---
 
-root_path = os.path.abspath( '.' )
+root_path = Path( '.' ).resolve()
 
 # Create input (data) directory (_data/xxx)
-data_path = os.path.join( root_path, '_data', args.suffix )
-os.makedirs( data_path, exist_ok=True )
+data_path = root_path / '_data' / args.suffix
+data_path.mkdir( parents=True, exist_ok=True )
 
 # Create output directories (_output/xxx and _output/xxx/img)
-output_path = os.path.join( root_path, '_output', args.suffix )
-os.makedirs( output_path, exist_ok=True )
+output_path = root_path / '_output' / args.suffix
+output_path.mkdir( parents=True, exist_ok=True )
 
 image_name = 'img'
-output_path_img = os.path.join( output_path, image_name )
-os.makedirs( output_path_img, exist_ok=True )
+output_path_img = output_path / image_name
+output_path_img.mkdir( parents=True, exist_ok=True )
 
 #---
 
 options = cOptions()
 options.ForceDownload( args.download == 'force' )
-previous = options.TempDirectory( args.tmp )
+tmp_path = args.tmp
+previous = options.TempDirectory( tmp_path )
 if isinstance( previous, tuple ):
 	error, message = previous
-	print( Back.RED + 'tmp folder: {}'.format( args.tmp ) )
+	print( Back.RED + 'tmp folder: {}'.format( tmp_path ) )
 	print( Back.RED + 'error: {} - {}'.format( error, message ) )
 	sys.exit( 10 )
 

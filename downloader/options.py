@@ -10,6 +10,7 @@
 #
 
 import os
+from pathlib import Path
 import re
 import sys
 import tempfile
@@ -41,7 +42,7 @@ class cOptions:
 	
 	def TempDirectory( self, iTempDirectory=None ):
 		if iTempDirectory is None:
-			return self.mTempDirectory
+			return Path( self.mTempDirectory )
 		
 		previous_value = self.mTempDirectory
 
@@ -76,4 +77,4 @@ class cOptions:
 
 			self.mTempDirectory = iTempDirectory
 		
-		return previous_value
+		return Path( previous_value )

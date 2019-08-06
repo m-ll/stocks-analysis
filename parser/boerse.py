@@ -26,9 +26,11 @@ class cBoerse:
 			return
 			
 		#---
+
+		input = iCompany.DataPathFile( iCompany.mBoerse.FileName() )
 		
 		html_content = ''
-		with open( iCompany.DataPathFile( iCompany.mBoerse.FileName() ), 'r', encoding='utf-8' ) as fd:
+		with input.open( 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )

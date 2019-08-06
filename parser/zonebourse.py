@@ -29,8 +29,11 @@ class cZoneBourse:
 
 		self._ParseSociety( iCompany )
 		
+		#---
+
+		input = iCompany.DataPathFile( iCompany.mZoneBourse.FileNameData() )
 		html_content = ''
-		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNameData() ), 'r', encoding='utf-8' ) as fd:
+		with input.open( 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )
@@ -40,8 +43,9 @@ class cZoneBourse:
 		self._ParseGraphics( iCompany, soup )
 			
 	def _ParseSociety( self, iCompany ):
+		input = iCompany.DataPathFile( iCompany.mZoneBourse.FileNameSociety() )
 		html_content = ''
-		with open( iCompany.DataPathFile( iCompany.mZoneBourse.FileNameSociety() ), 'r', encoding='utf-8' ) as fd:
+		with input.open( 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )

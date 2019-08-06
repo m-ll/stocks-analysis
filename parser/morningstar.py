@@ -39,7 +39,9 @@ class cMorningstar:
 	def _ParseIncomStatement( self, iCompany ):
 		print( '		- Income Statement ...' )
 
-		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameIncomeStatement() ), newline='' ) as csvfile:
+		input = iCompany.DataPathFile( iCompany.mMorningstar.FileNameIncomeStatement() )
+
+		with input.open( newline='' ) as csvfile:
 			reader = csv.reader( csvfile )
 			
 			for row in reader:
@@ -54,7 +56,9 @@ class cMorningstar:
 	def _ParseBalanceSheet( self, iCompany ):
 		print( '		- Balance Sheet ...' )
 
-		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameBalanceSheet() ), newline='' ) as csvfile:
+		input = iCompany.DataPathFile( iCompany.mMorningstar.FileNameBalanceSheet() )
+
+		with input.open( newline='' ) as csvfile:
 			reader = csv.reader( csvfile )
 			
 			for row in reader:
@@ -84,7 +88,9 @@ class cMorningstar:
 	def _ParseRatios( self, iCompany ):
 		print( '		- Ratios ...' )
 
-		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameRatios() ), newline='' ) as csvfile:
+		input = iCompany.DataPathFile( iCompany.mMorningstar.FileNameRatios() )
+
+		with input.open( newline='' ) as csvfile:
 			reader = csv.reader( csvfile )
 			
 			for row in reader:
@@ -167,8 +173,10 @@ class cMorningstar:
 	def _ParseQuote( self, iCompany ):
 		print( '		- Quote ...' )
 
+		input = iCompany.DataPathFile( iCompany.mMorningstar.FileNameQuote() )
+
 		html_content = ''
-		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameQuote() ), 'r', encoding='utf-8' ) as fd:
+		with input.open( 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )
@@ -185,8 +193,10 @@ class cMorningstar:
 	def _ParseValuation( self, iCompany ):
 		print( '		- Valuation ...' )
 
+		input = iCompany.DataPathFile( iCompany.mMorningstar.FileNameValuation() )
+
 		html_content = ''
-		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameValuation() ), 'r', encoding='utf-8' ) as fd:
+		with input.open( 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )
@@ -203,8 +213,10 @@ class cMorningstar:
 	def _ParseDividends( self, iCompany ):
 		print( '		- Dividends ...' )
 
+		input = iCompany.DataPathFile( iCompany.mMorningstar.FileNameDividends() )
+
 		html_content = ''
-		with open( iCompany.DataPathFile( iCompany.mMorningstar.FileNameDividends() ), 'r', encoding='utf-8' ) as fd:
+		with input.open( 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )

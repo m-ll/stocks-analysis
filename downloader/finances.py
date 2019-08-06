@@ -9,7 +9,6 @@
 # 29c355784a3921aa290371da87bce9c1617b8584ca6ac6fb17fb37ba4a07d191
 #
 
-import os
 import requests
 import time
 
@@ -27,14 +26,16 @@ class cFinances:
 		if not iCompany.mFinances.Name():
 			print( Fore.CYAN + '	skipping ... (no id)' )
 			return
+		
+		output = iCompany.DataPathFile( iCompany.mFinances.FileName() )
 			
-		if not iBrowser.Options().ForceDownload() and os.path.exists( iCompany.DataPathFile( iCompany.mFinances.FileName() ) ):
+		if not iBrowser.Options().ForceDownload() and output.exists():
 			print( Fore.CYAN + '	skipping ... (existing file)' )
 			return
 
 		r = requests.get( iCompany.mFinances.Url(), headers={ 'User-Agent' : iBrowser.Options().UserAgent() } )
-		with open( iCompany.DataPathFile( iCompany.mFinances.FileName() ), 'w' ) as output:
-			output.write( r.text )
+		with output.open( 'w' ) as o:
+			o.write( r.text )
 			
 		time.sleep( 1 )
 	

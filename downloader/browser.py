@@ -10,7 +10,7 @@
 #
 
 import glob
-import os
+from pathlib import Path
 import time
 
 from selenium import webdriver
@@ -53,14 +53,16 @@ class cBrowser:
 		# opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,application/octet-stream,text/html' )
 
 		copts.add_experimental_option( 'prefs', {
-			"download.default_directory": self.mOptions.TempDirectory(),
+			"download.default_directory": str(self.mOptions.TempDirectory()),
 			"download.prompt_for_download": False,
 			"download.directory_upgrade": True,
 			"safebrowsing.enabled": True
 		} )
 
-		self.mDriver = webdriver.Chrome( chrome_options=copts, executable_path=os.path.join( os.getcwd(), 'chromedriver75' ) )
-		# self.mDriver = webdriver.Firefox( firefox_options=opts, executable_path=os.path.join( os.getcwd(), 'geckodriver0.24' ) )
+		executable_path = Path( '.' ).resolve() / 'chromedriver75'
+		# executable_path = Path( '.' ).resolve() / 'geckodriver0.24'
+		self.mDriver = webdriver.Chrome( chrome_options=copts, executable_path=executable_path )
+		# self.mDriver = webdriver.Firefox( firefox_options=opts, executable_path=executable_path )
 		self.mDriver.implicitly_wait( 2 ) # seconds
 		
 		self.mDriver.set_window_size( 1920, 1500 )
@@ -105,22 +107,21 @@ class cBrowser:
 	def WaitFileInside( self, iDirectory ):
 		time.sleep( 1 )
 		
-		pathfiles = glob.glob( os.path.join( iDirectory, '*.csv' ) )
+		pathfiles = list(iDirectory.glob( '*.csv' ))
 		while not pathfiles:
 			print( Fore.YELLOW + 'sleep file refresh: {}'.format( iDirectory ) )
 			time.sleep( 1 )
-			pathfiles = glob.glob( os.path.join( iDirectory, '*.csv' ) )
+			pathfiles = list(iDirectory.glob( '*.csv' ))
 			
 		time.sleep( 1 )
-
+		
 		return pathfiles[0]
 		
 	def RemoveFiles( self, iDirectory ):
 		time.sleep( 3 )
 		
-		for file in os.listdir( iDirectory ):
-			path_file = os.path.join( iDirectory, file )
-			if os.path.isfile( path_file ):
-				os.unlink( path_file )
+		for file in iDirectory.iterdir():
+			if file.is_file():
+				file.unlink()
 				
 		time.sleep( 1 )

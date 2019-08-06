@@ -390,7 +390,7 @@ class cCompany:
 	#---
 	
 	def DataPathFile( self, iFileName ):
-		return os.path.join( self.mDataPath, iFileName )
+		return self.mDataPath / iFileName
 	
 	def OutputImgPathFileRelativeToHTMLFile( self, iFileName ):
 		return '{}/{}'.format( self.mImgDirRelativeToHTML, iFileName )	# Always '/' as it's for html
@@ -444,16 +444,16 @@ class cCompany:
 		
 		#TOIMPROVE: with tuple/dict/... like ichimoku (?)
 		filename = self.mZoneBourse.FileNamePricesSimple( 9999 )
-		shutil.copy( self.DataPathFile( filename ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filename ) ) )
+		shutil.copy( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) )
 		filename = self.mZoneBourse.FileNamePricesSimple( 10 )
-		shutil.copy( self.DataPathFile( filename ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filename ) ) )
+		shutil.copy( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) )
 		filename = self.mZoneBourse.FileNamePricesSimple( 5 )
-		shutil.copy( self.DataPathFile( filename ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filename ) ) )
+		shutil.copy( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) )
 		filename = self.mZoneBourse.FileNamePricesSimple( 2 )
-		shutil.copy( self.DataPathFile( filename ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filename ) ) )
+		shutil.copy( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) )
 		
 		filenames = self.mZoneBourse.FileNamesPricesIchimoku()
-		shutil.copy( self.DataPathFile( filenames[0] ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filenames[0] ) ) )
-		shutil.copy( self.DataPathFile( filenames[1] ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filenames[1] ) ) )
-		shutil.copy( self.DataPathFile( filenames[2] ), os.path.join( iOutputPath, self.OutputImgPathFileRelativeToHTMLFile( filenames[2] ) ) )
+		shutil.copy( self.DataPathFile( filenames[0] ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filenames[0] ) )
+		shutil.copy( self.DataPathFile( filenames[1] ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filenames[1] ) )
+		shutil.copy( self.DataPathFile( filenames[2] ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filenames[2] ) )
 	

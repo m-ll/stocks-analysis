@@ -28,9 +28,11 @@ class cFinances:
 			return
 		
 		#---
+
+		input = iCompany.DataPathFile( iCompany.mFinances.FileName() )
 		
 		html_content = ''
-		with open( iCompany.DataPathFile( iCompany.mFinances.FileName() ), 'r', encoding='utf-8' ) as fd:
+		with input.open( 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )

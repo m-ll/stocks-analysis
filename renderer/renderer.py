@@ -10,7 +10,6 @@
 #
 
 import copy
-import os
 
 from bs4 import BeautifulSoup
 
@@ -160,8 +159,8 @@ class cRenderer:
 		groups = set( groups ) # Get only unique group (should be single most of the time)
 		groups = '-'.join( groups ) # Create the name
 		
-		outputpathfile = os.path.join( iOutputPath, '{}-[{}].html'.format( groups, len( self.mCompanies ) ) )
-		with open( outputpathfile, 'w' ) as output:
+		outputpathfile = iOutputPath / '{}-[{}].html'.format( groups, len( self.mCompanies ) )
+		with outputpathfile.open( 'w' ) as output:
 			output.write( self.mHTML )
 			
 		for i, company in enumerate( self.mCompanies, start=1 ):

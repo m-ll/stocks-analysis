@@ -24,9 +24,11 @@ class cYahooFinance:
 			return
 			
 		#---
+
+		input = iCompany.DataPathFile( iCompany.mYahooFinance.FileName() )
 		
 		html_content = ''
-		with open( iCompany.DataPathFile( iCompany.mYahooFinance.FileName() ), 'r', encoding='utf-8' ) as fd:
+		with input.open( 'r', encoding='utf-8' ) as fd:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )
