@@ -19,6 +19,7 @@ import sys
 from colorama import init, Fore, Back, Style
 init( autoreset=True )
 
+from converter.converter import cConverter
 from company.company import cCompany
 from downloader.options import cOptions
 from downloader.browser import cBrowser
@@ -29,27 +30,6 @@ from renderer.renderer import cRenderer
 # https://graphseobourse.fr/classement-des-entreprises-les-plus-innovantes-du-monde/
 
 # https://www.suredividend.com/warren-buffett-stocks/
-
-#---
-
-#PATCH: to remove 'pseudo' comments
-data = ''
-with open( 'companies.json' ) as file:
-	for line in file:
-		if '#' not in line:
-			data += line
-#PATCH
-			
-data_groups = json.loads( data )
-
-data = ''
-with open( '_companies-invest.json' ) as file:
-	for line in file:
-		if '#' not in line:
-			data += line
-#PATCH
-			
-data_owned_invests = json.loads( data )['owned']
 
 #---
 		
@@ -96,6 +76,35 @@ browser = cBrowser( options )
 
 #---
 
+ods_path = ( root_path / '..' / '..' / 'Documents' / 'bourse' / 'Historique des ordres (data-results).ods' ).resolve()
+json_path = root_path / '_companies-invest.json'
+
+print( 'Converter:' )
+print( f'  - input:  {ods_path}' )
+print( f'  - output: {json_path}' )
+print()
+
+converter = cConverter()
+converter.Build( ods_path )
+converter.Export( json_path )
+
+#---
+
+#PATCH: to remove 'pseudo' comments
+data = ''
+with open( 'companies.json' ) as file:
+	for line in file:
+		if '#' not in line:
+			data += line
+#PATCH
+			
+data_groups = json.loads( data )
+
+with json_path.open( 'r' ) as file:
+	data_owned_invests = json.load( file )
+
+#---
+
 companies = []
 
 # Create a list of all companies
@@ -110,12 +119,12 @@ for data_group_name in data_groups:
 		company.DataPath( data_path )
 		company.OutputImgPathRelativeToHTMLFile( image_name )
 
-		data_invest = next( ( c for c in data_owned_invests if c[0] == data[0] and c[1] == data[1] ), None )
+		data_invest = next( ( c for c in data_owned_invests if c['isin'] == data[0] ), None )
 		if data_invest:
-			company.Invested( ( data_invest[2], data_invest[3] ) )
+			company.Invested( data_invest )
 
 		companies.append( company )
-		
+	
 #---
 
 # If no group as argument, take them all

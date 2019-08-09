@@ -18,7 +18,7 @@
 	,[ "US4523081093", "ILLINOIS-TOOL-WORKS", 13125, "ITW", 		"us",	"usa", "xnys",	"NYSE:ITW",			"ITW",		"ITW.N", 		"ITW",	"", 				"Illinois_Tool_Works" ]
 	,[ "US00287Y1091", "ABBVIE", 12136589, "ABBV", 					"us",	"usa", "xnys",	"NYSE:ABBV",		"ABBV",		"ABBV.N", 		"ABBV",	"", 				"AbbVie" ]
 	,[ "US1912161007", "COCA-COLA-COMPANY-THE", 4819, "KO", 		"us",	"usa", "xnys",	"NYSE:KO",			"KO",		"KO.N", 		"KO",	"", 				"Coca-Cola" ]
-	#,[ "US5246601075", "LEGGETT-PLATT", 13369, "LEG", 				"us",	"usa", "xnys",	"NYSE:LEG",			"LEG",		"LEG.N", 		"LEG",	"", 				"LeggettPlatt" ]
+	,[ "US5246601075", "LEGGETT-PLATT", 13369, "LEG", 				"us",	"usa", "xnys",	"NYSE:LEG",			"LEG",		"LEG.N", 		"LEG",	"", 				"LeggettPlatt" ]
 	,[ "US3724601055", "GENUINE-PARTS-COMPANY", 40311101, "GPC", 	"us",	"usa", "xnys",	"NYSE:GPC",			"GPC",		"GPC.N", 		"GPC",	"", 				"Genuine_Parts" ]
 	,[ "US7427181091", "PROCTER-GAMBLE-COMPANY", 4838, "PG", 		"us",	"usa", "xnys",	"NYSE:PG",			"PG",		"PG.N", 		"PG",	"", 				"Procter_Gamble" ]
 	,[ "US5797802064", "MCCORMICK-COMPANY", 13556, "MKC", 			"us",	"usa", "xnys",	"NYSE:MKC",			"MKC",		"MKC.N", 		"MKC",	"", 				"McCormick" ]

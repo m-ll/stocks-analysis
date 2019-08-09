@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+#
+# Copyright (c) 2019 m-ll. All Rights Reserved.
+#
+# Licensed under the MIT License.
+# See LICENSE file in the project root for full license information.
+#
+# 2b13c8312f53d4b9202b6c8c0f0e790d10044f9a00d8bab3edf3cd287457c979
+# 29c355784a3921aa290371da87bce9c1617b8584ca6ac6fb17fb37ba4a07d191
+#
+
+import json
+from pathlib import Path
+import pprint
+import pyexcel_odsr as pe
+
+from colorama import init, Fore, Back, Style
+
+class cConverter:
+    def __init__( self ):
+        self.mInputData = None
+        self.mInputDataCTO = None
+        self.mInputDataPEA = None
+
+        self.mISINIndex = -1
+        self.mNameIndex = -1
+        self.mDateIndex = -1
+        self.mTypeIndex = -1
+        
+        self.mOutputData = []
+
+    def Build( self, iInputPath ):
+        self.mInputData = pe.get_data( str(iInputPath) )
+        self.mInputDataCTO = self.mInputData['cto data']
+        self.mInputDataPEA = self.mInputData['pea data']
+
+        self._FindIndexes()
+        isins = self._FindISINs()
+        self._BuildCompanies( isins )
+    
+    #---
+    
+    def _FindIndexes( self ):
+        self.mISINIndex = self._FindIndex( 'ISIN' )
+        self.mNameIndex = self._FindIndex( 'Company' )
+        self.mDateIndex = self._FindIndex( 'Date' )
+        self.mTypeIndex = self._FindIndex( 'Type' )
+        
+    def _FindIndex( self, iLabel ):
+        for row in self.mInputDataCTO:
+            for i, cell in enumerate( row ):
+                if cell == iLabel:
+                    return i
+        
+    #---
+    
+    def _FindISINs( self ):
+        isins = set()
+        for row in self.mInputDataCTO + self.mInputDataPEA:
+            if not row:
+                continue
+
+            isin = row[self.mISINIndex]
+            if len( isin ) == 12:
+                isins.add( isin )
+
+        return isins
+    
+    #---
+    
+    def _BuildCompanies( self, iISINs ):
+        for isin in iISINs:
+            for row in self.mInputDataCTO + self.mInputDataPEA:
+                if not row:
+                    continue
+                
+                cell_isin = row[self.mISINIndex]
+                if cell_isin == isin:
+                    entry = {
+                        'isin': cell_isin,
+                        'name': row[self.mNameIndex],
+                        'cto': [],
+                        'pea': []
+                    }
+
+                    if not any( data['isin'] == cell_isin for data in self.mOutputData ):
+                        self.mOutputData.append( entry )
+
+        for isin in iISINs:
+            self._BuildCompany( isin, self.mInputDataCTO, 'cto' )
+            self._BuildCompany( isin, self.mInputDataPEA, 'pea' )
+        
+        # pprint.pprint( self.mOutputData )
+        # pprint.pprint( json.dumps( self.mOutputData ) )
+
+    def _BuildCompany( self, iISIN, iInputData, iName ):
+        state = 0
+        for row in iInputData:
+            if not row:
+                continue
+            
+            if not state:
+                cell_isin = row[self.mISINIndex]
+                if cell_isin == iISIN:
+                    state = 1
+
+            elif state:
+                cell_isin = row[self.mISINIndex]
+                if cell_isin == iISIN:
+                    state = 0
+                    continue
+                
+                try:
+                    cell_type = row[self.mTypeIndex]
+                except IndexError:
+                    cell_type = ''
+                if not cell_type or cell_type == 'div':
+                    continue
+
+                cell_date = row[self.mDateIndex]
+
+                entry_buy = {
+                    'date': cell_date.strftime( '%d/%m/%Y' ),
+                    'count': row[self.mTypeIndex+1],
+                    'unit-price': float(row[self.mTypeIndex+2].split()[0])
+                }
+
+                entry = next( data for data in self.mOutputData if data['isin'] == iISIN )
+                entry[iName].append( entry_buy )
+
+    #---
+    
+    def Export( self, iOutputPath ):
+        with iOutputPath.open( 'w' ) as fd:
+            fd.write( json.dumps( self.mOutputData, indent=4, sort_keys=True ) )
+	

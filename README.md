@@ -4,11 +4,12 @@ Merge many information about companies from various website to have everything o
 
 # dependencies
 
-pip3 install requests
-pip3 install selenium (+geckodriver)
-pip3 install bs4
-pip3 install html5lib
-pip3 install colorama
+- pip3 install requests
+- pip3 install selenium (+geckodriver)
+- pip3 install bs4
+- pip3 install html5lib
+- pip3 install colorama
+- pip3 install pyexcel-odsr
 
 # some references
 
