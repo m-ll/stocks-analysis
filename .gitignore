@@ -11,3 +11,6 @@ __pycache__/
 # files in root which end by exe/log
 /*.exe
 /*.log
+
+/*invest*
+/config.yaml

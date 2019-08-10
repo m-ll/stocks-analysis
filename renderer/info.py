@@ -52,13 +52,14 @@ def Title( iCompany, iSoup ):
 	#---
 	
 	invest = iSoup.new_tag( 'span' )
-	invest['class'] = 'invested'
-	cto_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['cto'] )
-	pea_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['pea'] )
-	total_invest = cto_total + pea_total
-	unit_price_all = [ d['unit-price'] for d in iCompany.Invested()['cto'] ] + [ d['unit-price'] for d in iCompany.Invested()['pea'] ]
-	if total_invest:
-		invest.append( ' ({} = {:.2f})'.format( '+'.join( map(str, unit_price_all) ), total_invest ) )
+	if iCompany.Invested() is not None:
+		invest['class'] = 'invested'
+		cto_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['cto'] )
+		pea_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['pea'] )
+		total_invest = cto_total + pea_total
+		unit_price_all = [ d['unit-price'] for d in iCompany.Invested()['cto'] ] + [ d['unit-price'] for d in iCompany.Invested()['pea'] ]
+		if total_invest:
+			invest.append( ' ({} = {:.2f})'.format( '+'.join( map(str, unit_price_all) ), total_invest ) )
 	
 	#---
 	

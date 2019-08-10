@@ -10,6 +10,7 @@ Merge many information about companies from various website to have everything o
 - pip3 install html5lib
 - pip3 install colorama
 - pip3 install pyexcel-odsr
+- pip3 install pyyaml
 
 # some references
 

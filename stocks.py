@@ -12,9 +12,9 @@
 import argparse
 from datetime import datetime
 import glob
-import json
 from pathlib import Path
 import sys
+import yaml
 
 from colorama import init, Fore, Back, Style
 init( autoreset=True )
@@ -76,32 +76,35 @@ browser = cBrowser( options )
 
 #---
 
-ods_path = ( root_path / '..' / '..' / 'Documents' / 'bourse' / 'Historique des ordres (data-results).ods' ).resolve()
-json_path = root_path / '_companies-invest.json'
+config_path = root_path / 'config.yaml'
+if not config_path.exists():
+	print( Back.RED + 'The config file doesn\'t exist: config.yaml' )
+	sys.exit( 15 )
 
-print( 'Converter:' )
-print( f'  - input:  {ods_path}' )
-print( f'  - output: {json_path}' )
-print()
-
-converter = cConverter()
-converter.Build( ods_path )
-converter.Export( json_path )
+config = yaml.safe_load( config_path.open( 'r' ) )
 
 #---
 
-#PATCH: to remove 'pseudo' comments
-data = ''
-with open( 'companies.json' ) as file:
-	for line in file:
-		if '#' not in line:
-			data += line
-#PATCH
-			
-data_groups = json.loads( data )
+if 'companies-path' not in config:
+	print( Back.RED + 'The key "companies-path" doesn\'t exist in the config file' )
+	sys.exit( 20 )
 
-with json_path.open( 'r' ) as file:
-	data_owned_invests = json.load( file )
+companies_pathfile = root_path / config['companies-path']
+if not companies_pathfile.exists():
+	print( Back.RED + 'The companies file doesn\'t exist: {}'.format( companies_pathfile ) )
+	sys.exit( 25 )
+
+data_groups = yaml.safe_load( companies_pathfile.open( 'r' ) )
+
+#---
+
+converter = cConverter( config )
+converter.Build()
+invest_pathfile = converter.Export()
+
+data_owned_invests = []
+if invest_pathfile is not None and invest_pathfile.exists():
+	data_owned_invests = yaml.safe_load( invest_pathfile.open( 'r' ) )
 
 #---
 
@@ -124,7 +127,7 @@ for data_group_name in data_groups:
 			company.Invested( data_invest )
 
 		companies.append( company )
-	
+
 #---
 
 # If no group as argument, take them all

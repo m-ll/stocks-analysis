@@ -9,15 +9,17 @@
 # 29c355784a3921aa290371da87bce9c1617b8584ca6ac6fb17fb37ba4a07d191
 #
 
-import json
 from pathlib import Path
 import pprint
 import pyexcel_odsr as pe
+import yaml
 
 from colorama import init, Fore, Back, Style
 
 class cConverter:
-    def __init__( self ):
+    def __init__( self, iConfig ):
+        self.mConfig = iConfig
+
         self.mInputData = None
         self.mInputDataCTO = None
         self.mInputDataPEA = None
@@ -29,8 +31,17 @@ class cConverter:
         
         self.mOutputData = []
 
-    def Build( self, iInputPath ):
-        self.mInputData = pe.get_data( str(iInputPath) )
+    def Build( self ):
+        if 'buy-ods-path' not in self.mConfig:
+            return
+
+        input_path = Path( self.mConfig['buy-ods-path'] ).resolve()
+        print( f'[CONVERT] input path: {input_path}')
+
+        if not input_path.exists():
+            return
+
+        self.mInputData = pe.get_data( str(input_path) )
         self.mInputDataCTO = self.mInputData['cto data']
         self.mInputDataPEA = self.mInputData['pea data']
 
@@ -90,9 +101,6 @@ class cConverter:
             self._BuildCompany( isin, self.mInputDataCTO, 'cto' )
             self._BuildCompany( isin, self.mInputDataPEA, 'pea' )
         
-        # pprint.pprint( self.mOutputData )
-        # pprint.pprint( json.dumps( self.mOutputData ) )
-
     def _BuildCompany( self, iISIN, iInputData, iName ):
         state = 0
         for row in iInputData:
@@ -130,7 +138,14 @@ class cConverter:
 
     #---
     
-    def Export( self, iOutputPath ):
-        with iOutputPath.open( 'w' ) as fd:
-            fd.write( json.dumps( self.mOutputData, indent=4, sort_keys=True ) )
+    def Export( self ):
+        if 'invest-path' not in self.mConfig:
+            return None
+
+        output_path = Path( self.mConfig['invest-path'] ).resolve()
+        print( f'[CONVERT] output path: {output_path}')
+
+        yaml.safe_dump( self.mOutputData, output_path.open( 'w' ) )
+        
+        return output_path
 	
