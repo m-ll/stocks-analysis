@@ -51,15 +51,8 @@ def Title( iCompany, iSoup ):
 	
 	#---
 	
-	invest = iSoup.new_tag( 'span' )
-	if iCompany.Invested() is not None:
-		invest['class'] = 'invested'
-		cto_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['cto'] )
-		pea_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['pea'] )
-		total_invest = cto_total + pea_total
-		unit_price_all = [ d['unit-price'] for d in iCompany.Invested()['cto'] ] + [ d['unit-price'] for d in iCompany.Invested()['pea'] ]
-		if total_invest:
-			invest.append( ' ({} = {:.2f})'.format( '+'.join( map(str, unit_price_all) ), total_invest ) )
+	invest_svg = _InfoInvestedSVG( iCompany, iSoup )
+	invest_total = _InfoInvestedTotal( iCompany, iSoup )
 	
 	#---
 	
@@ -73,9 +66,101 @@ def Title( iCompany, iSoup ):
 	root.append( link_fond )
 	root.append( link_societe )
 	root.append( iSoup.new_tag( 'br' ) )
-	root.append( invest )
+	root.append( invest_svg )
+	root.append( invest_total )
 		
 	return root
+
+def _InfoInvestedTotal( iCompany, iSoup ):
+	invest = iSoup.new_tag( 'span' )
+	invest['class'] = 'invested'
+	
+	if iCompany.Invested() is None:
+		return invest
+
+	cto_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['cto'] )
+	pea_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['pea'] )
+	
+	invest.append( ' => {:.2f}'.format( cto_total + pea_total ) )
+
+	return invest
+
+class cBox:
+	def __init__( self, iX, iY, iWidth, iHeight ):
+		self.mX = iX
+		self.mY = iY
+		self.mWidth = iWidth
+		self.mHeight = iHeight
+
+def _InfoInvestedSVG( iCompany, iSoup ):
+	if iCompany.Invested() is None:
+		return iSoup.new_tag( 'span' )
+
+	padding_x = 25
+	padding_y = 15
+	box_full = cBox( 0, 0, 500+2*padding_x, 100+2*padding_y )
+	inner_box = cBox( padding_x, padding_y, 500, 100 )
+
+	invest = iSoup.new_tag( 'svg', width=box_full.mWidth, height=box_full.mHeight, style='background: rgb(230,230,230)' )
+	invest['class'] = 'invested'
+
+	unit_price_all = [ d['unit-price'] for d in iCompany.Invested()['cto'] ] + [ d['unit-price'] for d in iCompany.Invested()['pea'] ]
+
+	price_current = float(iCompany.mZoneBourse.mPrice)
+	if iCompany.mZoneBourse.mCurrency.lower() == 'gbp':
+		price_current /= 100.0
+	price_min = min( unit_price_all + [price_current] )
+	price_max = max( unit_price_all + [price_current] )
+
+	for i, unit_price in enumerate( unit_price_all ):
+		cx = _ComputeX( inner_box.mWidth, len(unit_price_all) + 1, i )
+		cy = _ComputeY( inner_box.mHeight, price_min, price_max, unit_price )
+
+		circle = _NewCircle( iSoup, inner_box, cx, cy, 2 )
+		invest.append( circle )
+
+		text = _NewText( iSoup, inner_box, cx, cy, str(unit_price) )
+		invest.append( text )
+		
+	cx = _ComputeX( inner_box.mWidth, len(unit_price_all) + 1, len(unit_price_all) )
+	cy = _ComputeY( inner_box.mHeight, price_min, price_max, price_current )
+
+	circle = _NewCircle( iSoup, inner_box, cx, cy, 2, 'red' )
+	invest.append( circle )
+
+	text = _NewText( iSoup, inner_box, cx, cy, str(price_current), 'red' )
+	invest.append( text )
+
+	line = _NewHorizontal( iSoup, inner_box, cy, 'red' )
+	invest.append( line )
+
+	return invest
+
+def _ComputeX( iWidth, iCount, iIndex ):
+	return iIndex / ( iCount - 1 ) * iWidth
+
+def _ComputeY( iHeight, iPriceMin, iPriceMax, iPrice ):
+	return iHeight - ( iPrice - iPriceMin ) / ( iPriceMax - iPriceMin ) * iHeight
+
+def _NewCircle( iSoup, iInnerBox, iCenterX, iCenterY, iRadius, iColor='black' ):
+	return iSoup.new_tag( 'circle', cx=iInnerBox.mX + iCenterX, cy=iInnerBox.mY + iCenterY, r=iRadius, fill=iColor )
+
+def _NewText( iSoup, iInnerBox, iX, iY, iText, iColor='black' ):
+	text = iSoup.new_tag( 'text', x=iInnerBox.mX + iX, y=iInnerBox.mY + iY - 3, fill=iColor )
+	text['font-size'] = 12
+	text['text-anchor'] = 'middle'
+	text.append( iText )
+	return text
+
+def _NewHorizontal( iSoup, iInnerBox, iY, iColor='black' ):
+	line = iSoup.new_tag( 'path' )
+	line['stroke'] = 'red'
+	line['stroke-width'] = 2
+	line['stroke-dasharray'] = '10,10'
+	line['d'] = f'M {iInnerBox.mX} {iInnerBox.mY + iY} L {iInnerBox.mX+iInnerBox.mWidth} {iInnerBox.mY + iY}'
+	return line
+
+#---
 
 def Society( iCompany, iSoup ):
 	root = iSoup.new_tag( 'div' )
