@@ -147,8 +147,10 @@ class cZoneBourse:
 		
 		#---
 		
+		time.sleep( 5 )
+		
 		# Remove rgpd popup
-		element = driver.find_elements_by_xpath( '//div[@id="qcCmpButtons"]/button[contains(@class, "qc-cmp-button")]' )
+		element = driver.find_elements_by_xpath( '//div[@id="qcCmpButtons"]/button[contains(@class, "qc-cmp-button") and not(contains(@class, "qc-cmp-secondary-button"))]' )
 		if element:
 			element[0].click()
 		
@@ -156,6 +158,7 @@ class cZoneBourse:
 		element = driver.find_elements_by_xpath( '//div[@id="PopupCertif" and not(contains(@style, "display:none"))]//img[@alt="fermer"]' )
 		if element:
 			element[0].click()
+
 		element = driver.find_elements_by_xpath( '//div[@id="dPubInter" and not(contains(@style, "display: none"))]//img[@alt="fermer"]' )
 		if element:
 			element[0].click()
@@ -164,6 +167,13 @@ class cZoneBourse:
 		element = driver.find_elements_by_xpath( '//a[@id="cookieChoiceDismiss"]' )
 		if element:
 			element[0].click()
+
+		js = "var h=document.getElementById('dPubBg');h.parentNode.removeChild(h)"
+		driver.execute_script( js )
+		js = "var h=document.getElementById('dPubInter');h.parentNode.removeChild(h)"
+		driver.execute_script( js )
+		js = "var h=document.getElementById('back_g_d');h.parentNode.removeChild(h)"
+		driver.execute_script( js )
 			
 		# Find the offer iframe and switch to it
 		iframe = driver.find_elements_by_xpath( '//iframe[@id="offerIframe"]' )
@@ -223,10 +233,11 @@ class cZoneBourse:
 		
 		# Close the indicator list
 		close_indicators = iBrowser.WaitElement( '//div[contains(@class, "insert-study-dialog")]//a[contains(@class, "tv-dialog-title-close")]' )
+		close_indicators.location_once_scrolled_into_view
 		close_indicators.click()
 		
 		#---
-		
+
 		# Move to right to display the right part of the 'future' cloud
 		move_right = iBrowser.WaitElement( '//div[contains(@class, "control-bar-wrapper")]//*[name()="svg" and contains(@class, "move-right-button-control-bar")]' )
 		for _ in range( 21 ):

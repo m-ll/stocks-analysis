@@ -8,9 +8,11 @@
 /.*/
 # directories everywhere with this name
 __pycache__/
-# files in root which end by exe/log
-/*.exe
+# files in root which end by log
 /*.log
 
+# files in root containing driver or invest
+/*driver*
 /*invest*
+
 /config.yaml

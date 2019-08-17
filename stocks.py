@@ -40,7 +40,7 @@ parser.add_argument( '--suffix', help='Set suffix of output folder', required=Tr
 parser.add_argument( '--tmp', default='', help='Set the tmp folder' ) # MUST NOT be None for cOptions
 args = parser.parse_args()
 
-if not glob.glob( 'geckodriver*.exe' ) and not glob.glob( 'chromedriver*.exe' ):
+if not glob.glob( 'geckodriver' ) and not glob.glob( 'chromedriver*' ):
 	print( Back.RED + 'You need to download "geckodriver/chromedriver" file and move it next to this file' )
 	sys.exit( 5 )
 
@@ -64,13 +64,14 @@ output_path_img.mkdir( parents=True, exist_ok=True )
 
 options = cOptions()
 options.ForceDownload( args.download == 'force' )
-tmp_path = args.tmp
-previous = options.TempDirectory( tmp_path )
-if isinstance( previous, tuple ):
-	error, message = previous
-	print( Back.RED + 'tmp folder: {}'.format( tmp_path ) )
-	print( Back.RED + 'error: {} - {}'.format( error, message ) )
+error = {}
+options.TempDirectory( args.tmp, error )
+if error['id']:
+	print( Back.RED + 'tmp folder: {}'.format( args.tmp ) )
+	print( Back.RED + 'error: {} - {}'.format( error['id'], error['message'] ) )
 	sys.exit( 10 )
+
+print( '[TMP] {}'.format( options.TempDirectory() ) )
 
 browser = cBrowser( options )
 
@@ -164,5 +165,4 @@ for group in args.groups:
 	
 #---
 
-if browser is not None:
-	browser.Quit()
+browser.Quit()

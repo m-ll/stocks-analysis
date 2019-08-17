@@ -36,10 +36,12 @@ class cConverter:
             return
 
         input_path = Path( self.mConfig['buy-ods-path'] ).resolve()
-        print( f'[CONVERT] input path: {input_path}')
 
         if not input_path.exists():
+            print( Back.RED + f'[CONVERT] input path: {input_path}')
             return
+
+        print( f'[CONVERT] input path: {input_path}')
 
         self.mInputData = pe.get_data( str(input_path) )
         self.mInputDataCTO = self.mInputData['cto data']

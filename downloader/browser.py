@@ -11,11 +11,10 @@
 
 import glob
 from pathlib import Path
+import sys
 import time
 
 from selenium import webdriver
-# from selenium.webdriver.firefox.options import Options
-
 from colorama import init, Fore, Back, Style
 
 class cBrowser:
@@ -40,33 +39,47 @@ class cBrowser:
 		if self.mDriver is not None:
 			return
 
-		copts = webdriver.ChromeOptions()
-		# opts = Options()
-		# opts.add_argument( '--headless' )
+		#--- Chrome
+		# copts = webdriver.ChromeOptions()
+		# if not sys.platform.startswith( 'cygwin' ):
+		# 	copts.add_argument( '--headless' )
+		# copts.add_argument( "--incognito" )
+
+		# copts.add_experimental_option( 'prefs', {
+		# 	"download.default_directory": str(self.mOptions.TempDirectory()),
+		# 	"download.prompt_for_download": False,
+		# 	"download.directory_upgrade": True,
+		# 	"safebrowsing.enabled": True
+		# } )
+
+		# executable_path = Path( '.' ).resolve() / 'chromedriver75'
+		# if sys.platform.startswith( 'cygwin' ):
+		# 	executable_path = Path( '.' ).resolve() / 'chromedriver75.exe'
+		# self.mDriver = webdriver.Chrome( chrome_options=copts, executable_path=executable_path )
+
+		#--- Firefox
+		opts = webdriver.firefox.options.Options()
+		if not sys.platform.startswith( 'cygwin' ):
+			opts.headless = True
 		
-		# opts.set_preference( 'browser.privatebrowsing.autostart', True )
-		copts.add_argument( "--incognito" )
+		opts.set_preference( 'browser.privatebrowsing.autostart', True )
 
-		# opts.set_preference( 'browser.download.folderList', 2 )
-		# opts.set_preference( 'browser.download.manager.showWhenStarting', False )
-		# opts.set_preference( 'browser.download.dir', self.mOptions.TempDirectory() )
-		# opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,application/octet-stream,text/html' )
+		opts.set_preference( 'browser.download.folderList', 2 )
+		opts.set_preference( 'browser.download.manager.showWhenStarting', False )
+		opts.set_preference( 'browser.download.dir', str(self.mOptions.TempDirectory()) )
+		opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,application/octet-stream,text/html' )
 
-		copts.add_experimental_option( 'prefs', {
-			"download.default_directory": str(self.mOptions.TempDirectory()),
-			"download.prompt_for_download": False,
-			"download.directory_upgrade": True,
-			"safebrowsing.enabled": True
-		} )
+		executable_path = Path( '.' ).resolve() / 'geckodriver0.24'
+		if sys.platform.startswith( 'cygwin' ):
+			executable_path = Path( '.' ).resolve() / 'geckodriver0.24.exe'
+		self.mDriver = webdriver.Firefox( firefox_options=opts, executable_path=executable_path )
 
-		executable_path = Path( '.' ).resolve() / 'chromedriver75'
-		# executable_path = Path( '.' ).resolve() / 'geckodriver0.24'
-		self.mDriver = webdriver.Chrome( chrome_options=copts, executable_path=executable_path )
-		# self.mDriver = webdriver.Firefox( firefox_options=opts, executable_path=executable_path )
+		#---
+
 		self.mDriver.implicitly_wait( 2 ) # seconds
 		
 		self.mDriver.set_window_size( 1920, 1500 )
-		# sgBrowser.set_window_position( 0, 500 )
+		# self.mDriver.set_window_position( 0, 500 )
 		
 	def Quit( self ):
 		if self.mDriver is None:
@@ -92,10 +105,6 @@ class cBrowser:
 		
 		element = self.mDriver.find_elements_by_xpath( iXPath )
 		while not element or not element[0].is_displayed():
-			# print( self.mDriver.current_url )
-			# self.mDriver.get( self.mDriver.current_url );
-			# self.mDriver.refresh()
-			
 			print( Fore.YELLOW + 'sleep wait element: {}'.format( iXPath ) )
 			time.sleep( 1 )
 			element = self.mDriver.find_elements_by_xpath( iXPath )

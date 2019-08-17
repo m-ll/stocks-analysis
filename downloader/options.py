@@ -40,36 +40,48 @@ class cOptions:
 			self.mUserAgent = 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
 		return previous_value
 	
-	def TempDirectory( self, iTempDirectory=None ):
+	def TempDirectory( self, iTempDirectory=None, oError=None ):
 		if iTempDirectory is None:
 			return Path( self.mTempDirectory )
 		
-		previous_value = self.mTempDirectory
+		previous_value = Path( self.mTempDirectory )
+		
+		oError['id'] = 0
+		oError['message'] = ''
 
 		if not iTempDirectory:
 			if sys.platform.startswith( 'cygwin' ):
-				# current_path = os.path.abspath( '.' )
+				current_path = Path( '.' ).resolve() # Not a good idea to create/remove/create/remove/... many files on a USB key
+				current_path = str(current_path)
 				# r'...' = raw string
 				# >>> "\1"
 				# '\x01'
 				# >>> r"\1"
 				# '\\1'
 				# >>>
-				# current_path = re.sub( r'/cygdrive/([a-z])', r'\1:', current_path ).upper() # '/cygdrive/c' -> 'C:'
-				# current_path = current_path.replace( '/', '\\' )
-				# self.mTempDirectory = current_path + '\\tmp'
-				return 110, 'custom tmp folder must be set for cygwin' # Not a good idea to create/remove/create/remove/... many files on a USB key
+				current_path = re.sub( r'/cygdrive/([a-z])', r'\1:', current_path ).upper() # '/cygdrive/c' -> 'C:'
+				current_path = current_path.replace( '/', '\\' )
+				self.mTempDirectory = current_path + '\\tmp-stocks'
+				# oError['id'] = 110
+				# oError['message'] = 'custom tmp folder must be set for cygwin'
+				# return previous_value
 			elif sys.platform.startswith( 'linux' ):
 				self.mTempDirectory = tempfile.gettempdir() + '/tmp-stocks'
 			else:
-				return 100, 'platform is not managed'
+				oError['id'] = 100
+				oError['message'] = 'platform is not managed'
+				return previous_value
 		else:
 			# if os.path.exists( os.path.normpath( iTempDirectory ) ) and os.listdir( iTempDirectory ):
-			# 	return 200, 'custom tmp folder already exists and not empty'
+				# oError['id'] = 200
+				# oError['message'] = 'custom tmp folder already exists and not empty'
+				# return previous_value
 			
 			parent_dir = os.path.dirname( os.path.normpath( iTempDirectory ) )
 			if not os.path.exists( parent_dir ):
-				return 210, 'parent of custom tmp folder doesn\'t exist'
+				oError['id'] = 210
+				oError['message'] = 'parent of custom tmp folder doesn\'t exist'
+				return previous_value
 
 			if sys.platform.startswith( 'cygwin' ):
 				iTempDirectory = re.sub( r'/cygdrive/([a-z])', r'\1:', iTempDirectory ) # '/cygdrive/c' -> 'c:'
@@ -77,4 +89,4 @@ class cOptions:
 
 			self.mTempDirectory = iTempDirectory
 		
-		return Path( previous_value )
+		return previous_value
