@@ -380,8 +380,8 @@ def DataGrowth( iCompany, iSoup ):
 	tr = CreateRow( iSoup, 'Growth (Finviz)', iCompany.mFinviz.Url(), iCompany.mFinviz.mBNAGrowth )
 	tbody.append( tr )
 	
-	tr = CreateRow( iSoup, 'Growth (Reuters)', iCompany.mReuters.Url(), iCompany.mReuters.mBNAGrowth )
-	tbody.append( tr )
+	# tr = CreateRow( iSoup, 'Growth (Reuters)', iCompany.mReuters.Url(), iCompany.mReuters.mBNAGrowth )
+	# tbody.append( tr )
 	
 	table = iSoup.new_tag( 'table' )
 	table.append( tbody )
