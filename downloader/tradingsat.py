@@ -21,7 +21,7 @@ class cTradingSat:
 	def Download( self, iBrowser, iCompany ):
 		return
 
-		print( '	TradingSat ...' )
+		print( '	TradingSat ... ' + Style.DIM + '[' + iCompany.mTradingSat.Url() + ']' )
 
 		if not iCompany.mTradingSat.Name():
 			print( Fore.CYAN + '	skipping ... (no id)' )

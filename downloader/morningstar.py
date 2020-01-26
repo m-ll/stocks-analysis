@@ -47,7 +47,7 @@ class cMorningstar:
 	#---
 		
 	def _DownloadIncomeStatement( self, iBrowser, iCompany ):
-		print( '		- Income Statement' )
+		print( '		- Income Statement ' + Style.DIM + '[' + iCompany.mMorningstar.UrlIncomeStatement() + ']' )
 
 		output = iCompany.DataPathFile( iCompany.mMorningstar.FileNameIncomeStatement() )
 
@@ -77,7 +77,7 @@ class cMorningstar:
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 
 	def _DownloadBalanceSheet( self, iBrowser, iCompany ):
-		print( '		- Balance Sheet' )
+		print( '		- Balance Sheet ' + Style.DIM + '[' + iCompany.mMorningstar.UrlBalanceSheet() + ']' )
 
 		output = iCompany.DataPathFile( iCompany.mMorningstar.FileNameBalanceSheet() )
 
@@ -104,7 +104,7 @@ class cMorningstar:
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 
 	def _DownloadRatios( self, iBrowser, iCompany ):
-		print( '		- Ratios' )
+		print( '		- Ratios ' + Style.DIM + '[' + iCompany.mMorningstar.UrlRatios() + ']' )
 
 		output = iCompany.DataPathFile( iCompany.mMorningstar.FileNameRatios() )
 		
@@ -133,7 +133,7 @@ class cMorningstar:
 	#---
 		
 	def _DownloadQuote( self, iBrowser, iCompany ):
-		print( '		- Quote' )
+		print( '		- Quote ' + Style.DIM + '[' + iCompany.mMorningstar.UrlQuote() + ']' )
 
 		output = iCompany.DataPathFile( iCompany.mMorningstar.FileNameQuote() )
 		
@@ -165,7 +165,7 @@ class cMorningstar:
 			o.write( iBrowser.Driver().page_source.replace( '<!---->', '<!-- -->' ) )
 			
 	def _DownloadValuation( self, iBrowser, iCompany ):
-		print( '		- Valuation' )
+		print( '		- Valuation ' + Style.DIM + '[' + iCompany.mMorningstar.UrlValuation() + ']' )
 		
 		output = iCompany.DataPathFile( iCompany.mMorningstar.FileNameValuation() )
 
@@ -194,7 +194,7 @@ class cMorningstar:
 			o.write( iBrowser.Driver().page_source.replace( '<!---->', '<!-- -->' ) )
 			
 	def _DownloadDividends( self, iBrowser, iCompany ):
-		print( '		- Dividends' )
+		print( '		- Dividends ' + Style.DIM + '[' + iCompany.mMorningstar.UrlDividends() + ']' )
 
 		output = iCompany.DataPathFile( iCompany.mMorningstar.FileNameDividends() )
 		

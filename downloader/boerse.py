@@ -19,7 +19,7 @@ class cBoerse:
 		pass
 	
 	def Download( self, iBrowser, iCompany ):
-		print( '	Boerse ...' )
+		print( '	Boerse ... ' + Style.DIM + '[' + iCompany.mBoerse.Url() + ']' )
 
 		if not iCompany.mBoerse.Name():
 			print( Fore.CYAN + '	skipping ... (no id)' )

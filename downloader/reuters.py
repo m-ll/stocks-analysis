@@ -19,7 +19,7 @@ class cReuters:
 		pass
 	
 	def Download( self, iBrowser, iCompany ):
-		print( '	Reuters ...' )
+		print( '	Reuters ... ' + Style.DIM + '[' + iCompany.mReuters.Url() + ']' )
 
 		if not iCompany.mReuters.Symbol():
 			print( Fore.CYAN + '	skipping ... (no id)' )

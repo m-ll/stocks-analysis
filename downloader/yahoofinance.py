@@ -19,7 +19,7 @@ class cYahooFinance:
 		pass
 	
 	def Download( self, iBrowser, iCompany ):
-		print( '	YahooFinance ...' )
+		print( '	YahooFinance ... ' + Style.DIM + '[' + iCompany.mYahooFinance.Url() + ']' )
 
 		if not iCompany.mYahooFinance.Symbol():
 			print( Fore.CYAN + '	skipping ... (no id)' )

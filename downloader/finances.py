@@ -21,7 +21,7 @@ class cFinances:
 	def Download( self, iBrowser, iCompany ):
 		return
 			
-		print( '	Finances ...' )
+		print( '	Finances ... ' + Style.DIM + '[' + iCompany.mFinances.Url() + ']' )
 
 		if not iCompany.mFinances.Name():
 			print( Fore.CYAN + '	skipping ... (no id)' )

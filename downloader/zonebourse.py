@@ -37,7 +37,7 @@ class cZoneBourse:
 	#---
 	
 	def _DownloadData( self, iBrowser, iCompany ):
-		print( '		- Data' )
+		print( '		- Data ' + Style.DIM + '[' + iCompany.mZoneBourse.UrlData() + ']' )
 
 		output = iCompany.DataPathFile( iCompany.mZoneBourse.FileNameData() )
 
@@ -52,7 +52,7 @@ class cZoneBourse:
 		time.sleep( 1 )
 		
 	def _DownloadSociety( self, iBrowser, iCompany ):
-		print( '		- Society' )
+		print( '		- Society ' + Style.DIM + '[' + iCompany.mZoneBourse.UrlSociety() + ']' )
 
 		output = iCompany.DataPathFile( iCompany.mZoneBourse.FileNameSociety() )
 
@@ -131,7 +131,7 @@ class cZoneBourse:
 	#---
 		
 	def _DownloadPricesIchimoku( self, iBrowser, iCompany ):
-		print( '		- Prices Ichimoku' )
+		print( '		- Prices Ichimoku ' + Style.DIM + '[' + iCompany.mZoneBourse.UrlPricesIchimoku() + ']' )
 		
 		filenames = iCompany.mZoneBourse.FileNamesPricesIchimoku()
 		if( not iBrowser.Options().ForceDownload() and 

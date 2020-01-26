@@ -19,7 +19,7 @@ class cFinviz:
 		pass
 	
 	def Download( self, iBrowser, iCompany ):
-		print( '	Finviz ...' )
+		print( '	Finviz ... ' + Style.DIM + '[' + iCompany.mFinviz.Url() + ']' )
 
 		if not iCompany.mFinviz.Symbol():
 			print( Fore.CYAN + '	skipping ... (no id)' )

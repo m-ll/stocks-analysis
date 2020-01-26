@@ -32,6 +32,10 @@ to-take:
   - [ "FR0000120073", "AIR-LIQUIDE", 4605, "AI",                    "eu",  "fra", "xpar",  "EURONEXT:AI",     "AI.PA",    "AIRP.PA",      "",     "air-liquide",    "Air_Liquide" ]
   - [ "FR0000120321", "L-OREAL", 4666, "OR",                        "eu",  "fra", "xpar",  "EURONEXT:OR",     "OR.PA",    "OREP.PA",      "",     "loreal",         "LOréal" ]
   - [ "GB0002374006", "DIAGEO", 4000514, "DGE",                     "eu",  "gbr", "xlon",  "LSE:DGE",         "DGE.L",    "DGE.L",        "",     "diageo",         "Diageo" ]
+  - [ "US4404521001", "HORMEL-FOODS", 12977, "HRL",                 "us",  "usa", "xnys",  "NYSE:HRL",        "HRL",      "HRL.N",        "HRL",  "",               "Hormel_Foods" ]
+  - [ "FR0000121485", "KERING", 4683, "KER",                        "eu",  "fra", "xpar",  "EURONEXT:KER",    "KER.PA",   "PRTP.PA",      "",     "",               "kering" ]
+  # a voir si la derniere année le div a baissé ?
+  - [ "FR0000120693", "PERNOD-RICARD", 4681, "RI",                  "eu",  "fra", "xpar",  "EURONEXT:RI",     "RI.PA",    "PERP.PA",      "",     "",               "pernod_ricard" ]
 
 to-think:
   - [ "US00206R1023", "AT-T", 14324, "T",                           "us",  "usa", "xnys",  "NYSE:T",          "T",        "T.N",          "T",    "",               "AT_T" ]
@@ -44,10 +48,12 @@ to-think:
   - [ "US0530151036", "AUTOMATIC-DATA-PROCESSING", 11713, "ADP",    "us",  "usa", "xnas",  "NASDAQ:ADP",      "ADP",      "ADP.O",        "ADP",  "",               "Automatic_Data_Processing" ]
   - [ "US8545021011", "STANLEY-BLACK-DECKER", 14522, "SWK",         "us",  "usa", "xnys",  "NYSE:SWK",        "SWK",      "SWK.N",        "SWK",  "",               "Stanley_BlackDecker" ]
   - [ "US6935061076", "PPG-INDUSTRIES", 14090, "PPG",               "us",  "usa", "xnys",  "NYSE:PPG",        "PPG",      "PPG.N",        "PPG",  "",               "PPG_Industries" ]
-  - [ "US4404521001", "HORMEL-FOODS", 12977, "HRL",                 "us",  "usa", "xnys",  "NYSE:HRL",        "HRL",      "HRL.N",        "HRL",  "",               "Hormel_Foods" ]
   - [ "US8318652091", "AO-SMITH", 40311155, "AOS",                  "us",  "usa", "xnys",  "NYSE:AOS",        "AOS",      "AOS.N",        "AOS",  "",               "AO_Smith" ]
+  - [ "FR0000064271", "STEF", 5231, "STF",                          "eu",  "fra", "xpar",  "EURONEXT:STF",    "STF.PA",   "STF.PA",       "",     "",               "stef" ]
+  - [ "FR0013333432", "THERMADOR-GROUPE", 43328026, "THEP",         "eu",  "fra", "xpar",  "EURONEXT:THEP",   "THEP.PA",  "THHG.PA",      "",     "",               "thermador_groupe_sa" ]
+  - [ "FR0000121261", "MICHELIN", 4672, "ML",                       "eu",  "fra", "xpar",  "EURONEXT:ML",     "ML.PA",    "MICP.PA",      "",     "",               "michelin" ]
 
-
+#---
 
 ratio-versement-dividende-too-high:
   - [ "ES0130960018", "ENAGAS", 409361, "ENG",                      "eu",  "",    "",      "BME:ENG",         "ENG.MC",   "ENAG.MC",      "",     "",               "Enagas" ]
@@ -70,6 +76,7 @@ baisse-action:
   - [ "GB00B033F229", "CENTRICA", 9590112, "CNA",                   "eu",  "gbr", "xlon",  "LSE:CNA",         "CNA.L",    "CNA.L",        "",     "",               "Centrica" ]
   - [ "GB00BK1PTB77", "AGGREKO-PLC", 16570411, "AGK",               "eu",  "gbr", "xlon",  "LSE:AGK",         "AGK.L",    "AGGK.L",       "",     "",               "Aggreko_2" ]
   - [ "GB0009697037", "BABCOCK-INTERNATIONAL-GRO", 9583549, "BAB",  "eu",  "gbr", "xlon",  "LSE:BAB",         "BAB.L",    "BAB.L",        "",     "",               "Babcock_International" ]
+  - [ "FR0000066482", "TIPIAK", 5781, "TIPI",                       "eu",  "fra", "xpar",  "EURONEXT:TIPI",   "TIPI.PA",  "TIPK.PA",      "",     "",               "tipiak" ]
 
 buffet:
   - [ "US9497461015", "WELLS-FARGO", 14861, "WFC",                  "us",  "usa", "xnys",  "",                "WFC",      "WFC.N",        "WFC",  "",               "wells_fargo" ]
