@@ -24,10 +24,22 @@ def Title( iCompany, iSoup ):
 	price_value.append( iCompany.mZoneBourse.mPrice )
 	
 	price = iSoup.new_tag( 'span' )
-	price['class'] = 'price'
+	price['class'] = [ 'price', 'origin' ]
 	price.append( '[' )
 	price.append( price_value )
 	price.append( ' {} ] '.format( iCompany.mZoneBourse.mCurrency ) )
+	
+	#---
+	
+	price_realtime_value = iSoup.new_tag( 'span' )
+	price_realtime_value['class'] = 'value'
+	price_realtime_value.append( copy.copy( iCompany.mZoneBourse.mPrice ) )
+	
+	price_realtime = iSoup.new_tag( 'span' )
+	price_realtime['class'] = [ 'price', 'realtime' ]
+	price_realtime.append( '[' )
+	price_realtime.append( price_realtime_value )
+	price_realtime.append( ' {} ] '.format( iCompany.mZoneBourse.mCurrency ) )
 	
 	#---
 	
@@ -60,6 +72,7 @@ def Title( iCompany, iSoup ):
 	root = iSoup.new_tag( 'span' )
 	root['class'] = 'title'
 	root.append( price )
+	root.append( price_realtime )
 	root.append( name )
 	root.append( link_graph )
 	root.append( link_graph2 )

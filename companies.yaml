@@ -26,6 +26,11 @@ owned:
   - [ "BE0003470755", "SOLVAY", 5966, "SOLB",                       "eu",  "bel", "xbru",  "EURONEXT:SOLB",   "SOLB.BR",  "SOLB.BR",      "",     "solvay",         "Solvay" ]
   - [ "NL0000388619", "UNILEVER-N-V", 61006158, "UNA",              "eu",  "nld", "xams",  "EURONEXT:UNA",    "UNA.AS",   "UNA.AS",       "",     "",               "Unilever" ]
 
+test:
+  - [ "FR0000120578", "SANOFI", 4698, "SAN",                        "eu",  "fra", "xpar",  "EURONEXT:SAN",    "SAN.PA",   "SASY.PA",      "",     "sanofi",         "Sanofi" ]
+  - [ "GB00BH0P3Z91", "BHP-BILLITON-PLC", 47281658, "BHP",          "eu",  "gbr", "xlon",  "",                "BLT.L",    "BHPB.L",       "",     "",               "BHP_Billiton" ]
+  - [ "US5797802064", "MCCORMICK-COMPANY", 13556, "MKC",            "us",  "usa", "xnys",  "NYSE:MKC",        "MKC",      "MKC.N",        "MKC",  "",               "McCormick" ]
+
 to-take:
   - [ "US4781601046", "JOHNSON-JOHNSON", 4832, "JNJ",               "us",  "usa", "xnys",  "NYSE:JNJ",        "JNJ",      "JNJ.N",        "JNJ",  "",               "JohnsonJohnson" ]
   - [ "FR0000121014", "LVMH-MOET-HENNESSY-VUITTO", 4669, "MC",      "eu",  "fra", "xpar",  "EURONEXT:MC",     "MC.PA",    "LVMH.PA",      "",     "lvmh",           "LVMH" ]

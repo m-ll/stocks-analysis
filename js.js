@@ -64,4 +64,6 @@ $('[data-toggle="tooltip"]').click( function(e)
 $(function ()
 {
 	$('[data-toggle="tooltip"]').tooltip()
-})
+});
+
+//---

@@ -55,6 +55,14 @@ nav
 {
 	color:		rgb( 100, 100, 255 ); 
 }
+.title .price.realtime .value.up
+{
+	color:		rgb(58, 255, 86); 
+}
+.title .price.realtime .value.down
+{
+	color:		rgb(255, 100, 100); 
+}
 .title .invested
 {
 	color:		rgb(128, 128, 128); 
