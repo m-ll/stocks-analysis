@@ -34,6 +34,7 @@ class cZoneBourse:
 		self.mSoupPER = None
 		self.mSoupBNA = None
 		self.mPrice = ''
+		self.mPriceRealTime = ''
 		self.mCurrency = ''
 		
 		self.mYears = cData()
@@ -318,8 +319,46 @@ class cFinances:
 	
 #---
 
+class cNotation:
+	def __init__( self ):
+		self.mRawNotations = []
+		self.mCoefficients = []
+		self.mValidNotations = []
+		self.mValidCoefficients = []
+		self.mNote = 0
+		self.mStars = 0
+	
+	def Compute( self, iNotation ):
+		self.mRawNotations = iNotation
+		if len( self.mRawNotations ) != 5:
+			return
+		
+		self.mCoefficients = [4, 5, 5, 3, 1]
+		valid_notations_coefficients = [ ( notation, coefficent ) for notation, coefficent in zip(self.mRawNotations, self.mCoefficients) if notation > 0 ]
+		self.mValidNotations, self.mValidCoefficients = zip( *valid_notations_coefficients )
+
+		assert( len( self.mValidNotations ) == len( self.mValidCoefficients ) and len( self.mValidNotations ) > 0 )
+
+		notation_by_coef = [ notation * coefficent for notation, coefficent in zip(self.mValidNotations, self.mValidCoefficients) ]
+		self.mNote = sum( notation_by_coef ) / sum( self.mValidCoefficients )
+		
+		if self.mNote >= 9.0:
+			self.mStars = 4
+		elif self.mNote >= 8.0:
+			self.mStars = 3
+		elif self.mNote >= 7.0:
+			self.mStars = 2
+		elif self.mNote >= 5.0:
+			self.mStars = 1
+	
+	def StarsCount( self ):
+		return self.mStars
+	
+	def Note( self ):
+		return self.mNote
+
 class cCompany:
-	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iZone, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName ):
+	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iRawNotation, iZone, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName ):
 		self.mISIN = iISIN
 		self.mName = iZBName
 		self.mZone = iZone # eu/us
@@ -341,6 +380,7 @@ class cCompany:
 		self.mImgDirRelativeToHTML = ''
 		self.mGroup = ''
 		self.mInvested = None
+		self.mNotation = self._ComputeNotation( iRawNotation )
 		
 		self.mInvestment = 0.0
 		self.mStartingYield = 0.0
@@ -368,6 +408,15 @@ class cCompany:
 		previous_value = self.mInvested
 		self.mInvested = iInvested
 		return previous_value
+	
+	def Notation( self ):
+		return self.mNotation
+	
+	def _ComputeNotation( self, iRawNotation ):
+		notation = cNotation()
+		notation.Compute( iRawNotation )
+
+		return notation
 	
 	def DataPath( self, iPath=None ):
 		if iPath is None:

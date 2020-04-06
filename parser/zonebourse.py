@@ -10,6 +10,8 @@
 #
 
 import copy
+import requests
+import downloader.options
 
 from bs4 import BeautifulSoup
 from colorama import init, Fore, Back, Style
@@ -135,6 +137,16 @@ class cZoneBourse:
 		
 		iCompany.mZoneBourse.mPrice = sprice.string
 		iCompany.mZoneBourse.mCurrency = scurrency.string
+		
+		#---
+
+		options = downloader.options.cOptions()
+		r = requests.get( iCompany.mZoneBourse.UrlSociety(), headers={ 'User-Agent' : options.UserAgent() } )
+		
+		soup_zb = BeautifulSoup( r.text, 'html5lib' )
+		
+		iCompany.mZoneBourse.mPriceRealTime = soup_zb.find( id='zbjsfv_dr' ).string # = NavigableString
+		# iCompany.mZoneBourse.mPriceRealTime = soup_zb.find( id='zbjsfv_dr' ).get_text( strip=True ) # = str
 		
 	def _ParseGraphics( self, iCompany, iSoup ):
 		root = iSoup.find( id='graphPER' ).find( 'svg' )

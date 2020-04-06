@@ -11,21 +11,27 @@
 	clear: 		both;
 }
 
+main > article
+{
+	margin-top:		10px;
+	border-top: 	solid 2px black;
+}
+
 /*---*/
 
 nav
 {
   position: sticky;
-  top: 0;
-  z-index: 500;
+  top: 		0;
+  z-index: 	500;
 
   background-color: rgb(220, 220, 220);
 }
 .sectors .sector
 {
-	display: 	inline-block;
-	margin-right: 10px;
-	padding: 2px 10px;
+	display: 		inline-block;
+	margin-right: 	10px;
+	padding: 		2px 10px;
 
 	background-color: rgb(200, 200, 200);
 }
@@ -43,6 +49,84 @@ nav
 
 /*---*/
 
+.summary
+{
+	display:			inline-block;
+	width:				100%;
+	padding: 			5px 0;
+
+	border-bottom: 		dashed 1px black;
+	background-color: 	rgba( 0, 128, 255, .2 );
+}
+
+.summary > *,
+.summary .yield > *
+{
+	display:	inline-block;
+	padding:	3px 5px;
+}
+.summary .price
+{
+	width:		150px;
+	text-align:	right;
+}
+.summary .notation
+{
+	width:				150px;
+	text-align:			center;
+	vertical-align: 	middle;
+	color:				rgb( 255, 191, 0 );
+}
+.summary .notation.star4
+{
+	/* border:				double black; */
+	background-color:	rgba( 0, 128, 255, .8 );
+}
+.summary .notation.star4.jackpot
+{
+	color:				rgb( 255, 128, 0 )
+}
+.summary .notation.star3
+{
+	/* border:				solid 1px black; */
+	background-color:	rgba( 0, 128, 255, .5 );
+}
+.summary .notation.star2
+{
+	/* border:				dashed 1px black; */
+	background-color:	rgba( 0, 128, 255, .2 );
+}
+.summary .notation.star1
+{
+	/* border:				dotted 1px black; */
+	background-color:	rgba( 0, 128, 255, .0 );
+}
+.summary .name
+{
+	width:		500px;
+}
+.summary .invested
+{
+	width:		150px;
+	text-align:	right;
+}
+.summary .yield .current
+{
+	width:		100px;
+	text-align:	right;
+}
+.summary .yield .growth
+{
+	width:		150px;
+	color:		rgb(128, 128, 128); 
+}
+.summary .yield .years-10
+{
+	width:		150px;
+}
+
+/*---*/
+
 .title
 {
 	display: 	block;
@@ -53,19 +137,31 @@ nav
 }
 .title .price .value
 {
-	color:		rgb( 100, 100, 255 ); 
+	color:		rgb( 100, 100, 255 );
 }
-.title .price.realtime .value.up
+.price.realtime .value.up
 {
-	color:		rgb(58, 255, 86); 
+	color:		rgb( 0, 190, 0 );
 }
-.title .price.realtime .value.down
+.price.realtime .value.down
 {
-	color:		rgb(255, 100, 100); 
+	color:		rgb( 255, 100, 100 );
 }
 .title .invested
 {
-	color:		rgb(128, 128, 128); 
+	color:		rgb( 128, 128, 128 );
+}
+.invested.high
+{
+	background-color:	rgba( 0, 255, 0, 0.25 );
+}
+.invested.mid
+{
+	background-color:	rgba( 255, 197, 92, 0.25 );
+}
+.invested.low
+{
+	background-color:	rgba( 255, 0, 0, 0.25 );
 }
 
 .next-dividend-date

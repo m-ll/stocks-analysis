@@ -116,9 +116,10 @@ for data_group_name in data_groups:
 	for data in data_groups[data_group_name]:
 		company = cCompany( data[0], data[1], data[2], data[3], 
 							data[4], 
-							data[5], data[6], 
-							data[7], data[8], data[9], data[10], 
-							data[11], data[12] )
+							data[5], 
+							data[6], data[7], 
+							data[8], data[9], data[10], data[11], 
+							data[12], data[13] )
 		company.Group( data_group_name )
 		company.DataPath( data_path )
 		company.OutputImgPathRelativeToHTMLFile( image_name )
@@ -155,9 +156,11 @@ for group in args.groups:
 	parser = cParser()
 	parser.Parse( companies_of_current_group )
 	
-	companies_sorted_by_yield = sorted( companies_of_current_group, key=lambda company: company.mMorningstar.mYieldCurrent, reverse=True )
+	# companies_sorted_by_yield = sorted( companies_of_current_group, key=lambda company: company.mMorningstar.mYieldCurrent, reverse=True )
+	# companies_sorted_by_note = sorted( companies_sorted_by_yield, key=lambda company: company.Notation().StarsCount(), reverse=True )
+	companies_sorted_by_note_yield = sorted( companies_of_current_group, key=lambda company: ( company.Notation().StarsCount(), company.mMorningstar.mYieldCurrent ), reverse=True )
 
-	renderer = cRenderer( companies_sorted_by_yield )
+	renderer = cRenderer( companies_sorted_by_note_yield )
 	renderer.Render()
 	renderer.Export( output_path )
 	

@@ -43,6 +43,8 @@ class cRenderer:
 <head>
 <meta charset="UTF-8">
 <title>Title of the document</title>
+<!-- Can't get the font file from file:// url -->
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 <style type="text/css">
 ''' + css + '''
@@ -67,9 +69,11 @@ class cRenderer:
 			
 			#---
 			
-			sep = soup.new_tag( 'hr' )
-			main.append( sep )
+			# sep = soup.new_tag( 'hr' )
+			# main.append( sep )
 			
+			subtag_summary = info.Summary( company, soup )
+
 			subtag_society = info.Society( company, soup )
 			subtag_title = info.Title( company, soup )
 			
@@ -93,12 +97,16 @@ class cRenderer:
 			root = soup.new_tag( 'article', id=company.Name() )
 			
 			subroot = soup.new_tag( 'header' )
-			subroot.append( subtag_society )
-			# subroot.append( subtag_data_boerse )
-			subroot.append( subtag_title )
+			subroot.append( subtag_summary )
 			root.append( subroot )
 			
 			subroot = soup.new_tag( 'article' )
+			# society blabla
+			subroot.append( subtag_society )
+			#
+			# subroot.append( subtag_data_boerse )
+			# title
+			subroot.append( subtag_title )
 			# data
 			subroot.append( subtag_data )
 			# (zb/)per/bna/max/

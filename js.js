@@ -67,3 +67,26 @@ $(function ()
 });
 
 //---
+
+$('.summary .name').click( function( iEvent )
+{
+	let $article = $( this ).closest( 'article' ).find( 'article' );
+
+	if( !iEvent.ctrlKey )
+	{
+		$article.toggle();
+		return false;
+	}
+		
+	if( $article.is( ':hidden' ) )
+		$('article > article').show();
+	else
+		$('article > article').hide();
+	
+	return false;
+});
+
+$(function ()
+{
+	$('article > article').hide();
+});

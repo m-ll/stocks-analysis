@@ -18,10 +18,31 @@ import company.company
 
 #---
 
-def Title( iCompany, iSoup ):
+def _CreateSVGStar( iSoup ):
+	svg = iSoup.new_tag( 'svg' )
+	svg['aria-hidden'] = 'true'
+	svg['focusable'] = 'false'
+	svg['data-prefix'] = 'fas'
+	svg['data-icon'] = 'star'
+	svg['class'] = 'svg-inline--fa fa-star fa-w-18'
+	svg['role'] = 'img'
+	svg['xmlns'] = 'http://www.w3.org/2000/svg'
+	svg['viewBox'] = '0 0 576 512'
+	svg['width'] = '22'
+	svg['height'] = '22'
+
+	path = iSoup.new_tag( 'path' )
+	path['fill'] = 'currentColor'
+	path['d'] = 'M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z'
+
+	svg.append( path )
+
+	return svg
+
+def Summary( iCompany, iSoup ):
 	price_value = iSoup.new_tag( 'span' )
 	price_value['class'] = 'value'
-	price_value.append( iCompany.mZoneBourse.mPrice )
+	price_value.append( copy.copy( iCompany.mZoneBourse.mPrice ) )
 	
 	price = iSoup.new_tag( 'span' )
 	price['class'] = [ 'price', 'origin' ]
@@ -32,8 +53,111 @@ def Title( iCompany, iSoup ):
 	#---
 	
 	price_realtime_value = iSoup.new_tag( 'span' )
-	price_realtime_value['class'] = 'value'
-	price_realtime_value.append( copy.copy( iCompany.mZoneBourse.mPrice ) )
+	price_realtime_value['class'] = ['value']
+	price_old = float( iCompany.mZoneBourse.mPrice )
+	price_new = float( iCompany.mZoneBourse.mPriceRealTime )
+	if price_new > price_old:
+		price_realtime_value['class'].append( 'up' )
+	elif price_new < price_old:
+		price_realtime_value['class'].append( 'down' )
+	price_realtime_value.append( copy.copy( iCompany.mZoneBourse.mPriceRealTime ) )
+	
+	price_realtime = iSoup.new_tag( 'span' )
+	price_realtime['class'] = [ 'price', 'realtime' ]
+	price_realtime['title'] = datetime.now().strftime( '%d/%m/%Y - %H:%M:%S' )
+	price_realtime.append( '[' )
+	price_realtime.append( price_realtime_value )
+	price_realtime.append( ' {} ] '.format( iCompany.mZoneBourse.mCurrency ) )
+	
+	#---
+	
+	notation = iSoup.new_tag( 'span' )
+	notation['class'] = [ 'notation', f'star{iCompany.Notation().StarsCount()}' ]
+	if iCompany.Notation().Note() > 9.5:
+		notation['class'].append( 'jackpot' )
+	notation['title'] = '{:.02f} / 10'.format( iCompany.Notation().Note() )
+	
+	for _ in range( iCompany.Notation().StarsCount() ):
+		notation.append( _CreateSVGStar( iSoup ) )
+	
+	#---
+	
+	name = iSoup.new_tag( 'span' )
+	name['class'] = 'name'
+	
+	link_name = iSoup.new_tag( 'a', href='#' )
+	link_name.append( '{}'.format( iCompany.Name() ) )
+
+	name.append( link_name )
+	
+	#---
+	
+	invest_total = _InfoInvestedTotal( iCompany, iSoup )
+
+	#---
+	
+	dividend_yield = iSoup.new_tag( 'span' )
+	dividend_yield['class'] = 'yield'
+	
+	dividend_yield_current = iSoup.new_tag( 'span' )
+	dividend_yield_current['class'] = ['current']
+	yield_current = float( iCompany.mMorningstar.mFinancialsDividendsYield.mTTM )
+	if yield_current >= 4.3:
+		dividend_yield_current['class'].append( 'plus' )
+	elif yield_current >= 3.6:
+		dividend_yield_current['class'].append( 'bof' )
+	else:
+		dividend_yield_current['class'].append( 'minus' )
+	dividend_yield_current.append( '{}%'.format( iCompany.mMorningstar.mFinancialsDividendsYield.mTTM ) )
+	
+	dividend_yield_growth = iSoup.new_tag( 'span' )
+	dividend_yield_growth['class'] = 'growth'
+	dividend_yield_growth.append( ' ( growth: {}% )'.format( iCompany.mMorningstar.mFinancialsGrowthDividends.mGrowthAverage ) )
+	
+	dividend_yield_10_years = iSoup.new_tag( 'span' )
+	dividend_yield_10_years['class'] = 'years-10'
+	dividend_yield_10_years.append( ' ( 10-years: {}% )'.format( iCompany.mMorningstar.mFinancialsDividendsYield10Years.mTTM ) )
+
+	dividend_yield.append( dividend_yield_current )
+	dividend_yield.append( dividend_yield_growth )
+	dividend_yield.append( dividend_yield_10_years )
+	
+	#---
+	
+	# Always return a root because it can be customized outside
+	root = iSoup.new_tag( 'span' )
+	root['class'] = 'summary'
+	root.append( price )
+	root.append( price_realtime )
+	root.append( invest_total )
+	root.append( notation )
+	root.append( name )
+	root.append( dividend_yield )
+		
+	return root
+
+def Title( iCompany, iSoup ):
+	price_value = iSoup.new_tag( 'span' )
+	price_value['class'] = 'value'
+	price_value.append( copy.copy( iCompany.mZoneBourse.mPrice ) )
+	
+	price = iSoup.new_tag( 'span' )
+	price['class'] = [ 'price', 'origin' ]
+	price.append( '[' )
+	price.append( price_value )
+	price.append( ' {} ] '.format( iCompany.mZoneBourse.mCurrency ) )
+	
+	#---
+	
+	price_realtime_value = iSoup.new_tag( 'span' )
+	price_realtime_value['class'] = ['value']
+	price_old = float( iCompany.mZoneBourse.mPrice )
+	price_new = float( iCompany.mZoneBourse.mPriceRealTime )
+	if price_new > price_old:
+		price_realtime_value['class'].append( 'up' )
+	elif price_new < price_old:
+		price_realtime_value['class'].append( 'down' )
+	price_realtime_value.append( copy.copy( iCompany.mZoneBourse.mPriceRealTime ) )
 	
 	price_realtime = iSoup.new_tag( 'span' )
 	price_realtime['class'] = [ 'price', 'realtime' ]
@@ -80,21 +204,30 @@ def Title( iCompany, iSoup ):
 	root.append( link_societe )
 	root.append( iSoup.new_tag( 'br' ) )
 	root.append( invest_svg )
+	root.append( ' => ' )
 	root.append( invest_total )
 		
 	return root
 
 def _InfoInvestedTotal( iCompany, iSoup ):
 	invest = iSoup.new_tag( 'span' )
-	invest['class'] = 'invested'
+	invest['class'] = ['invested']
 	
 	if iCompany.Invested() is None:
 		return invest
-
+	
 	cto_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['cto'] )
 	pea_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['pea'] )
+
+	total = cto_total + pea_total
+	if total >= 3000:
+		invest['class'].append( 'high' )
+	elif total >= 1000:
+		invest['class'].append( 'mid' )
+	else:
+		invest['class'].append( 'low' )
 	
-	invest.append( ' => {:.2f}'.format( cto_total + pea_total ) )
+	invest.append( '{:.2f} {}'.format( total, iCompany.mZoneBourse.mCurrency ) )
 
 	return invest
 
