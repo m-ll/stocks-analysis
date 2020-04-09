@@ -25,6 +25,7 @@ owned:
   - [ "US88579Y1010", "3M-COMPANY", 4836, "MMM",                    [  7,  7, 10, 10,  4 ], "us",  "usa", "xnys",  "NYSE:MMM",        "MMM",      "MMM.N",        "MMM",  "",               "3M" ]
   - [ "BE0003470755", "SOLVAY", 5966, "SOLB",                       [  5,  6,  8, 10, 10 ], "eu",  "bel", "xbru",  "EURONEXT:SOLB",   "SOLB.BR",  "SOLB.BR",      "",     "solvay",         "Solvay" ]
   - [ "NL0000388619", "UNILEVER-N-V", 61006158, "UNA",              [  8,  8, 10,  5,  6 ], "eu",  "nld", "xams",  "EURONEXT:UNA",    "UNA.AS",   "UNA.AS",       "",     "",               "Unilever" ]
+  - [ "FR0000121261", "MICHELIN", 4672, "ML",                       [  8, 10,  8, 10, 10 ], "eu",  "fra", "xpar",  "EURONEXT:ML",     "ML.PA",    "MICP.PA",      "",     "",               "michelin" ]
 
 test:
   - [ "FR0000120578", "SANOFI", 4698, "SAN",                        [  6,  2,  0,  0,  0 ], "eu",  "fra", "xpar",  "EURONEXT:SAN",    "SAN.PA",   "SASY.PA",      "",     "sanofi",         "Sanofi" ]
@@ -56,7 +57,6 @@ to-think:
   - [ "US8318652091", "AO-SMITH", 40311155, "AOS",                  [  6, 10, 10 ,10 ,10 ], "us",  "usa", "xnys",  "NYSE:AOS",        "AOS",      "AOS.N",        "AOS",  "",               "AO_Smith" ]
   - [ "FR0000064271", "STEF", 5231, "STF",                          [ 10, 10,  1,  4, 10 ], "eu",  "fra", "xpar",  "EURONEXT:STF",    "STF.PA",   "STF.PA",       "",     "",               "stef" ]
   - [ "FR0013333432", "THERMADOR-GROUPE", 43328026, "THEP",         [  8,  6,  8, 10, 10 ], "eu",  "fra", "xpar",  "EURONEXT:THEP",   "THEP.PA",  "THHG.PA",      "",     "",               "thermador_groupe_sa" ]
-  - [ "FR0000121261", "MICHELIN", 4672, "ML",                       [  8, 10,  8, 10, 10 ], "eu",  "fra", "xpar",  "EURONEXT:ML",     "ML.PA",    "MICP.PA",      "",     "",               "michelin" ]
 
 #---
 
