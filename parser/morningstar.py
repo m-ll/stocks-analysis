@@ -180,8 +180,14 @@ class cMorningstar:
 			html_content = fd.read()
 			
 		soup = BeautifulSoup( html_content, 'html5lib' )
+
+		sections = soup.find_all( class_='sal-component-band-grid' )
+		for section in sections:
+			beta = section.find( string='Beta' )
+			if beta:
+				iCompany.mMorningstar.mQuoteBeta = float( beta.parent.find_next_sibling().string.strip() )
+
 		sections = soup.find_all( class_='sal-component-company-profile-body' )
-		
 		for section in sections:
 			sector = section.find( string='Sector' )
 			if sector:

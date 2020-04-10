@@ -126,6 +126,7 @@ class cMorningstar:
 		self.mHealthCurrentRatio = cData( iParent=self.mHealthYears )
 		self.mHealthDebtOnEquity = cData( iParent=self.mHealthYears )
 
+		self.mQuoteBeta = 0.0
 		self.mQuoteSector = ''
 		self.mQuoteIndustry = ''
 		

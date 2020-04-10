@@ -40,6 +40,12 @@ def _CreateSVGStar( iSoup ):
 	return svg
 
 def Summary( iCompany, iSoup ):
+	beta = iSoup.new_tag( 'span' )
+	beta['class'] = [ 'beta' ]
+	beta.append( 'β={}'.format( iCompany.mMorningstar.mQuoteBeta ) )
+	
+	#---
+
 	price_value = iSoup.new_tag( 'span' )
 	price_value['class'] = 'value'
 	price_value.append( copy.copy( iCompany.mZoneBourse.mPrice ) )
@@ -127,6 +133,7 @@ def Summary( iCompany, iSoup ):
 	# Always return a root because it can be customized outside
 	root = iSoup.new_tag( 'span' )
 	root['class'] = 'summary'
+	root.append( beta )
 	root.append( price )
 	root.append( price_realtime )
 	root.append( invest_total )

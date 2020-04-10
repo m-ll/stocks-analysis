@@ -65,9 +65,16 @@ nav
 	display:	inline-block;
 	padding:	3px 5px;
 }
+.summary .beta
+{
+	width:		75px;
+	text-align:	left;
+
+	color:		rgb(128, 128, 128);
+}
 .summary .price
 {
-	width:		150px;
+	width:		125px;
 	text-align:	right;
 }
 .summary .notation

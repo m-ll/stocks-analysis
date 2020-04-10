@@ -149,6 +149,13 @@ class cMorningstar:
 		quote = iBrowser.WaitElement( '//li[@id="stock__tab-quote"]//a' )
 		quote.click()
 		time.sleep( 1 )
+		
+		element = iBrowser.WaitElement( '//ul[contains(@class,"sal-component-band-grid")]//div[contains(text(), "Beta")]', 5 )
+		while element is None:
+			iBrowser.Driver().refresh()
+			element = iBrowser.WaitElement( '//ul[contains(@class,"sal-component-band-grid")]//div[contains(text(), "Beta")]', 5 )
+		iBrowser.WaitElement( '//ul[contains(@class,"sal-component-band-grid")]//div[contains(text(), "Beta")]', 5 )
+		
 		iBrowser.Driver().execute_script( 'window.scrollTo(0, document.body.scrollHeight);' )
 		
 		element = iBrowser.WaitElement( '//sal-components-company-profile//div[contains(@class,"sal-row") and not(contains(@class, "sal-blueprint"))]//div[contains(@class,"sal-component-company-profile-body")]', 5 )
