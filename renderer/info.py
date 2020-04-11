@@ -68,12 +68,15 @@ def Summary( iCompany, iSoup ):
 		price_realtime_value['class'].append( 'down' )
 	price_realtime_value.append( copy.copy( iCompany.mZoneBourse.mPriceRealTime ) )
 	
+	price_realtime_link = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlGraphic( company.company.cZoneBourse.eAppletMode.kDynamic ), target='_blank' )
+	price_realtime_link.append( '[' )
+	price_realtime_link.append( price_realtime_value )
+	price_realtime_link.append( ' {} ] '.format( iCompany.mZoneBourse.mCurrency ) )
+	
 	price_realtime = iSoup.new_tag( 'span' )
 	price_realtime['class'] = [ 'price', 'realtime' ]
 	price_realtime['title'] = datetime.now().strftime( '%d/%m/%Y - %H:%M:%S' )
-	price_realtime.append( '[' )
-	price_realtime.append( price_realtime_value )
-	price_realtime.append( ' {} ] '.format( iCompany.mZoneBourse.mCurrency ) )
+	price_realtime.append( price_realtime_link )
 	
 	#---
 	
@@ -180,16 +183,16 @@ def Title( iCompany, iSoup ):
 	
 	#---
 	
-	link_graph = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlGraphic( company.company.cZoneBourse.eAppletMode.kStatic ) )
+	link_graph = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlGraphic( company.company.cZoneBourse.eAppletMode.kStatic ), target='_blank' )
 	link_graph.append( ' [Prices]' )
 	
-	link_graph2 = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlGraphic( company.company.cZoneBourse.eAppletMode.kDynamic ) )
+	link_graph2 = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlGraphic( company.company.cZoneBourse.eAppletMode.kDynamic ), target='_blank' )
 	link_graph2.append( ' [Prices Dynamic]' )
 	
-	link_fond = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlData() )
+	link_fond = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlData(), target='_blank' )
 	link_fond.append( ' [Fondamentaux]' )
 	
-	link_societe = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlSociety() )
+	link_societe = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlSociety(), target='_blank' )
 	link_societe.append( ' [Societe]' )
 	
 	#---
@@ -385,7 +388,7 @@ def Dividends( iCompany, iSoup, iTag ):
 	link['class'] = 'toggle'
 	link.append( 'Dividends' )
 	
-	link2 = iSoup.new_tag( 'a', href=company_data.Url() )
+	link2 = iSoup.new_tag( 'a', href=company_data.Url(), target='_blank' )
 	link2.append( iTag )
 	
 	title.append( link )

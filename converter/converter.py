@@ -10,6 +10,7 @@
 #
 
 from pathlib import Path
+import platform
 import pprint
 import pyexcel_odsr as pe
 import yaml
@@ -35,7 +36,15 @@ class cConverter:
         if 'buy-ods-path' not in self.mConfig:
             return
 
-        input_path = Path( self.mConfig['buy-ods-path'] ).resolve()
+        buy_ods_path = self.mConfig['buy-ods-path']
+        if platform.system().lower().startswith( 'cygwin' ):
+            buy_ods_path = buy_ods_path.replace( '{DOCUMENTS}', '/cygdrive/d/Users/Mike/Documents' )
+        elif platform.system().lower().startswith( 'linux' ):
+            buy_ods_path = buy_ods_path.replace( '{DOCUMENTS}', '/mnt/d/Users/Mike/Documents' )
+        elif platform.system().lower().startswith( 'windows' ):
+            buy_ods_path = buy_ods_path.replace( '{DOCUMENTS}', 'D:/Users/Mike/Documents' )
+
+        input_path = Path( buy_ods_path ).resolve()
 
         if not input_path.exists():
             print( Back.RED + f'[CONVERT] input path: {input_path}')
@@ -86,9 +95,9 @@ class cConverter:
             for row in self.mInputDataCTO + self.mInputDataPEA:
                 if not row:
                     continue
-                
+            
                 cell_isin = row[self.mISINIndex]
-                if cell_isin == isin:
+                if cell_isin == isin and not any( data['isin'] == cell_isin for data in self.mOutputData ):
                     entry = {
                         'isin': cell_isin,
                         'name': row[self.mNameIndex],
@@ -96,8 +105,7 @@ class cConverter:
                         'pea': []
                     }
 
-                    if not any( data['isin'] == cell_isin for data in self.mOutputData ):
-                        self.mOutputData.append( entry )
+                    self.mOutputData.append( entry )
 
         for isin in iISINs:
             self._BuildCompany( isin, self.mInputDataCTO, 'cto' )
@@ -109,12 +117,12 @@ class cConverter:
             if not row:
                 continue
             
-            if not state:
+            if state == 0:
                 cell_isin = row[self.mISINIndex]
                 if cell_isin == iISIN:
                     state = 1
 
-            elif state:
+            elif state == 1:
                 cell_isin = row[self.mISINIndex]
                 if cell_isin == iISIN:
                     state = 0
