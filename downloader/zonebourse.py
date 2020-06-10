@@ -46,6 +46,8 @@ class cZoneBourse:
 			return
 
 		iBrowser.Driver().get( iCompany.mZoneBourse.UrlData() )
+		time.sleep( 2 )
+
 		with output.open( 'w' ) as o:
 			o.write( iBrowser.Driver().page_source )
 			
@@ -193,6 +195,7 @@ class cZoneBourse:
 		driver.execute_script( 'document.getElementById("mydiv").style.width = "1800px"' )
 		driver.execute_script( 'document.getElementById("mydiv").firstElementChild.style.width = "1800px"' )
 		driver.execute_script( 'document.getElementById("mydiv").firstElementChild.lastElementChild.style.width = "1800px"' )
+		time.sleep( 1 )
 		
 		# Find the first iframe and switch to it
 		iframe = iBrowser.WaitElement( '//iframe[contains(@src, "inc_dyna_graph")]' )
@@ -200,6 +203,7 @@ class cZoneBourse:
 		
 		# Resize the iframe container
 		driver.execute_script( 'document.getElementById("tv_chart_container").style.width = "1800px"' )
+		time.sleep( 1 )
 		
 		# Find the iframe and switch to it
 		iframe = iBrowser.WaitElement( '//iframe[contains(@id, "tradingview_") and contains(@name, "tradingview_")]' )

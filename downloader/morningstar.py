@@ -146,27 +146,35 @@ class cMorningstar:
 
 		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
 		
+		# Remove ads
+		elements = iBrowser.Driver().find_elements_by_xpath( '//div[contains(@class,"mdc-intro-ad")]//span[contains(text(), "Continue to Site")]' )
+		if elements:
+			elements[0].click()
+			time.sleep( 1 )
+		
+		# Go to 'quote' tab
 		quote = iBrowser.WaitElement( '//li[@id="stock__tab-quote"]//a' )
 		quote.click()
 		time.sleep( 1 )
 		
+		# Beta ratio
 		element = iBrowser.WaitElement( '//ul[contains(@class,"sal-component-band-grid")]//div[contains(text(), "Beta")]', 5 )
 		while element is None:
 			iBrowser.Driver().refresh()
 			element = iBrowser.WaitElement( '//ul[contains(@class,"sal-component-band-grid")]//div[contains(text(), "Beta")]', 5 )
 		iBrowser.WaitElement( '//ul[contains(@class,"sal-component-band-grid")]//div[contains(text(), "Beta")]', 5 )
+
+		# iBrowser.Driver().execute_script( 'window.scrollTo(0, document.body.scrollHeight);' )
 		
-		iBrowser.Driver().execute_script( 'window.scrollTo(0, document.body.scrollHeight);' )
-		
-		element = iBrowser.WaitElement( '//sal-components-company-profile//div[contains(@class,"sal-row") and not(contains(@class, "sal-blueprint"))]//div[contains(@class,"sal-component-company-profile-body")]', 5 )
-		while element is None:
-			iBrowser.Driver().refresh()
-			quote = iBrowser.WaitElement( '//li[@id="stock__tab-quote"]//a' )
-			quote.click()
-			time.sleep( 1 )
-			iBrowser.Driver().execute_script( 'window.scrollTo(0, document.body.scrollHeight);' )
-			element = iBrowser.WaitElement( '//sal-components-company-profile//div[contains(@class,"sal-row") and not(contains(@class, "sal-blueprint"))]//div[contains(@class,"sal-component-company-profile-body")]', 5 )
-		iBrowser.WaitElement( '//sal-components-company-profile//div[contains(@class,"sal-row") and not(contains(@class, "sal-blueprint"))]//div[contains(@class,"sal-component-company-profile-body")]' )
+		# element = iBrowser.WaitElement( '//sal-components-company-profile//div[contains(@class,"sal-row") and not(contains(@class, "sal-blueprint"))]//div[contains(@class,"sal-component-company-profile-body")]', 5 )
+		# while element is None:
+		# 	iBrowser.Driver().refresh()
+		# 	quote = iBrowser.WaitElement( '//li[@id="stock__tab-quote"]//a' )
+		# 	quote.click()
+		# 	time.sleep( 1 )
+		# 	iBrowser.Driver().execute_script( 'window.scrollTo(0, document.body.scrollHeight);' )
+		# 	element = iBrowser.WaitElement( '//sal-components-company-profile//div[contains(@class,"sal-row") and not(contains(@class, "sal-blueprint"))]//div[contains(@class,"sal-component-company-profile-body")]', 5 )
+		# iBrowser.WaitElement( '//sal-components-company-profile//div[contains(@class,"sal-row") and not(contains(@class, "sal-blueprint"))]//div[contains(@class,"sal-component-company-profile-body")]' )
 		
 		with output.open( 'w' ) as o:
 			o.write( iBrowser.Driver().page_source.replace( '<!---->', '<!-- -->' ) )

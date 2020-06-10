@@ -187,7 +187,8 @@ class cMorningstar:
 			if beta:
 				iCompany.mMorningstar.mQuoteBeta = float( beta.parent.find_next_sibling().string.strip() )
 
-		sections = soup.find_all( class_='sal-component-company-profile-body' )
+		sections = soup.find_all( class_='stock__profile-items-item' )
+		# sections = soup.find_all( class_='sal-component-company-profile-body' )
 		for section in sections:
 			sector = section.find( string='Sector' )
 			if sector:

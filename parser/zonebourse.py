@@ -87,38 +87,53 @@ class cZoneBourse:
 		iDataGrowth.Update()
 		
 	def _ParseData( self, iCompany, iSoup ):
-		root = iSoup.find( 'table', class_='BordCollapseYear' )
-		if not root:
+		titles = iSoup.find_all( 'table', class_='tabTitleWhite' )
+		for title in titles:
+			element = title.find( string='Données Annuelles du Compte de Résultat' )
+			if element is not None:
+				title_data = element
+
+			element = title.find( string='Valorisation' )
+			if element is not None:
+				title_valorisation = element
+
+		root_data = title_data.find_parent( 'tr' ).find_parent( 'tr' ).find_next_sibling( 'tr' ).find( 'table', class_='BordCollapseYear2' )
+		root_valorisation = title_valorisation.find_parent( 'tr' ).find_parent( 'tr' ).find_next_sibling( 'tr' ).find( 'table', class_='BordCollapseYear2' )
+
+		if not root_data or not root_valorisation:
 			return
-			
-		iCompany.mZoneBourse.mSoupData = copy.copy( root )
-			
-		for tr in iCompany.mZoneBourse.mSoupData.find_all( 'tr' ):
-			tr.append( iSoup.new_tag( 'td' ) )
-		
+
+		#---
+
+		tr_revenue = root_data.find( 'tr' ).find_next_sibling() # CA to get number of estimated years...
+		nb_estimated = len( tr_revenue.find_all( 'td', class_='bc2H' ) )
+
 		#---
 		
-		tr = iCompany.mZoneBourse.mSoupData.find( 'tr' ).find_next_sibling()
-		iCompany.mZoneBourse.mYears.SetTR2( tr )
+		tr = root_data.find( 'tr' )
+		iCompany.mZoneBourse.mYears.SetTR2( tr, nb_estimated )
 		
 		tr = tr.find_next_sibling()
-		iCompany.mZoneBourse.mRevenue.SetTR2( tr )
+		iCompany.mZoneBourse.mRevenue.SetTR2( tr, nb_estimated )
 		self._ComputeGrowth( iCompany.mZoneBourse.mRevenue, iCompany.mZoneBourse.mGrowthRevenue )
 		
-		tr = tr.find_next_sibling().find_next_sibling().find_next_sibling().find_next_sibling()
-		iCompany.mZoneBourse.mNetIncome.SetTR2( tr )
+		tr = tr.find_next_sibling().find_next_sibling().find_next_sibling().find_next_sibling().find_next_sibling()
+		iCompany.mZoneBourse.mNetIncome.SetTR2( tr, nb_estimated )
 		self._ComputeGrowth( iCompany.mZoneBourse.mNetIncome, iCompany.mZoneBourse.mGrowthNetIncome )
 		
 		tr = tr.find_next_sibling().find_next_sibling()
-		iCompany.mZoneBourse.mEarnings.SetTR2( tr )
+		iCompany.mZoneBourse.mEarnings.SetTR2( tr, nb_estimated )
 		self._ComputeGrowth( iCompany.mZoneBourse.mEarnings, iCompany.mZoneBourse.mGrowthEarnings )
 		
 		tr = tr.find_next_sibling()
-		iCompany.mZoneBourse.mDividends.SetTR2( tr )
+		iCompany.mZoneBourse.mDividends.SetTR2( tr, nb_estimated )
 		self._ComputeGrowth( iCompany.mZoneBourse.mDividends, iCompany.mZoneBourse.mGrowthDividends )
 		
-		tr = tr.find_next_sibling()
-		iCompany.mZoneBourse.mYields.SetTR2( tr )
+		#---
+
+		tr = root_valorisation.find( 'tr' )
+		tr = tr.find_next_sibling().find_next_sibling().find_next_sibling().find_next_sibling()
+		iCompany.mZoneBourse.mYields.SetTR2( tr, nb_estimated )
 		
 		if iCompany.mZoneBourse.mYields.mDataEstimated[0]:
 			iCompany.mZoneBourse.mYieldCurrent = float( iCompany.mZoneBourse.mYields.mDataEstimated[0] )

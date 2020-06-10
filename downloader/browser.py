@@ -91,11 +91,11 @@ class cBrowser:
 		
 	def WaitElement( self, iXPath, iRange=0 ):
 		for i in range(iRange):
-			element = self.mDriver.find_elements_by_xpath( iXPath )
-			if len( element ) > 1:
+			elements = self.mDriver.find_elements_by_xpath( iXPath )
+			if len( elements ) > 1:
 				print( Fore.RED + 'Error: multiple results when waiting 1 element' )
-			if element and element[0].is_displayed():
-				return element[0]
+			if elements and elements[0].is_displayed():
+				return elements[0]
 				
 			print( Fore.YELLOW + 'sleep ({}) wait element: {}'.format( i, iXPath ) )
 			time.sleep( 1 )
@@ -103,15 +103,15 @@ class cBrowser:
 		if iRange:
 			return None
 		
-		element = self.mDriver.find_elements_by_xpath( iXPath )
-		while not element or not element[0].is_displayed():
+		elements = self.mDriver.find_elements_by_xpath( iXPath )
+		while not elements or not elements[0].is_displayed():
 			print( Fore.YELLOW + 'sleep wait element: {}'.format( iXPath ) )
 			time.sleep( 1 )
-			element = self.mDriver.find_elements_by_xpath( iXPath )
+			elements = self.mDriver.find_elements_by_xpath( iXPath )
 		
 		time.sleep( 1 )
 
-		return element[0]
+		return elements[0]
 		
 	def WaitFileInside( self, iDirectory ):
 		time.sleep( 1 )

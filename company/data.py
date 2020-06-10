@@ -73,7 +73,7 @@ class cData:
 			else:
 				self.mData = iRow[1:]
 		
-		self.mData = list( map( self._FixLocale, self.mData ) );
+		self.mData = list( map( self._FixLocale, self.mData ) )
 		self.mTTM = self._FixLocale( self.mTTM )
 		self.mLatestQuarter = self._FixLocale( self.mLatestQuarter )
 		
@@ -118,8 +118,8 @@ class cData:
 			td = td.find_next_sibling( 'td' )
 			self.mDataEstimated.append( td.get_text( strip=True ) )
 			
-		self.mData = list( map( self._FixLocale2, self.mData ) );
-		self.mDataEstimated = list( map( self._FixLocale2, self.mDataEstimated ) );
+		self.mData = list( map( self._FixLocale2, self.mData ) )
+		self.mDataEstimated = list( map( self._FixLocale2, self.mDataEstimated ) )
 		
 		self.Update()
 			
@@ -128,14 +128,15 @@ class cData:
 		
 	#---
 		
-	def SetTR2( self, iSoupTr ):
+	def SetTR2( self, iSoupTr, iEstimated ):
 		if not self.mParent:		# for years row
-			tds_past = iSoupTr.find_all( 'td', style=re.compile( '#eeeeee', re.IGNORECASE ) )
+			tds = iSoupTr.find_all( 'td' )
+			tds_past = tds[1:-iEstimated]
 			for td in tds_past:
 				v = td.get_text( strip=True )
 				self.mData.append( v )
 				
-			tds_estimated = iSoupTr.find_all( 'td', style=re.compile( '#defefe', re.IGNORECASE ) )
+			tds_estimated = tds[-iEstimated:]
 			for td in tds_estimated:
 				v = td.get_text( strip=True )
 				self.mDataEstimated.append( v )
@@ -154,8 +155,8 @@ class cData:
 				
 				td = td.find_next_sibling( 'td' )
 			
-		self.mData = list( map( self._FixLocale3, self.mData ) );
-		self.mDataEstimated = list( map( self._FixLocale3, self.mDataEstimated ) );
+		self.mData = list( map( self._FixLocale3, self.mData ) )
+		self.mDataEstimated = list( map( self._FixLocale3, self.mDataEstimated ) )
 		
 		self.Update()
 			
