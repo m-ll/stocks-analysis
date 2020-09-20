@@ -152,23 +152,23 @@ class cZoneBourse:
 		time.sleep( 5 )
 		
 		# Remove rgpd popup
-		element = driver.find_elements_by_xpath( '//div[@id="qcCmpButtons"]/button[contains(@class, "qc-cmp-button") and not(contains(@class, "qc-cmp-secondary-button"))]' )
-		if element:
-			element[0].click()
+		elements = driver.find_elements_by_xpath( '//div[@id="qcCmpButtons"]/button[contains(@class, "qc-cmp-button") and not(contains(@class, "qc-cmp-secondary-button"))]' )
+		if elements:
+			elements[0].click()
 		
 		# Remove account creation
-		element = driver.find_elements_by_xpath( '//div[@id="PopupCertif" and not(contains(@style, "display:none"))]//img[@alt="fermer"]' )
-		if element:
-			element[0].click()
+		elements = driver.find_elements_by_xpath( '//div[@id="PopupCertif" and not(contains(@style, "display:none"))]//img[@alt="fermer"]' )
+		if elements:
+			elements[0].click()
 
-		element = driver.find_elements_by_xpath( '//div[@id="dPubInter" and not(contains(@style, "display: none"))]//img[@alt="fermer"]' )
-		if element:
-			element[0].click()
+		elements = driver.find_elements_by_xpath( '//div[@id="dPubInter" and not(contains(@style, "display: none"))]//img[@alt="fermer"]' )
+		if elements:
+			elements[0].click()
 
 		# Remove cookie popup
-		element = driver.find_elements_by_xpath( '//a[@id="cookieChoiceDismiss"]' )
-		if element:
-			element[0].click()
+		elements = driver.find_elements_by_xpath( '//a[@id="cookieChoiceDismiss"]' )
+		if elements:
+			elements[0].click()
 
 		js = "var h=document.getElementById('dPubBg');h.parentNode.removeChild(h)"
 		driver.execute_script( js )
@@ -181,9 +181,9 @@ class cZoneBourse:
 		iframe = driver.find_elements_by_xpath( '//iframe[@id="offerIframe"]' )
 		if iframe:
 			driver.switch_to.frame( iframe[0] )
-			element = driver.find_elements_by_xpath( '//img[@alt="fermer"]' )
-			if element:
-				element[0].click()
+			elements = driver.find_elements_by_xpath( '//img[@alt="fermer"]' )
+			if elements:
+				elements[0].click()
 
 			driver.switch_to.default_content()
 		
@@ -192,11 +192,14 @@ class cZoneBourse:
 		js = "var h=document.getElementById('myHeader');h.parentNode.removeChild(h)"
 		driver.execute_script( js )
 		
+		js = "switch_sec_per_reg('dynamique2');" # To select the last graph
+		driver.execute_script( js )
+		
 		driver.execute_script( 'document.getElementById("mydiv").style.width = "1800px"' )
 		driver.execute_script( 'document.getElementById("mydiv").firstElementChild.style.width = "1800px"' )
 		driver.execute_script( 'document.getElementById("mydiv").firstElementChild.lastElementChild.style.width = "1800px"' )
 		time.sleep( 1 )
-		
+
 		# Find the first iframe and switch to it
 		iframe = iBrowser.WaitElement( '//iframe[contains(@src, "inc_dyna_graph")]' )
 		driver.switch_to.frame( iframe )

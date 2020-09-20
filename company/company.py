@@ -75,7 +75,8 @@ class cZoneBourse:
 		applet_mode = 'statique'
 		if iAppletMode is self.eAppletMode.kDynamic:
 			applet_mode = 'dynamique2'
-		return 'https://www.zonebourse.com/{}-{}/{}/&applet_mode={}'.format( self.mName, self.mCode, 'graphiques', applet_mode )
+		return 'https://www.zonebourse.com/{}-{}/{}/'.format( self.mName, self.mCode, 'graphiques' )
+		# return 'https://www.zonebourse.com/{}-{}/{}/&applet_mode={}'.format( self.mName, self.mCode, 'graphiques', applet_mode ) # '&applet_mode=' doesn't work anymore ... -_-
 		
 	def UrlPricesSimple( self, iDuration, iWidth, iHeight ):
 		return 'https://www.zonebourse.com/zbcache/charts/ObjectChart.aspx?Name={0}&Type=Custom&Intraday=1&Width={2}&Height={3}&Cycle=NONE&Duration={1}&TopMargin=10&Render=Candle&ShowName=0'.format( self.mCode, iDuration, iWidth, iHeight )

@@ -147,10 +147,11 @@ class cMorningstar:
 		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
 		
 		# Remove ads
-		elements = iBrowser.Driver().find_elements_by_xpath( '//div[contains(@class,"mdc-intro-ad")]//span[contains(text(), "Continue to Site")]' )
-		if elements:
-			elements[0].click()
-			time.sleep( 1 )
+		# Now, sometime it crashes inside the click (with <span class="mdc-button__content"> element), but can't find "mdc-button__content" and even "mdc-intro-ad" oO
+		# elements = iBrowser.Driver().find_elements_by_xpath( '//div[contains(@class,"mdc-intro-ad")]//span[contains(text(), "Continue to Site")]' )
+		# if elements:
+		# 	elements[0].click()
+		# 	time.sleep( 1 )
 		
 		# Go to 'quote' tab
 		quote = iBrowser.WaitElement( '//li[@id="stock__tab-quote"]//a' )
