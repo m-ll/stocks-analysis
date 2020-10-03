@@ -135,7 +135,7 @@ class cZoneBourse:
 		tr = tr.find_next_sibling().find_next_sibling().find_next_sibling().find_next_sibling()
 		iCompany.mZoneBourse.mYields.SetTR2( tr, nb_estimated )
 		
-		if iCompany.mZoneBourse.mYields.mDataEstimated[0]:
+		if len( iCompany.mZoneBourse.mYields.mDataEstimated ) and iCompany.mZoneBourse.mYields.mDataEstimated[0]:
 			iCompany.mZoneBourse.mYieldCurrent = float( iCompany.mZoneBourse.mYields.mDataEstimated[0] )
 			
 			iCompany.mZoneBourse.mUrlDividendCalculator10Years = iCompany.UrlDividendCalculator( float( iCompany.mZoneBourse.mYieldCurrent ), float( iCompany.mZoneBourse.mGrowthDividends.mGrowthAverage ), 10 )

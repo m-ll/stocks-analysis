@@ -131,15 +131,23 @@ class cData:
 	def SetTR2( self, iSoupTr, iEstimated ):
 		if not self.mParent:		# for years row
 			tds = iSoupTr.find_all( 'td' )
-			tds_past = tds[1:-iEstimated]
-			for td in tds_past:
-				v = td.get_text( strip=True )
-				self.mData.append( v )
+			if iEstimated:
+				tds_past = tds[1:-iEstimated]
+				for td in tds_past:
+					v = td.get_text( strip=True )
+					self.mData.append( v )
+					
+				tds_estimated = tds[-iEstimated:]
+				for td in tds_estimated:
+					v = td.get_text( strip=True )
+					self.mDataEstimated.append( v )
+			else:
+				tds_past = tds[1:]
+				for td in tds_past:
+					v = td.get_text( strip=True )
+					self.mData.append( v )
 				
-			tds_estimated = tds[-iEstimated:]
-			for td in tds_estimated:
-				v = td.get_text( strip=True )
-				self.mDataEstimated.append( v )
+				self.mDataEstimated = []
 		
 		else:
 			td = iSoupTr.find( 'td' ).find_next_sibling( 'td' )

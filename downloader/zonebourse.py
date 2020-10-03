@@ -156,6 +156,23 @@ class cZoneBourse:
 		if elements:
 			elements[0].click()
 		
+		# Remove rgpd popup (2)
+		# elements = driver.find_elements_by_xpath( '//div[@id="sp_message_container_323929"]' ) # ...(iframe)...//button[contains(@title, "Accepter et Fermer")]
+		# if elements:
+		# 	elements[0].click()
+		#
+		# js = "var h=document.getElementById('sp_message_container_323929');h.parentNode.removeChild(h)"
+		# driver.execute_script( js )
+		#
+		iframes = driver.find_elements_by_xpath( '//iframe[@id="sp_message_iframe_323929"]' )
+		if iframes:
+			driver.switch_to.frame( iframes[0] )
+			elements = driver.find_elements_by_xpath( '//button[@title="Accepter et Fermer"]' )
+			if elements:
+				elements[0].click()
+
+			driver.switch_to.default_content()
+		
 		# Remove account creation
 		elements = driver.find_elements_by_xpath( '//div[@id="PopupCertif" and not(contains(@style, "display:none"))]//img[@alt="fermer"]' )
 		if elements:
@@ -178,9 +195,9 @@ class cZoneBourse:
 		driver.execute_script( js )
 			
 		# Find the offer iframe and switch to it
-		iframe = driver.find_elements_by_xpath( '//iframe[@id="offerIframe"]' )
-		if iframe:
-			driver.switch_to.frame( iframe[0] )
+		iframes = driver.find_elements_by_xpath( '//iframe[@id="offerIframe"]' )
+		if iframes:
+			driver.switch_to.frame( iframes[0] )
 			elements = driver.find_elements_by_xpath( '//img[@alt="fermer"]' )
 			if elements:
 				elements[0].click()
@@ -191,12 +208,16 @@ class cZoneBourse:
 
 		js = "var h=document.getElementById('myHeader');h.parentNode.removeChild(h)"
 		driver.execute_script( js )
+		js = "var h=document.getElementById('tdFvDroite');h.parentNode.removeChild(h)"
+		driver.execute_script( js )
 		
 		js = "switch_sec_per_reg('dynamique2');" # To select the last graph
 		driver.execute_script( js )
 		
 		driver.execute_script( 'document.getElementById("mydiv").style.width = "1800px"' )
+		time.sleep( 1 )
 		driver.execute_script( 'document.getElementById("mydiv").firstElementChild.style.width = "1800px"' )
+		time.sleep( 1 )
 		driver.execute_script( 'document.getElementById("mydiv").firstElementChild.lastElementChild.style.width = "1800px"' )
 		time.sleep( 1 )
 
@@ -237,7 +258,7 @@ class cZoneBourse:
 		indicators.location_once_scrolled_into_view
 		indicators = iBrowser.WaitElement( '//div[contains(@class, "insert-study-dialog")]//span[contains(@title, "Ichimoku")]/..' )
 		indicators.click()
-		
+
 		# Close the indicator list
 		close_indicators = iBrowser.WaitElement( '//div[contains(@class, "insert-study-dialog")]//a[contains(@class, "tv-dialog-title-close")]' )
 		close_indicators.location_once_scrolled_into_view

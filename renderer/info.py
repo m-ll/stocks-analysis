@@ -263,7 +263,7 @@ def _InfoInvestedSVG( iCompany, iSoup ):
 	unit_price_all = [ d['unit-price'] for d in iCompany.Invested()['cto'] ] + [ d['unit-price'] for d in iCompany.Invested()['pea'] ]
 
 	price_current = float(iCompany.mZoneBourse.mPrice)
-	if iCompany.mZoneBourse.mCurrency.lower() == 'gbp':
+	if iCompany.mZoneBourse.mCurrency.lower() == 'gbp' or iCompany.mZoneBourse.mCurrency.lower() == 'gbx':
 		price_current /= 100.0
 	price_min = min( unit_price_all + [price_current] )
 	price_max = max( unit_price_all + [price_current] )

@@ -154,7 +154,7 @@ class cMorningstar:
 		# 	time.sleep( 1 )
 		
 		# Go to 'quote' tab
-		quote = iBrowser.WaitElement( '//li[@id="stock__tab-quote"]//a' )
+		quote = iBrowser.WaitElement( '//a[@id="stock__tab-quote"]' )
 		quote.click()
 		time.sleep( 1 )
 		
@@ -170,7 +170,7 @@ class cMorningstar:
 		# element = iBrowser.WaitElement( '//sal-components-company-profile//div[contains(@class,"sal-row") and not(contains(@class, "sal-blueprint"))]//div[contains(@class,"sal-component-company-profile-body")]', 5 )
 		# while element is None:
 		# 	iBrowser.Driver().refresh()
-		# 	quote = iBrowser.WaitElement( '//li[@id="stock__tab-quote"]//a' )
+		# 	quote = iBrowser.WaitElement( '//a[@id="stock__tab-quote"]' )
 		# 	quote.click()
 		# 	time.sleep( 1 )
 		# 	iBrowser.Driver().execute_script( 'window.scrollTo(0, document.body.scrollHeight);' )
@@ -194,13 +194,13 @@ class cMorningstar:
 		
 		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
 		
-		valuation = iBrowser.WaitElement( '//li[@id="stock__tab-valuation"]//a' )
+		valuation = iBrowser.WaitElement( '//a[@id="stock__tab-valuation"]' )
 		valuation.click()
 		time.sleep( 1 )
 		element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsValuation"]', 5 )
 		while element is None:
 			iBrowser.Driver().refresh()
-			valuation = iBrowser.WaitElement( '//li[@id="stock__tab-valuation"]//a' )
+			valuation = iBrowser.WaitElement( '//a[@id="stock__tab-valuation"]' )
 			valuation.click()
 			time.sleep( 1 )
 			element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsValuation"]', 5 )
@@ -223,13 +223,13 @@ class cMorningstar:
 		
 		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
 		
-		dividends = iBrowser.WaitElement( '//li[@id="stock__tab-dividends"]//a' )
+		dividends = iBrowser.WaitElement( '//a[@id="stock__tab-dividends"]' )
 		dividends.click()
 		time.sleep( 1 )
 		element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsDividends"]', 5 )
 		while element is None:
 			iBrowser.Driver().refresh()
-			dividends = iBrowser.WaitElement( '//li[@id="stock__tab-dividends"]//a' )
+			dividends = iBrowser.WaitElement( '//a[@id="stock__tab-dividends"]' )
 			dividends.click()
 			time.sleep( 1 )
 			element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsDividends"]', 5 )
