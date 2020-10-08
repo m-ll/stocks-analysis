@@ -9,6 +9,7 @@
 # 29c355784a3921aa290371da87bce9c1617b8584ca6ac6fb17fb37ba4a07d191
 #
 
+from datetime import datetime, date, time
 from enum import Enum, auto
 import os
 # import requests
@@ -212,6 +213,7 @@ class cYahooFinance:
 		
 		# string 'xx%'
 		self.mGrowth = { '-5': '', '0': '', '+1': '', '+5':'' }
+		self.mHistoric = [] # [ { 'date': date(), 'price': xxxx.xx }, {...}, ... ]
 		
 	def Symbol( self ):
 		return self.mSymbol
@@ -223,6 +225,16 @@ class cYahooFinance:
 			return 'https://finance.yahoo.com/quote/{}/analysis?p={}'.format( self.mSymbol, self.mSymbol )
 	def FileName( self ):
 		return '{}.{}.yahoofinance.html'.format( self.mCompany.Name(), self.mCompany.ISIN() )
+		
+	def UrlHistoric( self ):
+		start_date = date( 2019, 1, 1 )
+		start_timestamp = datetime.combine( start_date, time() ).timestamp()
+		now = datetime.now().date()
+		stop_timestamp = datetime.combine( now, time() ).timestamp()
+		return 'https://query1.finance.yahoo.com/v7/finance/download/{}?period1={}&period2={}&interval=1wk&events=history'.format( self.mSymbol, int(start_timestamp), int(stop_timestamp) )
+		# https://query1.finance.yahoo.com/v7/finance/download/SAN.PA?period1=1546560000&period2=1601769600&interval=1wk&events=history
+	def FileNameHistoric( self ):
+		return '{}.{}.yahoofinance-historic.csv'.format( self.mCompany.Name(), self.mCompany.ISIN() )
 	
 class cReuters:
 	def __init__( self, iCompany, iSymbol ):

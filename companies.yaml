@@ -13,7 +13,7 @@ owned:
   - [ "FR0000120271", "TOTAL", 4717, "FP",                          [  4,  6,  5, 10, 10 ], "eu",  "fra", "xpar",  "EURONEXT:FP",     "FP.PA",    "TOTF.PA",      "",     "total",          "TOTAL" ]
   - [ "FR0000073298", "IPSOS", 4663, "IPS",                         [  6, 10,  8, 10, 10 ], "eu",  "fra", "xpar",  "EURONEXT:IPS",    "IPS.PA",   "ISOS.PA",      "",     "ipsos",          "" ]
   - [ "GB00B03MLX29", "ROYAL-DUTCH-SHELL", 6273, "RDSA",            [  4,  4,  6, 10, 10 ], "eu",  "gbr", "xlon",  "EURONEXT:RDSA",   "RDSA.L",   "RDSa.L",       "",     "",               "Shell" ]
-  - [ "GB00BH0P3Z91", "BHP-BILLITON-PLC", 47281658, "BHP",          [  4,  7, 10,  9, 10 ], "eu",  "gbr", "xlon",  "",                "BLT.L",    "BHPB.L",       "",     "",               "BHP_Billiton" ]
+  - [ "GB00BH0P3Z91", "BHP-BILLITON-PLC", 47281658, "BHP",          [  4,  7, 10,  9, 10 ], "eu",  "gbr", "xlon",  "",                "BHP.L",    "BHPB.L",       "",     "",               "BHP_Billiton" ]
   - [ "US7134481081", "PEPSICO", 39085159, "PEP",                   [  6,  6, 10,  5,  2 ], "us",  "usa", "xnas",  "NASDAQ:PEP",      "PEP",      "PEP.O",        "PEP",  "",               "PepsiCo" ]
   - [ "US4523081093", "ILLINOIS-TOOL-WORKS", 13125, "ITW",          [  6, 10, 10, 10,  2 ], "us",  "usa", "xnys",  "NYSE:ITW",        "ITW",      "ITW.N",        "ITW",  "",               "Illinois_Tool_Works" ]
   - [ "US00287Y1091", "ABBVIE", 12136589, "ABBV",                   [  7,  6, 10,  8,  1 ], "us",  "usa", "xnys",  "NYSE:ABBV",       "ABBV",     "ABBV.N",       "ABBV", "",               "AbbVie" ]
@@ -29,7 +29,7 @@ owned:
 
 test:
   - [ "FR0000120578", "SANOFI", 4698, "SAN",                        [  6,  2,  0,  0,  0 ], "eu",  "fra", "xpar",  "EURONEXT:SAN",    "SAN.PA",   "SASY.PA",      "",     "sanofi",         "Sanofi" ]
-  - [ "GB00BH0P3Z91", "BHP-BILLITON-PLC", 47281658, "BHP",          [  4,  8, 10, 10, 10 ], "eu",  "gbr", "xlon",  "",                "BLT.L",    "BHPB.L",       "",     "",               "BHP_Billiton" ]
+  - [ "GB00BH0P3Z91", "BHP-BILLITON-PLC", 47281658, "BHP",          [  4,  8, 10, 10, 10 ], "eu",  "gbr", "xlon",  "",                "BHP.L",    "BHPB.L",       "",     "",               "BHP_Billiton" ]
   - [ "US5797802064", "MCCORMICK-COMPANY", 13556, "MKC",            [  8, 10, 10,  7,  8 ], "us",  "usa", "xnys",  "NYSE:MKC",        "MKC",      "MKC.N",        "MKC",  "",               "McCormick" ]
 
 to-take:

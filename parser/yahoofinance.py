@@ -9,8 +9,10 @@
 # 29c355784a3921aa290371da87bce9c1617b8584ca6ac6fb17fb37ba4a07d191
 #
 
+import csv
 from bs4 import BeautifulSoup
 from colorama import init, Fore, Back, Style
+from datetime import datetime
 
 class cYahooFinance:
 	def __init__( self ):
@@ -25,6 +27,12 @@ class cYahooFinance:
 			
 		#---
 
+		self._ParseData( iCompany )
+		self._ParseHistoric( iCompany )
+	
+	def _ParseData( self, iCompany ):
+		print( '		- Data ...' )
+		
 		input = iCompany.DataPathFile( iCompany.mYahooFinance.FileName() )
 		
 		html_content = ''
@@ -55,3 +63,17 @@ class cYahooFinance:
 		td = td.find_parent( 'tr' ).find_previous_sibling().find( 'td' ).find_next_sibling()
 		td_value = td.string
 		iCompany.mYahooFinance.mGrowth['0'] = td_value
+		
+	def _ParseHistoric( self, iCompany ):
+		print( '		- Historic ...' )
+		
+		input = iCompany.DataPathFile( iCompany.mYahooFinance.FileNameHistoric() )
+		
+		with input.open( newline='' ) as csvfile:
+			csv_reader = csv.DictReader( csvfile, delimiter=',' )
+			
+			row_header = next( csv_reader ) # Skip header row
+			for row in csv_reader:
+				computed_row = { 'date': datetime.strptime( row['Date'], '%Y-%m-%d' ).date(), 'price': float( row['Close'] ) }
+				iCompany.mYahooFinance.mHistoric.append( computed_row )
+				

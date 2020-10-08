@@ -67,7 +67,7 @@ class cBrowser:
 		opts.set_preference( 'browser.download.folderList', 2 )
 		opts.set_preference( 'browser.download.manager.showWhenStarting', False )
 		opts.set_preference( 'browser.download.dir', str(self.mOptions.TempDirectory()) )
-		opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,application/octet-stream,text/html' )
+		opts.set_preference( 'browser.helperApps.neverAsk.saveToDisk', 'application/csv,text/csv,text/plain,application/octet-stream,text/html' )
 
 		executable_path = Path( '.' ).resolve() / 'geckodriver0.24'
 		if sys.platform.startswith( 'cygwin' ):
