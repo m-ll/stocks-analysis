@@ -17,6 +17,7 @@ from .reuters import cReuters
 from .boerse import cBoerse
 from .tradingsat import cTradingSat
 from .finances import cFinances
+import company.company
 
 class cDownloader:
 	def __init__( self ):
@@ -25,23 +26,28 @@ class cDownloader:
 	def Download( self, iBrowser, iCompanies ):
 		for i, company in enumerate( iCompanies, start=1 ):
 			print( 'Download ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
-			
-			dl = cZoneBourse()
-			dl.Download( iBrowser, company )
-			dl = cFinviz()
-			dl.Download( iBrowser, company )
-			dl = cMorningstar()
-			dl.Download( iBrowser, company )
-			dl = cYahooFinance()
-			dl.Download( iBrowser, company )
-			# dl = cReuters()
-			# dl.Download( iBrowser, company )
-			dl = cBoerse()
-			dl.Download( iBrowser, company )
-			dl = cTradingSat()
-			dl.Download( iBrowser, company )
-			dl = cFinances()
-			dl.Download( iBrowser, company )
-		
+			self._DownloadCompany( iBrowser, company )
 			print( '' )
+	
+	def _DownloadCompany( self, iBrowser, iCompany ):
+		if isinstance( iCompany, company.company.cStockIndex ):
+			dl = cYahooFinance()
+			dl.Download( iBrowser, iCompany )
+		else:
+			dl = cZoneBourse()
+			dl.Download( iBrowser, iCompany )
+			dl = cFinviz()
+			dl.Download( iBrowser, iCompany )
+			dl = cMorningstar()
+			dl.Download( iBrowser, iCompany )
+			dl = cYahooFinance()
+			dl.Download( iBrowser, iCompany )
+			# dl = cReuters()
+			# dl.Download( iBrowser, iCompany )
+			dl = cBoerse()
+			dl.Download( iBrowser, iCompany )
+			dl = cTradingSat()
+			dl.Download( iBrowser, iCompany )
+			dl = cFinances()
+			dl.Download( iBrowser, iCompany )
 	

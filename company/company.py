@@ -371,6 +371,44 @@ class cNotation:
 	def Note( self ):
 		return self.mNote
 
+class cStockIndex:
+	def __init__( self, iISIN, iZBName, iZone, iYFSymbol ):
+		self.mISIN = iISIN
+		self.mName = iZBName
+		self.mZone = iZone # eu/us
+		
+		self.mYahooFinance = cYahooFinance( self, iYFSymbol )
+		
+		self.mDataPath = ''
+		self.mGroup = ''
+
+	#---
+	
+	def Group( self, iGroup ):
+		self.mGroup = iGroup
+		
+	def ISIN( self ):
+		return self.mISIN
+	def Name( self ):
+		return self.mName
+	def Zone( self ):
+		return self.mZone
+	
+	#---
+	
+	def DataPath( self, iPath=None ):
+		if iPath is None:
+			return self.mDataPath
+		
+		previous_value = self.mDataPath
+		self.mDataPath = iPath
+		return previous_value
+	
+	def DataPathFile( self, iFileName ):
+		return self.mDataPath / iFileName
+	
+	#---
+	
 class cCompany:
 	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iRawNotation, iZone, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName ):
 		self.mISIN = iISIN

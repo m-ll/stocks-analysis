@@ -17,6 +17,7 @@ from .reuters import cReuters
 from .boerse import cBoerse
 from .tradingsat import cTradingSat
 from .finances import cFinances
+import company.company
 
 class cParser:
 	def __init__( self ):
@@ -25,23 +26,28 @@ class cParser:
 	def Parse( self, iCompanies ):
 		for i, company in enumerate( iCompanies, start=1 ):
 			print( 'Parse ({}/{}): {} ...'.format( i, len( iCompanies ), company.Name() ) )
-			
-			parser = cZoneBourse()
-			parser.Parse( company )
-			parser = cFinviz()
-			parser.Parse( company )
-			parser = cMorningstar()
-			parser.Parse( company )
-			# parser = cReuters()
-			# parser.Parse( company )
-			parser = cYahooFinance()
-			parser.Parse( company )
-			parser = cBoerse()
-			parser.Parse( company )
-			parser = cFinances()
-			parser.Parse( company )
-			parser = cTradingSat()
-			parser.Parse( company )
-			
+			self._ParseCompany( company )
 			print( '' )
+	
+	def _ParseCompany( self, iCompany ):
+		if isinstance( iCompany, company.company.cStockIndex ):
+			parser = cYahooFinance()
+			parser.Parse( iCompany )
+		else:
+			parser = cZoneBourse()
+			parser.Parse( iCompany )
+			parser = cFinviz()
+			parser.Parse( iCompany )
+			parser = cMorningstar()
+			parser.Parse( iCompany )
+			# parser = cReuters()
+			# parser.Parse( iCompany )
+			parser = cYahooFinance()
+			parser.Parse( iCompany )
+			parser = cBoerse()
+			parser.Parse( iCompany )
+			parser = cFinances()
+			parser.Parse( iCompany )
+			parser = cTradingSat()
+			parser.Parse( iCompany )
 	

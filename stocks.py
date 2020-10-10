@@ -20,7 +20,7 @@ from colorama import init, Fore, Back, Style
 init( autoreset=True )
 
 from converter.converter import cConverter
-from company.company import cCompany
+from company.company import cCompany, cStockIndex
 from downloader.options import cOptions
 from downloader.browser import cBrowser
 from downloader.downloader import cDownloader
@@ -136,6 +136,24 @@ for data_group_name in data_groups:
 if not args.groups:
 	for data_group_name in data_groups:
 		args.groups.append( data_group_name )
+
+#---
+
+cac40 = cStockIndex( 'FR0003500008', 'CAC-40', 'eu', r'%5EFCHI' )
+sp500 = cStockIndex( 'SP500', 'S-P-500', 'us', r'%5EGSPC' )
+stock_indexes = [ cac40, sp500 ]
+
+for stock_index in stock_indexes:
+	stock_index.Group( 'index' )
+	stock_index.DataPath( data_path )
+
+if args.download in ['yes', 'force']:
+	browser.Init()
+	downloader = cDownloader()
+	downloader.Download( browser, stock_indexes )
+	
+parser = cParser()
+parser.Parse( stock_indexes )
 
 #---
 
