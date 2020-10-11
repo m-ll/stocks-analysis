@@ -35,6 +35,7 @@ from renderer.renderer import cRenderer
 		
 parser = argparse.ArgumentParser( description='Process group(s).' )
 parser.add_argument( 'groups', metavar='Group', nargs='*', help='One (or multiple) group(s) name (may also be company name)')
+parser.add_argument( '-d', '--debug', action="store_true", help='Debug: open browser gui/...' )
 parser.add_argument( '--download', choices=['no', 'yes', 'force'], default='yes', help='Download source' )
 parser.add_argument( '--suffix', help='Set suffix of output folder', required=True )
 parser.add_argument( '--tmp', default='', help='Set the tmp folder' ) # MUST NOT be None for cOptions
@@ -64,6 +65,7 @@ output_path_img.mkdir( parents=True, exist_ok=True )
 
 options = cOptions()
 options.ForceDownload( args.download == 'force' )
+options.DebugDownload( args.debug )
 error = {}
 options.TempDirectory( args.tmp, error )
 if error['id']:
@@ -178,7 +180,7 @@ for group in args.groups:
 	# companies_sorted_by_note = sorted( companies_sorted_by_yield, key=lambda company: company.Notation().StarsCount(), reverse=True )
 	companies_sorted_by_note_yield = sorted( companies_of_current_group, key=lambda company: ( company.Notation().StarsCount(), company.mMorningstar.mYieldCurrent ), reverse=True )
 
-	renderer = cRenderer( companies_sorted_by_note_yield )
+	renderer = cRenderer( companies_sorted_by_note_yield, stock_indexes )
 	renderer.Render()
 	renderer.Export( output_path )
 	

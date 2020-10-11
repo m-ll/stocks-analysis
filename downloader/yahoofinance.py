@@ -12,7 +12,6 @@
 import csv
 import io
 import requests
-import shutil
 import time
 
 from colorama import init, Fore, Back, Style

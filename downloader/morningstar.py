@@ -73,7 +73,8 @@ class cMorningstar:
 			export.click()
 			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
-		shutil.copy( csv, output )
+		shutil.copyfile( csv, output ) # Just copy the content, doens't care of metadata (problem with wsl2)
+		# shutil.copy( csv, output ) # Can't copy metadata ?! (https://bugs.python.org/issue38633)
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 
 	def _DownloadBalanceSheet( self, iBrowser, iCompany ):
@@ -100,7 +101,8 @@ class cMorningstar:
 			export.click()
 			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
-		shutil.copy( csv, output )
+		shutil.copyfile( csv, output ) # Just copy the content, doens't care of metadata (problem with wsl2)
+		# shutil.copy( csv, output ) # Can't copy metadata ?! (https://bugs.python.org/issue38633)
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 
 	def _DownloadRatios( self, iBrowser, iCompany ):
@@ -127,7 +129,8 @@ class cMorningstar:
 			export.click()
 			csv = iBrowser.WaitFileInside( iBrowser.Options().TempDirectory() )
 
-		shutil.copy( csv, output )
+		shutil.copyfile( csv, output ) # Just copy the content, doens't care of metadata (problem with wsl2)
+		# shutil.copy( csv, output ) # Can't copy metadata ?! (https://bugs.python.org/issue38633)
 		iBrowser.RemoveFiles( iBrowser.Options().TempDirectory() )
 
 	#---

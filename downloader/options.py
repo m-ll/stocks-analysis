@@ -19,6 +19,7 @@ class cOptions:
 	def __init__( self ):
 		self.mForceDownload = False
 		self.mTempDirectory = ''
+		self.mDebug = False
 		self.mUserAgent = ''
 		self.UserAgent( '' )
 
@@ -38,6 +39,14 @@ class cOptions:
 		self.mUserAgent = iUserAgent
 		if not self.mUserAgent:
 			self.mUserAgent = 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
+		return previous_value
+	
+	def DebugDownload( self, iDebugDownload=None ):
+		if iDebugDownload is None:
+			return self.mDebug
+		
+		previous_value = self.mDebug
+		self.mDebug = iDebugDownload
 		return previous_value
 	
 	def TempDirectory( self, iTempDirectory=None, oError=None ):

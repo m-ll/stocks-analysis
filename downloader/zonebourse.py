@@ -164,10 +164,10 @@ class cZoneBourse:
 		# js = "var h=document.getElementById('sp_message_container_323929');h.parentNode.removeChild(h)"
 		# driver.execute_script( js )
 		#
-		iframes = driver.find_elements_by_xpath( '//iframe[@id="sp_message_iframe_323929"]' )
+		iframes = driver.find_elements_by_xpath( '//iframe[contains(@id, "sp_message_iframe_")]' )
 		if iframes:
 			driver.switch_to.frame( iframes[0] )
-			elements = driver.find_elements_by_xpath( '//button[@title="Accepter et Fermer"]' )
+			elements = driver.find_elements_by_xpath( '//button[@title="Accepter et Fermer" or @title="Accept and close"]' )
 			if elements:
 				elements[0].click()
 

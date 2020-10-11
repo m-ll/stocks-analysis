@@ -18,12 +18,14 @@ from . import data_boerse
 from . import graphics
 from . import info
 from . import menu
+from . import compare
 import company.company
 
 class cRenderer:
-	def __init__( self, iCompanies ):
+	def __init__( self, iCompanies, iStockIndexes ):
 		self.mHTML = ''
 		self.mCompanies = iCompanies
+		self.mStockIndexes = iStockIndexes
 	
 	def Render( self ):
 		# print( '	Render ...' )
@@ -135,9 +137,33 @@ class cRenderer:
 			root.append( subroot )
 
 			main.append( root )
+
+		#---
+		
+		for stock_index in self.mStockIndexes:
+			subtag_title = compare.Title( stock_index, self.mCompanies, soup )
+			subtag_compare = compare.CompareWithStockIndex( stock_index, self.mCompanies, soup )
+
+			#---
+
+			root = soup.new_tag( 'article', id=stock_index.Name() )
+			root['class'] = 'stock-index'
+
+			subroot = soup.new_tag( 'header' )
+			subroot.append( subtag_title )
+			root.append( subroot )
 			
+			subroot = soup.new_tag( 'article' )
+			subroot.append( subtag_compare )
+			root.append( subroot )
+
+			subroot = soup.new_tag( 'footer' )
+			root.append( subroot )
+
+			main.append( root )
+
 		body.append( main )
-			
+		
 		#---
 		
 		soup_script = soup.new_tag( 'script', src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" )

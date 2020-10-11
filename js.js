@@ -86,6 +86,14 @@ $('.summary .name').click( function( iEvent )
 	return false;
 });
 
+$('.stock-index header').click( function( iEvent )
+{
+	let $article = $( this ).closest( 'article' ).find( 'article' );
+
+	$article.toggle();
+	return false;
+});
+
 $(function ()
 {
 	$('article > article').hide();

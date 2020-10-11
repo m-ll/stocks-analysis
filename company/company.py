@@ -236,6 +236,11 @@ class cYahooFinance:
 	def FileNameHistoric( self ):
 		return '{}.{}.yahoofinance-historic.csv'.format( self.mCompany.Name(), self.mCompany.ISIN() )
 	
+	def ComputeWeightPrice( self, iWeight ):
+		ratio = iWeight / self.mHistoric[0]['price']
+		for row in self.mHistoric:
+			row['price-weighted'] = row['price'] * ratio
+
 class cReuters:
 	def __init__( self, iCompany, iSymbol ):
 		self.mCompany = iCompany
@@ -543,16 +548,17 @@ class cCompany:
 		
 		#TOIMPROVE: with tuple/dict/... like ichimoku (?)
 		filename = self.mZoneBourse.FileNamePricesSimple( 9999 )
-		shutil.copy( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) )
+		shutil.copyfile( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) ) # Just copy the content, doens't care of metadata (problem with wsl2)
+		# shutil.copy( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) ) # Can't copy metadata ?! (https://bugs.python.org/issue38633)
 		filename = self.mZoneBourse.FileNamePricesSimple( 10 )
-		shutil.copy( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) )
+		shutil.copyfile( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) )
 		filename = self.mZoneBourse.FileNamePricesSimple( 5 )
-		shutil.copy( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) )
+		shutil.copyfile( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) )
 		filename = self.mZoneBourse.FileNamePricesSimple( 2 )
-		shutil.copy( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) )
+		shutil.copyfile( self.DataPathFile( filename ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filename ) )
 		
 		filenames = self.mZoneBourse.FileNamesPricesIchimoku()
-		shutil.copy( self.DataPathFile( filenames[0] ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filenames[0] ) )
-		shutil.copy( self.DataPathFile( filenames[1] ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filenames[1] ) )
-		shutil.copy( self.DataPathFile( filenames[2] ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filenames[2] ) )
+		shutil.copyfile( self.DataPathFile( filenames[0] ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filenames[0] ) )
+		shutil.copyfile( self.DataPathFile( filenames[1] ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filenames[1] ) )
+		shutil.copyfile( self.DataPathFile( filenames[2] ), iOutputPath / self.OutputImgPathFileRelativeToHTMLFile( filenames[2] ) )
 	

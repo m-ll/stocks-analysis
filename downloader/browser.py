@@ -59,7 +59,9 @@ class cBrowser:
 
 		#--- Firefox
 		opts = webdriver.firefox.options.Options()
-		if not sys.platform.startswith( 'cygwin' ):
+		
+		# if not sys.platform.startswith( 'cygwin' ):
+		if not self.mOptions.DebugDownload():
 			opts.headless = True
 		
 		opts.set_preference( 'browser.privatebrowsing.autostart', True )
