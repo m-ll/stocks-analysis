@@ -9,6 +9,7 @@
 # 29c355784a3921aa290371da87bce9c1617b8584ca6ac6fb17fb37ba4a07d191
 #
 
+from datetime import date, datetime
 from pathlib import Path
 import platform
 import pprint
@@ -138,7 +139,8 @@ class cConverter:
                 cell_date = row[self.mDateIndex]
 
                 entry_buy = {
-                    'date': cell_date.strftime( '%d/%m/%Y' ),
+                    'date': cell_date, # is a <class 'datetime.date'>
+                    # 'date': cell_date.strftime( '%d/%m/%Y' ),
                     'count': row[self.mTypeIndex+1],
                     'unit-price': float(row[self.mTypeIndex+2].split()[0])
                 }

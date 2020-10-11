@@ -51,8 +51,8 @@ def CompareWithStockIndex( iStockIndex, iCompanies, iSoup ):
         root.append( f'Problem with historic rows between stock-index ({iStockIndex.Name()}) and one company ({company.Name()})' )
         return root
     
-    companies_with_invest = [ company for company in companies_of_same_zone if company.Invested() is not None ]
-    companies_without_invest = [ company for company in companies_of_same_zone if company.Invested() is None ]
+    companies_with_invest = [ company for company in companies_of_same_zone if company.HasInvested() ]
+    companies_without_invest = [ company for company in companies_of_same_zone if not company.HasInvested() ]
     if len( companies_with_invest ) and len( companies_without_invest ):
         print( Back.RED + f'Problem with companies with AND without invest ...' )
 
@@ -64,21 +64,17 @@ def CompareWithStockIndex( iStockIndex, iCompanies, iSoup ):
 
     total_invest = 0
     for company in companies_of_same_zone:
-        if company.Invested() is None:
+        if not company.HasInvested():
             continue
-        cto_total = sum( d['count'] * d['unit-price'] for d in company.Invested()['cto'] )
-        pea_total = sum( d['count'] * d['unit-price'] for d in company.Invested()['pea'] )
-        total_invest += cto_total + pea_total
+        total_invest += company.GetInvested().ComputeTotalPrice()
     
     weight_of_each_company = []
     for company in companies_of_same_zone:
-        if company.Invested() is None:
+        if not company.HasInvested():
             weight_of_each_company.append( 1000 )
             continue
 
-        cto_total = sum( d['count'] * d['unit-price'] for d in company.Invested()['cto'] )
-        pea_total = sum( d['count'] * d['unit-price'] for d in company.Invested()['pea'] )
-        company_invest = cto_total + pea_total
+        company_invest = company.GetInvested().ComputeTotalPrice()
 
         weight_of_each_company.append( company_invest / total_invest * 1000 * len(companies_of_same_zone) ) #TOCHECK if correct
 
@@ -113,14 +109,7 @@ def CompareWithStockIndex( iStockIndex, iCompanies, iSoup ):
     x2 = [ row['date'] for row in portfolio_weighted ]
     y2 = [ row['price-weighted'] for row in portfolio_weighted ]
     # plotting the line 2 points
-    plt.plot( x2, y2, label=iStockIndex.Zone().upper() )
-
-    # naming the x axis
-    # plt.xlabel('date - axis')
-    # naming the y axis
-    # plt.ylabel('value - axis')
-    # giving a title to my graph
-    # plt.title('Two lines on same graph!')
+    plt.plot( x2, y2, label=f'{iStockIndex.Zone().upper()} ({len(companies_of_same_zone)})' )
 
     # show a legend on the plot
     plt.legend()

@@ -11,6 +11,8 @@
 
 import copy
 from datetime import date, datetime
+from io import BytesIO
+import matplotlib.pyplot as plt
 
 from bs4 import BeautifulSoup
 
@@ -186,8 +188,8 @@ def Title( iCompany, iSoup ):
 	link_graph = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlGraphic( company.company.cZoneBourse.eAppletMode.kStatic ), target='_blank' )
 	link_graph.append( ' [Prices]' )
 	
-	link_graph2 = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlGraphic( company.company.cZoneBourse.eAppletMode.kDynamic ), target='_blank' )
-	link_graph2.append( ' [Prices Dynamic]' )
+	# link_graph2 = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlGraphic( company.company.cZoneBourse.eAppletMode.kDynamic ), target='_blank' )
+	# link_graph2.append( ' [Prices Dynamic]' )
 	
 	link_fond = iSoup.new_tag( 'a', href=iCompany.mZoneBourse.UrlData(), target='_blank' )
 	link_fond.append( ' [Fondamentaux]' )
@@ -209,7 +211,7 @@ def Title( iCompany, iSoup ):
 	root.append( price_realtime )
 	root.append( name )
 	root.append( link_graph )
-	root.append( link_graph2 )
+	# root.append( link_graph2 )
 	root.append( link_fond )
 	root.append( link_societe )
 	root.append( iSoup.new_tag( 'br' ) )
@@ -223,13 +225,10 @@ def _InfoInvestedTotal( iCompany, iSoup ):
 	invest = iSoup.new_tag( 'span' )
 	invest['class'] = ['invested']
 	
-	if iCompany.Invested() is None:
+	if not iCompany.HasInvested():
 		return invest
 	
-	cto_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['cto'] )
-	pea_total = sum( d['count'] * d['unit-price'] for d in iCompany.Invested()['pea'] )
-
-	total = cto_total + pea_total
+	total = iCompany.GetInvested().ComputeTotalPrice()
 	if total >= 3000:
 		invest['class'].append( 'high' )
 	elif total >= 1000:
@@ -249,48 +248,50 @@ class cBox:
 		self.mHeight = iHeight
 
 def _InfoInvestedSVG( iCompany, iSoup ):
-	if iCompany.Invested() is None:
+	if not iCompany.HasInvested():
 		return iSoup.new_tag( 'span' )
+	
+	plt.gcf().set_size_inches( 10, 2 )
 
-	padding_x = 25
-	padding_y = 15
-	box_full = cBox( 0, 0, 500+2*padding_x, 100+2*padding_y )
-	inner_box = cBox( padding_x, padding_y, 500, 100 )
+	plt.margins(0.05, 0.2)
 
-	invest = iSoup.new_tag( 'svg', width=box_full.mWidth, height=box_full.mHeight, style='background: rgb(230,230,230)' )
-	invest['class'] = 'invested'
+	# first line
+	x1 = [ d['date'] for d in iCompany.GetInvested().GetData() ]
+	y1 = [ d['unit-price'] for d in iCompany.GetInvested().GetData() ]
+	t1 = [ d['unit-price'] for d in iCompany.GetInvested().GetData() ]
+	# t1 = [ f"{d['unit-price']}\n(x{d['count']})" for d in iCompany.GetInvested().GetData() ] #TODO: add more info on tooltip
+	max_count = max( [ d['count'] for d in iCompany.GetInvested().GetData() ] )
+	scale_count = 100 if max_count < 20 else 20 if max_count < 100 else 2
+	s1 = [ d['count'] * scale_count for d in iCompany.GetInvested().GetData() ]
+	c1 = None # [ d['count'] * 100 for d in iCompany.GetInvested().GetData() ]
+	# plotting the line 1 points
+	plt.scatter( x1, y1, s=s1, c=c1, alpha=0.5, label=iCompany.Name())
+	# plt.plot( x1, y1, '.', label=iCompany.Name())
+	for x, y, t in zip( x1, y1, t1 ):
+		plt.text( x, y, t, horizontalalignment='center', verticalalignment='center' )
 
-	unit_price_all = [ d['unit-price'] for d in iCompany.Invested()['cto'] ] + [ d['unit-price'] for d in iCompany.Invested()['pea'] ]
-
-	price_current = float(iCompany.mZoneBourse.mPrice)
+	# second line
+	x2 = [ date( 2018, 4, 1 ), datetime.now().date() ]
+	y2 = [ float(iCompany.mZoneBourse.mPriceRealTime), float(iCompany.mZoneBourse.mPriceRealTime) ]
 	if iCompany.mZoneBourse.mCurrency.lower() == 'gbp' or iCompany.mZoneBourse.mCurrency.lower() == 'gbx':
-		price_current /= 100.0
-	price_min = min( unit_price_all + [price_current] )
-	price_max = max( unit_price_all + [price_current] )
+		y2 = list( map( lambda v: v / 100.0, y2 ) )
+	# plotting the line 2 points
+	plt.plot( x2, y2, '--', c='red', label='current price' )
+	plt.text( x2[-1], y2[-1] + 0.5, str(y2[-1]), horizontalalignment='center' )
 
-	for i, unit_price in enumerate( unit_price_all ):
-		cx = _ComputeX( inner_box.mWidth, len(unit_price_all) + 1, i )
-		cy = _ComputeY( inner_box.mHeight, price_min, price_max, unit_price )
+	# show a legend on the plot
+	plt.legend()
 
-		circle = _NewCircle( iSoup, inner_box, cx, cy, 2 )
-		invest.append( circle )
+	# function to show the plot
+	f = BytesIO()
+	plt.savefig( f, format="svg" )
+	plt.close()
 
-		text = _NewText( iSoup, inner_box, cx, cy, str(unit_price) )
-		invest.append( text )
-		
-	cx = _ComputeX( inner_box.mWidth, len(unit_price_all) + 1, len(unit_price_all) )
-	cy = _ComputeY( inner_box.mHeight, price_min, price_max, price_current )
+	#---
 
-	circle = _NewCircle( iSoup, inner_box, cx, cy, 2, 'red' )
-	invest.append( circle )
+	soup_xml = BeautifulSoup( f.getvalue().decode( 'utf-8' ), 'xml' )
 
-	text = _NewText( iSoup, inner_box, cx, cy, str(price_current), 'red' )
-	invest.append( text )
-
-	line = _NewHorizontal( iSoup, inner_box, cy, 'red' )
-	invest.append( line )
-
-	return invest
+	return soup_xml.find( 'svg' )
 
 def _ComputeX( iWidth, iCount, iIndex ):
 	return iIndex / ( iCount - 1 ) * iWidth

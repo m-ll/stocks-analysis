@@ -376,6 +376,8 @@ class cNotation:
 	def Note( self ):
 		return self.mNote
 
+#---
+
 class cStockIndex:
 	def __init__( self, iISIN, iZBName, iZone, iYFSymbol ):
 		self.mISIN = iISIN
@@ -413,6 +415,31 @@ class cStockIndex:
 		return self.mDataPath / iFileName
 	
 	#---
+
+class cCompanyInvestment:
+	def __init__( self ):
+		self.mData = None
+
+	def SetData( self, iAllInvest, iISIN ):
+		data = next( ( c for c in iAllInvest if c['isin'] == iISIN ), None )
+		if data:
+			self.mData = data
+	
+	def GetData( self, iType='all' ):
+		if iType == 'cto':
+			return self.mData['cto']
+		if iType == 'pea':
+			return self.mData['pea']
+		
+		return sorted( self.mData['cto'] + self.mData['pea'], key=lambda k: k['date'] )
+	
+	def ComputeTotalPrice( self, iType='all' ):
+		if iType == 'cto':
+			return sum( d['count'] * d['unit-price'] for d in self.mData['cto'] )
+		if iType == 'pea':
+			return sum( d['count'] * d['unit-price'] for d in self.mData['pea'] )
+			
+		return sum( d['count'] * d['unit-price'] for d in self.mData['cto'] ) + sum( d['count'] * d['unit-price'] for d in self.mData['pea'] )
 	
 class cCompany:
 	def __init__( self, iISIN, iZBName, iZBCode, iZBSymbol, iRawNotation, iZone, iMorningstarRegion, iMorningstarX, iTradingViewSymbol, iYFSymbol, iRSymbol, iFVSymbol, iTSName, iFCName ):
@@ -457,14 +484,20 @@ class cCompany:
 		return self.mZone
 	
 	#---
+
+	def GetInvested( self ):
+		return self.mInvested
 	
-	def Invested( self, iInvested=None ):
-		if iInvested is None:
-			return self.mInvested
+	def SetInvested( self, iAllInvest, iISIN ):
+		self.mInvested = cCompanyInvestment()
+		self.mInvested.SetData( iAllInvest, iISIN )
 		
-		previous_value = self.mInvested
-		self.mInvested = iInvested
-		return previous_value
+	def HasInvested( self ):
+		if self.mInvested is None:
+			return False
+		if not self.mInvested.mData:
+			return False
+		return True
 	
 	def Notation( self ):
 		return self.mNotation

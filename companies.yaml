@@ -19,7 +19,7 @@ owned:
   - [ "US00287Y1091", "ABBVIE", 12136589, "ABBV",                   [  7,  6, 10,  8,  1 ], "us",  "usa", "xnys",  "NYSE:ABBV",       "ABBV",     "ABBV.N",       "ABBV", "",               "AbbVie" ]
   - [ "US1912161007", "COCA-COLA-COMPANY-THE", 4819, "KO",          [  6,  6, 10,  7,  5 ], "us",  "usa", "xnys",  "NYSE:KO",         "KO",       "KO.N",         "KO",   "",               "Coca-Cola" ]
   - [ "US5246601075", "LEGGETT-PLATT", 13369, "LEG",                [  6,  7, 10, 10,  7 ], "us",  "usa", "xnys",  "NYSE:LEG",        "LEG",      "LEG.N",        "LEG",  "",               "LeggettPlatt" ]
-  - [ "US3724601055", "GENUINE-PARTS-COMPANY", 40311101, "GPC",     [  8,  8,  6, 10, 10 ], "us",  "usa", "xnys",  "NYSE:GPC",        "GPC",      "GPC.N",        "GPC",  "",               "Genuine_Parts" ]
+  - [ "US3724601055", "GENUINE-PARTS-COMPANY", 40311101, "GPC",     [  8, 10,  7, 10, 10 ], "us",  "usa", "xnys",  "NYSE:GPC",        "GPC",      "GPC.N",        "GPC",  "",               "Genuine_Parts" ]
   - [ "US7427181091", "PROCTER-GAMBLE-COMPANY", 4838, "PG",         [  4,  4, 10,  4, 10 ], "us",  "usa", "xnys",  "NYSE:PG",         "PG",       "PG.N",         "PG",   "",               "Procter_Gamble" ]
   - [ "US5797802064", "MCCORMICK-COMPANY", 13556, "MKC",            [  8, 10, 10,  5,  6 ], "us",  "usa", "xnys",  "NYSE:MKC",        "MKC",      "MKC.N",        "MKC",  "",               "McCormick" ]
   - [ "US88579Y1010", "3M-COMPANY", 4836, "MMM",                    [  7,  7, 10, 10,  4 ], "us",  "usa", "xnys",  "NYSE:MMM",        "MMM",      "MMM.N",        "MMM",  "",               "3M" ]

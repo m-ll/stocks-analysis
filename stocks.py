@@ -126,9 +126,7 @@ for data_group_name in data_groups:
 		company.DataPath( data_path )
 		company.OutputImgPathRelativeToHTMLFile( image_name )
 
-		data_invest = next( ( c for c in data_owned_invests if c['isin'] == data[0] ), None )
-		if data_invest:
-			company.Invested( data_invest )
+		company.SetInvested( data_owned_invests, data[0] )
 
 		companies.append( company )
 
