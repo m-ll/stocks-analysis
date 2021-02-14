@@ -133,7 +133,7 @@ class cConverter:
                     cell_type = row[self.mTypeIndex]
                 except IndexError:
                     cell_type = ''
-                if not cell_type or cell_type == 'div':
+                if not cell_type or cell_type == 'div': # ['inv', 'reinv', 'spin-off'] are for buy
                     continue
 
                 cell_date = row[self.mDateIndex]

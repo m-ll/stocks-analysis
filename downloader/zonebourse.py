@@ -214,6 +214,8 @@ class cZoneBourse:
 		js = "switch_sec_per_reg('dynamique2');" # To select the last graph
 		driver.execute_script( js )
 		
+		driver.execute_script( 'var td = document.getElementById("mydiv").parentNode.parentNode; var last_child = td.lastChild; td.removeChild( last_child )' )
+		time.sleep( 1 )
 		driver.execute_script( 'document.getElementById("mydiv").style.width = "1800px"' )
 		time.sleep( 1 )
 		driver.execute_script( 'document.getElementById("mydiv").firstElementChild.style.width = "1800px"' )
