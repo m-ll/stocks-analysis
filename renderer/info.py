@@ -250,6 +250,8 @@ class cBox:
 def _InfoInvestedSVG( iCompany, iSoup ):
 	if not iCompany.HasInvested():
 		return iSoup.new_tag( 'span' )
+	if not iCompany.GetInvested().GetData():
+		return iSoup.new_tag( 'span' )
 	
 	plt.gcf().set_size_inches( 10, 2 )
 

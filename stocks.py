@@ -139,6 +139,8 @@ if not args.groups:
 
 #---
 
+stock_indexes = []
+
 cac40 = cStockIndex( 'FR0003500008', 'CAC-40', 'eu', r'%5EFCHI' )
 sp500 = cStockIndex( 'SP500', 'S-P-500', 'us', r'%5EGSPC' )
 stock_indexes = [ cac40, sp500 ]

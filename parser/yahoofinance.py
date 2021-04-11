@@ -72,17 +72,16 @@ class cYahooFinance:
 		with input.open( newline='' ) as csvfile:
 			csv_reader = csv.DictReader( csvfile, delimiter=',' )
 
-			def IsInt( iString ):
+			def IsFloat( iString ):
 				try: 
-					int( iString )
+					float( iString )
 					return True
 				except ValueError:
 					return False
 			
 			row_header = next( csv_reader ) # Skip header row
 			for row in csv_reader:
-				if not IsInt( row['Close'] ):
+				if not IsFloat( row['Close'] ):
 					continue
 				computed_row = { 'date': datetime.strptime( row['Date'], '%Y-%m-%d' ).date(), 'price': float( row['Close'] ) }
 				iCompany.mYahooFinance.mHistoric.append( computed_row )
-				
