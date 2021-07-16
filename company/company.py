@@ -176,17 +176,17 @@ class cMorningstar:
 		return '{}.{}.{}.csv'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-ratios' )
 		
 	def UrlQuote( self ):
-		return 'https://www.morningstar.com/stocks/{}/{}/quote.html'.format( self.mCity, self.mSymbol.lower() )
+		return 'https://www.morningstar.com/stocks/{}/{}/quote'.format( self.mCity, self.mSymbol.lower() )
 	def FileNameQuote( self ):
 		return '{}.{}.{}.html'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-quote' )
 		
 	def UrlValuation( self ):
-		return 'https://www.morningstar.com/stocks/{}/{}/quote.html'.format( self.mCity, self.mSymbol.lower() )
+		return 'https://www.morningstar.com/stocks/{}/{}/valuation'.format( self.mCity, self.mSymbol.lower() )
 	def FileNameValuation( self ):
 		return '{}.{}.{}.html'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-valuation' )
 		
 	def UrlDividends( self ):
-		return 'https://www.morningstar.com/stocks/{}/{}/quote.html'.format( self.mCity, self.mSymbol.lower() )
+		return 'https://www.morningstar.com/stocks/{}/{}/dividends'.format( self.mCity, self.mSymbol.lower() )
 	def FileNameDividends( self ):
 		return '{}.{}.{}.html'.format( self.mCompany.Name(), self.mCompany.ISIN(), 'morningstar-dividends' )
 

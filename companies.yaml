@@ -1,5 +1,5 @@
 
-          # ISIN          ZoneBourse                                Notation                Zone   Morningstar    TradingView         YahooFin    Reuters      Finviz     TradingSat        Finances
+          # ISIN      ZoneBourse (symbol not used ZB but Morningstar) Notation                Zone   Morningstar    TradingView         YahooFin    Reuters      Finviz     TradingSat        Finances
 owned:
   - [ "FR0000120578", "SANOFI", 4698, "SAN",                        [  5,  1, 10, 10, 10 ], "eu",  "fra", "xpar",  "EURONEXT:SAN",    "SAN.PA",   "SASY.PA",      "",     "sanofi",         "Sanofi" ]
   - [ "FR0000120644", "DANONE", 4634, "BN",                         [  6,  8, 10,  4,  7 ], "eu",  "fra", "xpar",  "EURONEXT:BN",     "BN.PA",    "DANO.PA",      "",     "danone",         "Danone" ]
@@ -11,7 +11,7 @@ owned:
   - [ "DE0007236101", "SIEMENS", 56358595, "SIE",                   [  4,  8, 10, 10, 10 ], "eu",  "deu", "xetr",  "XETR:SIE",        "SIE.DE",   "SIEGn.DE",     "",     "",               "Siemens" ]
 #  - [ "DE000ENER6Y0", "SIEMENS-ENERGY-AG", 113013151, "ENR",        [  4,  8, 10, 10, 10 ], "eu",  "deu", "xetr",  "XETR-ENR",        "ENR.DE",   "ENR1n.DE",     "",     "",               "siemens_energy" ]
   - [ "DE000BAY0017", "BAYER", 436063, "BAYN",                      [  6,  6, 10, 10, 10 ], "eu",  "deu", "xetr",  "XETR:BAYN",       "BAYN.DE",  "BAYGn.DE",     "",     "",               "Bayer" ]
-  - [ "FR0000120271", "TOTAL", 4717, "FP",                          [  4,  6,  5, 10, 10 ], "eu",  "fra", "xpar",  "EURONEXT:FP",     "FP.PA",    "TOTF.PA",      "",     "total",          "TOTAL" ]
+  - [ "FR0000120271", "TOTAL", 4717, "TTA",                         [  4,  6,  5, 10, 10 ], "eu",  "fra", "xpar",  "EURONEXT:FP",     "FP.PA",    "TOTF.PA",      "",     "total",          "TOTAL" ]
   - [ "FR0000073298", "IPSOS", 4663, "IPS",                         [  6, 10,  8, 10, 10 ], "eu",  "fra", "xpar",  "EURONEXT:IPS",    "IPS.PA",   "ISOS.PA",      "",     "ipsos",          "" ]
   - [ "GB00B03MLX29", "ROYAL-DUTCH-SHELL", 6273, "RDSA",            [  4,  4,  6, 10, 10 ], "eu",  "gbr", "xlon",  "EURONEXT:RDSA",   "RDSA.L",   "RDSa.L",       "",     "",               "Shell" ]
   - [ "GB00BH0P3Z91", "BHP-BILLITON-PLC", 47281658, "BHP",          [  4,  7, 10,  9, 10 ], "eu",  "gbr", "xlon",  "",                "BHP.L",    "BHPB.L",       "",     "",               "BHP_Billiton" ]

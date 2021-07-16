@@ -156,11 +156,6 @@ class cMorningstar:
 		# 	elements[0].click()
 		# 	time.sleep( 1 )
 		
-		# Go to 'quote' tab
-		quote = iBrowser.WaitElement( '//a[@id="stock__tab-quote"]' )
-		quote.click()
-		time.sleep( 1 )
-		
 		# Beta ratio
 		element = iBrowser.WaitElement( '//ul[contains(@class,"sal-component-band-grid")]//div[contains(text(), "Beta")]', 5 )
 		while element is None:
@@ -194,17 +189,9 @@ class cMorningstar:
 		
 		iBrowser.Driver().get( iCompany.mMorningstar.UrlValuation() )
 		time.sleep( 1 )
-		
-		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
-		
-		valuation = iBrowser.WaitElement( '//a[@id="stock__tab-valuation"]' )
-		valuation.click()
-		time.sleep( 1 )
 		element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsValuation"]', 5 )
 		while element is None:
-			iBrowser.Driver().refresh()
-			valuation = iBrowser.WaitElement( '//a[@id="stock__tab-valuation"]' )
-			valuation.click()
+			iBrowser.Driver().get( iCompany.mMorningstar.UrlValuation() )
 			time.sleep( 1 )
 			element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsValuation"]', 5 )
 		iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsValuation"]//table[contains(@class,"report-table")]' )
@@ -223,17 +210,9 @@ class cMorningstar:
 		
 		iBrowser.Driver().get( iCompany.mMorningstar.UrlDividends() )
 		time.sleep( 1 )
-		
-		iBrowser.Driver().find_element_by_tag_name( 'body' ).send_keys( Keys.HOME )
-		
-		dividends = iBrowser.WaitElement( '//a[@id="stock__tab-dividends"]' )
-		dividends.click()
-		time.sleep( 1 )
 		element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsDividends"]', 5 )
 		while element is None:
-			iBrowser.Driver().refresh()
-			dividends = iBrowser.WaitElement( '//a[@id="stock__tab-dividends"]' )
-			dividends.click()
+			iBrowser.Driver().get( iCompany.mMorningstar.UrlDividends() )
 			time.sleep( 1 )
 			element = iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsDividends"]', 5 )
 		iBrowser.WaitElement( '//sal-components//div[@mwc-id="salComponentsDividends"]//table[contains(@class,"report-table")]' )
